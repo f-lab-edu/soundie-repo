@@ -1,2 +1,4 @@
 rootProject.name = 'soundie'
 include('app')
+include('module-common')
+include('module-rest')
