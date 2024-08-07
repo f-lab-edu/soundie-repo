@@ -1,29 +1,9 @@
-plugins {
-    id 'application'
-}
+bootJar.enabled = true
 
-repositories {
-    mavenCentral()
-}
+jar.enabled = false
 
 dependencies {
-    testImplementation libs.junit.jupiter
-
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
-    implementation libs.guava
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
-
-application {
-    mainClass = 'org.example.App'
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
 }
