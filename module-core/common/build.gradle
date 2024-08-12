@@ -1,19 +1,4 @@
-plugins {
-    id 'java'
-}
-
-group 'com.soundie'
-version 'unspecified'
-
-repositories {
-    mavenCentral()
-}
-
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
-}
-
-test {
-    useJUnitPlatform()
+    // Spring Boot Web Starter: 웹 애플리케이션 개발을 위한 기본 설정 및 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-web'
 }
