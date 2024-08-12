@@ -4,6 +4,5 @@ plugins {
 }
 
 rootProject.name = 'soundie'
-include ':module-api:user-api'
 include ':module-api:post-api'
 include ':module-core:common'
