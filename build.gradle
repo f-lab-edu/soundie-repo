@@ -28,9 +28,11 @@ subprojects { // 모든 하위 모듈들에 아래 설정 적용
     }
 
     dependencies {
-        implementation 'org.springframework.boot:spring-boot-starter'
+        // Lombok: 보일러플레이트 코드를 줄이기 위한 도구 및 의존성
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
+
+        // Spring Boot Test Starter: 테스트를 위한 기본 설정 및 의존성
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     }

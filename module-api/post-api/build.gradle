@@ -1,0 +1,6 @@
+dependencies {
+    // Spring Boot Web Starter: 웹 애플리케이션 개발을 위한 기본 설정 및 의존성
+    implementation("org.springframework.boot:spring-boot-starter-web")
+
+    implementation project(':module-core:common')
+}
