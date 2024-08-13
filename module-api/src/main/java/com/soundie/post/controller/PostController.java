@@ -22,22 +22,25 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public EnvelopeResponse readPost(@PathVariable Long postId){
-        GetPostDetailResDto post = postService.readPost(postId);
-        return new EnvelopeResponse<>("200", "success", post);
+    public EnvelopeResponse<GetPostDetailResDto> readPost(@PathVariable Long postId){
+        return EnvelopeResponse.<GetPostDetailResDto>builder()
+                .data(postService.readPost(postId))
+                .build();
     }
 
     @PostMapping
-    public EnvelopeResponse createPost(@RequestBody PostPostCreateReqDto postPostCreateReqDto,
+    public EnvelopeResponse<PostIdElement> createPost(@RequestBody PostPostCreateReqDto postPostCreateReqDto,
                                        @RequestParam Long memberId){
-        PostIdElement postId = postService.createPost(memberId, postPostCreateReqDto);
-        return new EnvelopeResponse<>("200", "success", postId);
+        return EnvelopeResponse.<PostIdElement>builder()
+                .data(postService.createPost(memberId, postPostCreateReqDto))
+                .build();
     }
 
     @PostMapping("/{postId}/like")
-    public EnvelopeResponse likePost(@PathVariable Long postId,
+    public EnvelopeResponse<PostCommonLikeResDto> likePost(@PathVariable Long postId,
                                      @RequestParam Long memberId){
-        PostCommonLikeResDto like = postService.likePost(memberId, postId);
-        return new EnvelopeResponse<>("200", "success", like);
+        return EnvelopeResponse.<PostCommonLikeResDto>builder()
+                .data(postService.likePost(memberId, postId))
+                .build();
     }
 }

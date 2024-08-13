@@ -1,13 +1,18 @@
 package com.soundie.global.common;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class EnvelopeResponse<T> {
 
-    private String code;
-    private String message;
+    @Builder.Default
+    private String code = "200";
+
+    @Builder.Default
+    private String message = "success";
+
     private T data;
 }

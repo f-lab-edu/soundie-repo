@@ -14,8 +14,9 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping
-    public EnvelopeResponse createMember(){
-        MemberIdElement memberId = memberService.createMember();
-        return new EnvelopeResponse<>("200", "success", memberId);
+    public EnvelopeResponse<MemberIdElement> createMember(){
+        return EnvelopeResponse.<MemberIdElement>builder()
+                .data(memberService.createMember())
+                .build();
     }
 }

@@ -16,17 +16,19 @@ public class CommentController {
     private final CommentService commentService;
 
     @GetMapping
-    public EnvelopeResponse readComments(@RequestParam Long postId,
+    public EnvelopeResponse<GetCommentResDto> readComments(@RequestParam Long postId,
                                          @RequestParam Long memberId){
-        GetCommentResDto commentList = commentService.readCommentList(memberId, postId);
-        return new EnvelopeResponse<>("200", "success", commentList);
+        return EnvelopeResponse.<GetCommentResDto>builder()
+                .data(commentService.readCommentList(memberId, postId))
+                .build();
     }
 
     @PostMapping
-    public EnvelopeResponse createComment(@RequestBody PostCommentCreateReqDto postCommentCreateReqDto,
+    public EnvelopeResponse<CommentIdElement> createComment(@RequestBody PostCommentCreateReqDto postCommentCreateReqDto,
                                           @RequestParam Long postId,
                                           @RequestParam Long memberId){
-        CommentIdElement commentId = commentService.createComment(memberId, postId, postCommentCreateReqDto);
-        return new EnvelopeResponse<>("200", "success", commentId);
+        return EnvelopeResponse.<CommentIdElement>builder()
+                .data(commentService.createComment(memberId, postId, postCommentCreateReqDto))
+                .build();
     }
 }
