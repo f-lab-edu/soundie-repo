@@ -25,11 +25,6 @@ public class Post {
         this.musicPath = musicPath;
         this.albumImgPath = albumImgPath;
         this.albumName = albumName;
-
-        // 수정 필요: 댓글
-        this.comments.add(new Comment());
-        this.comments.add(new Comment());
-
         this.createdAt = createdAt;
     }
 }
