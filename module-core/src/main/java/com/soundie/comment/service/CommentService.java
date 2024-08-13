@@ -12,7 +12,9 @@ import com.soundie.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -22,11 +24,17 @@ public class CommentService {
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
 
-    public GetCommentResDto readCommentList(Long memberId, Long postId) {
+    public GetCommentResDto readCommentList(Long postId) {
         // 수정 필요: postId 존재 판단
-        Member member = memberRepository.findMemberById(memberId);
-        List<Comment> findComments = commentRepository.findCommentsByMemberIdAndPostId(memberId, postId);
-        return GetCommentResDto.of(findComments, member);
+        List<Comment> findComments = commentRepository.findCommentsByPostId(postId);
+
+        Map<Long, Member> linkedHashMap = new LinkedHashMap<>();
+        for (Comment comment : findComments){
+            Member member = memberRepository.findMemberById(comment.getMemberId());
+            linkedHashMap.put(comment.getId(), member);
+        }
+
+        return GetCommentResDto.of(findComments, linkedHashMap);
     }
 
     public CommentIdElement createComment(Long memberId, Long postId, PostCommentCreateReqDto postCommentCreateReqDto) {

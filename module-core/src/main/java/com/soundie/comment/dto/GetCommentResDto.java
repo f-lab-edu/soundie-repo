@@ -7,6 +7,7 @@ import lombok.Getter;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Getter
@@ -15,10 +16,13 @@ public class GetCommentResDto {
 
     private Collection<GetCommentElement> comments;
 
-    public static GetCommentResDto of(List<Comment> comments, Member member) {
+    public static GetCommentResDto of(List<Comment> comments, Map<Long, Member> linkedHashMap) {
         return GetCommentResDto.builder()
                 .comments(comments.stream()
-                        .map(c -> GetCommentElement.of(c, member))
+                        .map(c -> {
+                            Member member = linkedHashMap.get(c.getId());
+                            return GetCommentElement.of(c, member);
+                        })
                         .collect(Collectors.toList()))
                 .build();
     }

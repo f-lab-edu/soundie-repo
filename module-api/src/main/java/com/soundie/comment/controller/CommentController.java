@@ -16,10 +16,9 @@ public class CommentController {
     private final CommentService commentService;
 
     @GetMapping
-    public EnvelopeResponse<GetCommentResDto> readComments(@RequestParam Long postId,
-                                         @RequestParam Long memberId){
+    public EnvelopeResponse<GetCommentResDto> readComments(@RequestParam Long postId){
         return EnvelopeResponse.<GetCommentResDto>builder()
-                .data(commentService.readCommentList(memberId, postId))
+                .data(commentService.readCommentList(postId))
                 .build();
     }
 

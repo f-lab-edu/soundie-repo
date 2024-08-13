@@ -24,11 +24,11 @@ public class CommentRepository {
 
 
     /*
-     * 회원 Id + 음원 게시물 Id로, 댓글 목록 조회
+     * 음원 게시물 Id로, 댓글 목록 조회
      * */
-    public List<Comment> findCommentsByMemberIdAndPostId(Long memberId, Long postId) {
+    public List<Comment> findCommentsByPostId(Long postId) {
         return findComments().stream()
-                .filter(c -> c.getMemberId().equals(memberId) && c.getPostId().equals(postId))
+                .filter(c -> c.getPostId().equals(postId))
                 .collect(Collectors.toList());
     }
 
