@@ -21,7 +21,7 @@ public class PostLikeRepository {
     /*
      * 회원 Id + 음원 게시물 Id로, 좋아요 조회
      * */
-    public Optional<PostLike> findByMemberIdAndPostId(Long memberId, Long postId) {
+    public Optional<PostLike> findPostLikeByMemberIdAndPostId(Long memberId, Long postId) {
         return findPostLikes().stream()
                 .filter(pl -> pl.getMemberId().equals(memberId) && pl.getPostId().equals(postId) )
                 .findFirst();
@@ -30,7 +30,7 @@ public class PostLikeRepository {
     /*
      * 좋아요 개수 조회
      * */
-    public Long countByPostId(Long postId){
+    public Long countPostLikesByPostId(Long postId){
         return findPostLikes().stream()
                 .filter(pl -> pl.getPostId().equals(postId))
                 .count();

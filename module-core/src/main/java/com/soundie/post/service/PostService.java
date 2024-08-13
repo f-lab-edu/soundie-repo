@@ -56,10 +56,10 @@ public class PostService {
     public PostCommonLikeResDto likePost(Long memberId, Long postId) {
         Member member = memberRepository.findMemberById(memberId);
         Post post = postRepository.findPostById(postId);
-        PostLike postLike = postLikeRepository.findByMemberIdAndPostId(memberId, postId)
+        PostLike postLike = postLikeRepository.findPostLikeByMemberIdAndPostId(memberId, postId)
                 .orElse(null);
 
-        Long likeCount = postLikeRepository.countByPostId(post.getId());
+        Long likeCount = postLikeRepository.countPostLikesByPostId(post.getId());
 
         return togglePostLike(member, post, postLike, likeCount);
     }
