@@ -1,10 +1,7 @@
 package com.soundie.post.controller;
 
 import com.soundie.global.common.EnvelopeResponse;
-import com.soundie.post.dto.GetPostDetailResDto;
-import com.soundie.post.dto.GetPostResDto;
-import com.soundie.post.dto.PostIdElement;
-import com.soundie.post.dto.PostPostCreateReqDto;
+import com.soundie.post.dto.*;
 import com.soundie.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +31,13 @@ public class PostController {
     public EnvelopeResponse createPost(@RequestBody PostPostCreateReqDto postPostCreateReqDto,
                                        @RequestParam Long memberId){
         PostIdElement postId = postService.createPost(memberId, postPostCreateReqDto);
-        return new EnvelopeResponse("200", "success", postId);
+        return new EnvelopeResponse<>("200", "success", postId);
+    }
+
+    @PostMapping("/{postId}/like")
+    public EnvelopeResponse likePost(@PathVariable Long postId,
+                                     @RequestParam Long memberId){
+        PostCommonLikeResDto like = postService.likePost(memberId, postId);
+        return new EnvelopeResponse<>("200", "success", like);
     }
 }

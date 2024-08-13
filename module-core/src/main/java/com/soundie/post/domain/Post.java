@@ -26,9 +26,7 @@ public class Post {
         this.albumImgPath = albumImgPath;
         this.albumName = albumName;
 
-        // 수정 필요: 좋아요, 댓글
-        this.likes.add(new PostLike());
-        this.likes.add(new PostLike());
+        // 수정 필요: 댓글
         this.comments.add(new Comment());
         this.comments.add(new Comment());
 

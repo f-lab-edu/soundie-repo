@@ -1,10 +1,11 @@
 package com.soundie.post.service;
 
+import com.soundie.member.domain.Member;
+import com.soundie.member.repository.MemberRepository;
 import com.soundie.post.domain.Post;
-import com.soundie.post.dto.GetPostDetailResDto;
-import com.soundie.post.dto.GetPostResDto;
-import com.soundie.post.dto.PostIdElement;
-import com.soundie.post.dto.PostPostCreateReqDto;
+import com.soundie.post.domain.PostLike;
+import com.soundie.post.dto.*;
+import com.soundie.post.repository.PostLikeRepository;
 import com.soundie.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final PostLikeRepository postLikeRepository;
+    private final MemberRepository memberRepository;
 
     public List<GetPostResDto> readPostList(){
         List<Post> findPosts = postRepository.findPosts();
@@ -31,7 +34,7 @@ public class PostService {
                         p.getLikes().size(),
                         p.getComments().size(),
                         p.getCreatedAt(),
-                        false
+                        p.getLikes().size() != 0 // 수정 필요
                 ))
                 .collect(Collectors.toList());
     }
@@ -48,7 +51,7 @@ public class PostService {
                 findPost.getLikes().size(),
                 findPost.getComments().size(),
                 findPost.getCreatedAt(),
-                false
+                findPost.getLikes().size() != 0 // 수정 필요
         );
     }
 
@@ -63,5 +66,43 @@ public class PostService {
                 "2024-08-13");
         Long postId = postRepository.save(post).getId();
         return new PostIdElement(postId);
+    }
+
+    public PostCommonLikeResDto likePost(Long memberId, Long postId) {
+        Member member = memberRepository.findMemberById(memberId);
+        Post post = postRepository.findPostById(postId);
+        PostLike postLike = postLikeRepository.findByMemberIdAndPostId(memberId, postId)
+                .orElse(null);
+
+        Long likeCount = postLikeRepository.countByPostId(post.getId());
+
+        return togglePostLike(member, post, postLike, likeCount);
+    }
+
+    private PostCommonLikeResDto togglePostLike(Member member, Post post, PostLike postLike, Long likeCount) {
+        if (postLike != null){
+            deleteLike(post, postLike);
+            return new PostCommonLikeResDto(likeCount - 1, false);
+        }
+
+        saveLike(member, post);
+        return new PostCommonLikeResDto(likeCount + 1, true);
+    }
+
+    private void saveLike(Member member, Post post) {
+        PostLike postLike = new PostLike(member.getId(), post.getId());
+
+        post.getLikes().add(postLike);
+
+        postLikeRepository.save(postLike);
+    }
+
+    private void deleteLike(Post post, PostLike postLike) {
+        post.getLikes().stream()
+                        .filter(pl -> pl.getId().equals(postLike.getId()))
+                        .collect(Collectors.toList())
+                        .forEach(x -> post.getLikes().remove(x));
+
+        postLikeRepository.delete(postLike);
     }
 }
