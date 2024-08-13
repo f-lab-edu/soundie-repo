@@ -20,4 +20,21 @@ public class PostRepository {
     public List<Post> findPosts() {
         return new ArrayList<>(store.values());
     }
+
+    /*
+     * 음원 게시물 Id로, 음원 게시물 조회
+     * */
+    public Post findPostById(Long postId) {
+        return store.get(postId);
+    }
+
+    /*
+    * 음원 게시물 저장
+    * */
+    public Post save(Post post){
+        post.setId(++sequence);
+        store.put(post.getId(), post);
+
+        return post;
+    }
 }
