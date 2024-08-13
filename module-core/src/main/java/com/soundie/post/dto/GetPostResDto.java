@@ -1,20 +1,24 @@
 package com.soundie.post.dto;
 
-import lombok.AllArgsConstructor;
+import com.soundie.post.domain.Post;
+import lombok.Builder;
 import lombok.Getter;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
-@AllArgsConstructor
+@Builder
 public class GetPostResDto {
 
-    private Long postId;
-    private String title;
-    private String artistName;
-    private String musicPath;
-    private String albumImgPath;
-    private String albumName;
-    private Number likeCount;
-    private Number commentCount;
-    private String createdAt;
-    private Boolean liked;
+    private Collection<GetPostElement> posts;
+
+    public static GetPostResDto of(List<Post> posts) {
+        return GetPostResDto.builder()
+                .posts(posts.stream()
+                        .map(p -> GetPostElement.of(p))
+                        .collect(Collectors.toList()))
+                .build();
+    }
 }

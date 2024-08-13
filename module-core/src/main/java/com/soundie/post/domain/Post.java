@@ -3,6 +3,7 @@ package com.soundie.post.domain;
 import com.soundie.comment.domain.Comment;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import java.util.List;
 public class Post {
 
     private Long id;
+    private Long memberId;
     private String title;
     private String artistName;
     private String musicPath;
@@ -17,14 +19,15 @@ public class Post {
     private String albumName;
     private List<PostLike> likes = new ArrayList<>();
     private List<Comment> comments = new ArrayList<>();
-    private String createdAt;
+    private LocalDateTime createdAt;
 
-    public Post(String title, String artistName, String musicPath, String albumImgPath, String albumName, String createdAt) {
+    public Post(Long memberId, String title, String artistName, String musicPath, String albumImgPath, String albumName) {
+        this.memberId = memberId;
         this.title = title;
         this.artistName = artistName;
         this.musicPath = musicPath;
         this.albumImgPath = albumImgPath;
         this.albumName = albumName;
-        this.createdAt = createdAt;
+        this.createdAt = LocalDateTime.now();
     }
 }

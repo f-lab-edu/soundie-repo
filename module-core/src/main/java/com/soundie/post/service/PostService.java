@@ -21,51 +21,36 @@ public class PostService {
     private final PostLikeRepository postLikeRepository;
     private final MemberRepository memberRepository;
 
-    public List<GetPostResDto> readPostList(){
+    public GetPostResDto readPostList(){
         List<Post> findPosts = postRepository.findPosts();
-        return findPosts.stream()
-                .map(p -> new GetPostResDto(
-                        p.getId(),
-                        p.getTitle(),
-                        p.getArtistName(),
-                        p.getMusicPath(),
-                        p.getAlbumImgPath(),
-                        p.getAlbumName(),
-                        p.getLikes().size(),
-                        p.getComments().size(),
-                        p.getCreatedAt(),
-                        p.getLikes().size() != 0 // 수정 필요
-                ))
-                .collect(Collectors.toList());
+        return GetPostResDto.of(findPosts);
     }
 
-    public GetPostDetailResDto readPost(Long postId) {
+    public GetPostDetailResDto readPost(Long memberId, Long postId) {
         Post findPost = postRepository.findPostById(postId);
-        return new GetPostDetailResDto(
-                findPost.getId(),
-                findPost.getTitle(),
-                findPost.getArtistName(),
-                findPost.getMusicPath(),
-                findPost.getAlbumImgPath(),
-                findPost.getAlbumName(),
-                findPost.getLikes().size(),
-                findPost.getComments().size(),
-                findPost.getCreatedAt(),
-                findPost.getLikes().size() != 0 // 수정 필요
-        );
+
+        if (memberId != null){
+            Member member = memberRepository.findMemberById(memberId);
+            return GetPostDetailResDto.of(findPost, member);
+        }
+
+        return GetPostDetailResDto.of(findPost, null);
     }
 
     public PostIdElement createPost(Long memberId, PostPostCreateReqDto postPostCreateReqDto) {
-        // 수정 필요: 회원 Id로 Post 등록
+        Member member = memberRepository.findMemberById(memberId);
         Post post = new Post(
+                memberId,
                 postPostCreateReqDto.getTitle(),
-                postPostCreateReqDto.getArtistName(),
+                member.getName(),
                 postPostCreateReqDto.getMusicPath(),
                 postPostCreateReqDto.getAlbumImgPath(),
-                postPostCreateReqDto.getAlbumName(),
-                "2024-08-13");
-        Long postId = postRepository.save(post).getId();
-        return new PostIdElement(postId);
+                postPostCreateReqDto.getAlbumName()
+        );
+
+        post = postRepository.save(post);
+
+        return new PostIdElement(post.getId());
     }
 
     public PostCommonLikeResDto likePost(Long memberId, Long postId) {

@@ -6,8 +6,6 @@ import com.soundie.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/posts")
@@ -16,15 +14,17 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping
-    public EnvelopeResponse readPostList(){
-        List<GetPostResDto> postList = postService.readPostList();
-        return new EnvelopeResponse<>("200", "success", postList);
+    public EnvelopeResponse<GetPostResDto> readPostList(){
+        return EnvelopeResponse.<GetPostResDto>builder()
+                .data(postService.readPostList())
+                .build();
     }
 
     @GetMapping("/{postId}")
-    public EnvelopeResponse<GetPostDetailResDto> readPost(@PathVariable Long postId){
+    public EnvelopeResponse<GetPostDetailResDto> readPost(@PathVariable Long postId,
+                                                          @RequestParam Long memberId){
         return EnvelopeResponse.<GetPostDetailResDto>builder()
-                .data(postService.readPost(postId))
+                .data(postService.readPost(memberId, postId))
                 .build();
     }
 

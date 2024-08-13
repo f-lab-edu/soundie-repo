@@ -7,7 +7,6 @@ import lombok.Setter;
 @Setter
 public class PostPostCreateReqDto {
     private String title;
-    private String artistName;
     private String musicPath;
     private String albumImgPath;
     private String albumName;
