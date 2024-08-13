@@ -2,10 +2,8 @@ package com.soundie.post.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 @AllArgsConstructor
 public class GetPostDetailResDto {
 
