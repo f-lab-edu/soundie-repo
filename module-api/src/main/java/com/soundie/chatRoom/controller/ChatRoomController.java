@@ -17,7 +17,7 @@ public class ChatRoomController {
     private final ChatRoomService chatRoomService;
 
     @GetMapping
-    public EnvelopeResponse<GetChatRoomResDto> readChatRooms(@PathVariable Long memberId){
+    public EnvelopeResponse<GetChatRoomResDto> readChatRooms(@RequestParam Long memberId){
         return EnvelopeResponse.<GetChatRoomResDto>builder()
                 .data(chatRoomService.readChatRoomList(memberId))
                 .build();
