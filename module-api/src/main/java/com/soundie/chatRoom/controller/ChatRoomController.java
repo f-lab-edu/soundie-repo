@@ -24,7 +24,8 @@ public class ChatRoomController {
     }
 
     @GetMapping("/{chatRoomId}")
-    public EnvelopeResponse<GetChatRoomDetailResDto> readChatRoom(@PathVariable Long chatRoomId){
+    public EnvelopeResponse<GetChatRoomDetailResDto> readChatRoom(@PathVariable Long chatRoomId,
+                                                                  @RequestParam Long memberId){
         return EnvelopeResponse.<GetChatRoomDetailResDto>builder()
                 .data(chatRoomService.readChatRoom(chatRoomId))
                 .build();
@@ -32,9 +33,10 @@ public class ChatRoomController {
 
     @PostMapping
     public EnvelopeResponse<ChatRoomIdElement> createChatRoom(@RequestBody PostChatRoomCreateReqDto postChatRoomCreateReqDto,
-                                                              @RequestParam Long memberId){
+                                                              @RequestParam Long hostMemberId,
+                                                              @RequestParam Long guestMemberId){
         return EnvelopeResponse.<ChatRoomIdElement>builder()
-                .data(chatRoomService.createChatRoom(memberId, postChatRoomCreateReqDto))
+                .data(chatRoomService.createChatRoom(hostMemberId, guestMemberId, postChatRoomCreateReqDto))
                 .build();
     }
 }

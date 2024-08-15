@@ -18,7 +18,7 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
 
     public GetChatRoomResDto readChatRoomList(Long memberId) {
-        List<ChatRoom> findChatRooms = chatRoomRepository.findChatRoomsByMemberId(memberId);
+        List<ChatRoom> findChatRooms = chatRoomRepository.findChatRoomsByHostMemberIdOrGuestMemberId(memberId);
         return GetChatRoomResDto.of(findChatRooms);
     }
 
@@ -27,9 +27,10 @@ public class ChatRoomService {
         return GetChatRoomDetailResDto.of(findChatRoom);
     }
 
-    public ChatRoomIdElement createChatRoom(Long memberId, PostChatRoomCreateReqDto postChatRoomCreateReqDto) {
+    public ChatRoomIdElement createChatRoom(Long hostMemberId, Long guestMemberId, PostChatRoomCreateReqDto postChatRoomCreateReqDto) {
         ChatRoom chatRoom = new ChatRoom(
-                memberId,
+                hostMemberId,
+                guestMemberId,
                 postChatRoomCreateReqDto.getName(),
                 postChatRoomCreateReqDto.getDescription()
         );
