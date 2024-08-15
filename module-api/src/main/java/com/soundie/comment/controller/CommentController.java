@@ -16,7 +16,8 @@ public class CommentController {
     private final CommentService commentService;
 
     @GetMapping
-    public EnvelopeResponse<GetCommentResDto> readComments(@RequestParam Long postId){
+    public EnvelopeResponse<GetCommentResDto> readComments(@RequestParam Long postId,
+                                                           @RequestParam(required = false) Long memberId){
         return EnvelopeResponse.<GetCommentResDto>builder()
                 .data(commentService.readCommentList(postId))
                 .build();
@@ -24,8 +25,8 @@ public class CommentController {
 
     @PostMapping
     public EnvelopeResponse<CommentIdElement> createComment(@RequestBody PostCommentCreateReqDto postCommentCreateReqDto,
-                                          @RequestParam Long postId,
-                                          @RequestParam Long memberId){
+                                                            @RequestParam Long postId,
+                                                            @RequestParam Long memberId){
         return EnvelopeResponse.<CommentIdElement>builder()
                 .data(commentService.createComment(memberId, postId, postCommentCreateReqDto))
                 .build();

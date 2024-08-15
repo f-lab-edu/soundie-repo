@@ -14,7 +14,7 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping
-    public EnvelopeResponse<GetPostResDto> readPostList(){
+    public EnvelopeResponse<GetPostResDto> readPostList(@RequestParam(required = false) Long memberId){
         return EnvelopeResponse.<GetPostResDto>builder()
                 .data(postService.readPostList())
                 .build();
@@ -22,7 +22,7 @@ public class PostController {
 
     @GetMapping("/{postId}")
     public EnvelopeResponse<GetPostDetailResDto> readPost(@PathVariable Long postId,
-                                                          @RequestParam Long memberId){
+                                                          @RequestParam(required = false) Long memberId){
         return EnvelopeResponse.<GetPostDetailResDto>builder()
                 .data(postService.readPost(memberId, postId))
                 .build();
@@ -30,7 +30,7 @@ public class PostController {
 
     @PostMapping
     public EnvelopeResponse<PostIdElement> createPost(@RequestBody PostPostCreateReqDto postPostCreateReqDto,
-                                       @RequestParam Long memberId){
+                                                      @RequestParam Long memberId){
         return EnvelopeResponse.<PostIdElement>builder()
                 .data(postService.createPost(memberId, postPostCreateReqDto))
                 .build();
@@ -38,7 +38,7 @@ public class PostController {
 
     @PostMapping("/{postId}/like")
     public EnvelopeResponse<PostCommonLikeResDto> likePost(@PathVariable Long postId,
-                                     @RequestParam Long memberId){
+                                                           @RequestParam Long memberId){
         return EnvelopeResponse.<PostCommonLikeResDto>builder()
                 .data(postService.likePost(memberId, postId))
                 .build();
