@@ -4,16 +4,17 @@ import com.soundie.comment.domain.Comment;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Repository
 public class CommentRepository {
 
-    private static final Map<Long, Comment> store = new HashMap<>(); //static
-    private static long sequence = 0L; //static
+    private final Map<Long, Comment> store = new ConcurrentHashMap<>();
+    private AtomicLong sequence = new AtomicLong(0L);
 
     /*
      * 댓글 목록 조회
@@ -36,7 +37,7 @@ public class CommentRepository {
      * 댓글 저장
      * */
     public Comment save(Comment comment){
-        comment.setId(++sequence);
+        comment.setId(sequence.incrementAndGet());
         store.put(comment.getId(), comment);
 
         return comment;

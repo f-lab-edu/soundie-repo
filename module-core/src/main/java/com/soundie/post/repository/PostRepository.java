@@ -4,15 +4,16 @@ import com.soundie.post.domain.Post;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class PostRepository {
 
-    private static final Map<Long, Post> store = new HashMap<>(); //static
-    private static long sequence = 0L; //static
+    private final Map<Long, Post> store = new ConcurrentHashMap<>();
+    private AtomicLong sequence = new AtomicLong(0L);
 
     /*
     * 음원 게시물 목록 조회
@@ -32,7 +33,7 @@ public class PostRepository {
     * 음원 게시물 저장
     * */
     public Post save(Post post){
-        post.setId(++sequence);
+        post.setId(sequence.incrementAndGet());
         store.put(post.getId(), post);
 
         return post;

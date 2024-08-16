@@ -4,16 +4,17 @@ import com.soundie.notification.domain.Notification;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Repository
 public class NotificationRepository {
 
-    private static final Map<Long, Notification> store = new HashMap<>(); //static
-    private static long sequence = 0L; //static
+    private final Map<Long, Notification> store = new ConcurrentHashMap<>();
+    private AtomicLong sequence = new AtomicLong(0L);
 
     /*
      * 알림 목록 조회

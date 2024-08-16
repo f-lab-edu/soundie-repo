@@ -4,15 +4,16 @@ import com.soundie.member.domain.Member;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class MemberRepository {
 
-    private static final Map<Long, Member> store = new HashMap<>(); //static
-    private static long sequence = 0L; //static
+    private final Map<Long, Member> store = new ConcurrentHashMap<>();
+    private AtomicLong sequence = new AtomicLong(0L);
 
     /*
      * 회원 목록 조회
@@ -32,7 +33,7 @@ public class MemberRepository {
      * 회원 저장
      * */
     public Member save(Member member){
-        member.setId(++sequence);
+        member.setId(sequence.incrementAndGet());
         store.put(member.getId(), member);
 
         return member;

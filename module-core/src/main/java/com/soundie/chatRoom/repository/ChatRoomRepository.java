@@ -4,15 +4,16 @@ import com.soundie.chatRoom.domain.ChatRoom;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Repository
 public class ChatRoomRepository {
-    private static final Map<Long, ChatRoom> store = new HashMap<>(); //static
-    private static long sequence = 0L; //static
+    private final Map<Long, ChatRoom> store = new ConcurrentHashMap<>();
+    private AtomicLong sequence = new AtomicLong(0L);
 
     /*
      * 채팅방 목록 조회
@@ -42,7 +43,7 @@ public class ChatRoomRepository {
      * 채팅방 저장
      * */
     public ChatRoom save(ChatRoom chatRoom){
-        chatRoom.setId(++sequence);
+        chatRoom.setId(sequence.incrementAndGet());
         store.put(chatRoom.getId(), chatRoom);
 
         return chatRoom;

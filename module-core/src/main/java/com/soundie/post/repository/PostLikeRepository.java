@@ -4,12 +4,14 @@ import com.soundie.post.domain.PostLike;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class PostLikeRepository {
 
-    private static final Map<Long, PostLike> store = new HashMap<>(); //static
-    private static long sequence = 0L; //static
+    private final Map<Long, PostLike> store = new ConcurrentHashMap<>();
+    private AtomicLong sequence = new AtomicLong(0L);
 
     /*
      * 좋아요 목록 조회
@@ -40,7 +42,7 @@ public class PostLikeRepository {
      * 좋아요 저장
      * */
     public PostLike save(PostLike postLike) {
-        postLike.setId(++sequence);
+        postLike.setId(sequence.incrementAndGet());
         store.put(postLike.getId(), postLike);
 
         return postLike;
