@@ -37,9 +37,9 @@ public class PostController {
     }
 
     @PostMapping("/{postId}/like")
-    public EnvelopeResponse<PostCommonLikeResDto> likePost(@PathVariable Long postId,
-                                                           @RequestParam Long memberId){
-        return EnvelopeResponse.<PostCommonLikeResDto>builder()
+    public EnvelopeResponse<PostPostLikeResDto> likePost(@PathVariable Long postId,
+                                                         @RequestParam Long memberId){
+        return EnvelopeResponse.<PostPostLikeResDto>builder()
                 .data(postService.likePost(memberId, postId))
                 .build();
     }

@@ -50,10 +50,10 @@ public class PostService {
 
         post = postRepository.save(post);
 
-        return new PostIdElement(post.getId());
+        return PostIdElement.of(post.getId());
     }
 
-    public PostCommonLikeResDto likePost(Long memberId, Long postId) {
+    public PostPostLikeResDto likePost(Long memberId, Long postId) {
         Member member = memberRepository.findMemberById(memberId);
         Post post = postRepository.findPostById(postId);
         PostLike postLike = postLikeRepository.findPostLikeByMemberIdAndPostId(memberId, postId)
@@ -64,14 +64,14 @@ public class PostService {
         return togglePostLike(member, post, postLike, likeCount);
     }
 
-    private PostCommonLikeResDto togglePostLike(Member member, Post post, PostLike postLike, Long likeCount) {
+    private PostPostLikeResDto togglePostLike(Member member, Post post, PostLike postLike, Long likeCount) {
         if (postLike != null){
             deleteLike(post, postLike);
-            return new PostCommonLikeResDto(likeCount - 1, false);
+            return PostPostLikeResDto.of(likeCount - 1, false);
         }
 
         saveLike(member, post);
-        return new PostCommonLikeResDto(likeCount + 1, true);
+        return PostPostLikeResDto.of(likeCount + 1, true);
     }
 
     private void saveLike(Member member, Post post) {

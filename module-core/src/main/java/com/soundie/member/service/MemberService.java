@@ -15,7 +15,8 @@ public class MemberService {
     public MemberIdElement createMember() {
         Member member = new Member();
         member.setName("정원석");
+
         Long memberId = memberRepository.save(member).getId();
-        return new MemberIdElement(memberId);
+        return MemberIdElement.of(memberId);
     }
 }

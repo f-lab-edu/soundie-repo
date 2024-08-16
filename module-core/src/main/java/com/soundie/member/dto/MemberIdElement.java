@@ -1,13 +1,17 @@
 package com.soundie.member.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class MemberIdElement {
 
-    private final Long memberId;
+    private Long memberId;
 
-    public MemberIdElement(Long memberId){
-        this.memberId = memberId;
+    public static MemberIdElement of(Long memberId){
+        return MemberIdElement.builder()
+                .memberId(memberId)
+                .build();
     }
 }

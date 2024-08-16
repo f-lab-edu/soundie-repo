@@ -22,7 +22,7 @@ public class GetCommentElement {
                 .commentId(comment.getId())
                 .content(comment.getContent())
                 .createdAt(comment.getCreatedAt())
-                .author(new AuthorElement(member))
+                .author(AuthorElement.of(member))
                 .build();
     }
 }

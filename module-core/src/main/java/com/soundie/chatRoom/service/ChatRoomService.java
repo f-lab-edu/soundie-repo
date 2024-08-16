@@ -37,6 +37,6 @@ public class ChatRoomService {
 
         chatRoom = chatRoomRepository.save(chatRoom);
 
-        return new ChatRoomIdElement(chatRoom.getId());
+        return ChatRoomIdElement.of(chatRoom.getId());
     }
 }

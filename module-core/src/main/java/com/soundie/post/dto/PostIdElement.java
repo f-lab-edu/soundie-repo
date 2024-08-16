@@ -1,12 +1,16 @@
 package com.soundie.post.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class PostIdElement {
-    private final Long postId;
+    private Long postId;
 
-    public PostIdElement(Long postId){
-        this.postId = postId;
+    public static PostIdElement of(Long postId){
+        return PostIdElement.builder()
+                .postId(postId)
+                .build();
     }
 }
