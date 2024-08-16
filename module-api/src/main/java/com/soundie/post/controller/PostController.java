@@ -1,6 +1,6 @@
 package com.soundie.post.controller;
 
-import com.soundie.global.common.EnvelopeResponse;
+import com.soundie.global.common.dto.EnvelopeResponse;
 import com.soundie.post.dto.*;
 import com.soundie.post.service.PostService;
 import lombok.RequiredArgsConstructor;

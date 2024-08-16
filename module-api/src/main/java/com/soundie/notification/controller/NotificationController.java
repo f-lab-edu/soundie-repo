@@ -1,6 +1,6 @@
 package com.soundie.notification.controller;
 
-import com.soundie.global.common.EnvelopeResponse;
+import com.soundie.global.common.dto.EnvelopeResponse;
 import com.soundie.notification.dto.GetNotificationResDto;
 import com.soundie.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;

@@ -5,7 +5,7 @@ import com.soundie.chatRoom.dto.GetChatRoomDetailResDto;
 import com.soundie.chatRoom.dto.GetChatRoomResDto;
 import com.soundie.chatRoom.dto.PostChatRoomCreateReqDto;
 import com.soundie.chatRoom.service.ChatRoomService;
-import com.soundie.global.common.EnvelopeResponse;
+import com.soundie.global.common.dto.EnvelopeResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

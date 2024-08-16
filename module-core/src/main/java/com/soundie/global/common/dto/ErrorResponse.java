@@ -1,4 +1,4 @@
-package com.soundie.global.common;
+package com.soundie.global.common.dto;
 
 import com.soundie.global.common.exception.ApplicationError;
 import com.soundie.global.common.exception.ApplicationException;

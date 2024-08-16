@@ -1,6 +1,6 @@
 package com.soundie.global.resolver;
 
-import com.soundie.global.common.ErrorResponse;
+import com.soundie.global.common.dto.ErrorResponse;
 import com.soundie.global.common.exception.ApplicationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

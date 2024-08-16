@@ -1,4 +1,4 @@
-package com.soundie.global.common;
+package com.soundie.global.common.dto;
 
 import lombok.*;
 

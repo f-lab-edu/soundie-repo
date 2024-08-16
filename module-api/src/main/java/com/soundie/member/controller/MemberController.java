@@ -1,6 +1,6 @@
 package com.soundie.member.controller;
 
-import com.soundie.global.common.EnvelopeResponse;
+import com.soundie.global.common.dto.EnvelopeResponse;
 import com.soundie.member.dto.MemberIdElement;
 import com.soundie.member.service.MemberService;
 import lombok.RequiredArgsConstructor;

@@ -4,7 +4,7 @@ import com.soundie.comment.dto.CommentIdElement;
 import com.soundie.comment.dto.GetCommentResDto;
 import com.soundie.comment.dto.PostCommentCreateReqDto;
 import com.soundie.comment.service.CommentService;
-import com.soundie.global.common.EnvelopeResponse;
+import com.soundie.global.common.dto.EnvelopeResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
