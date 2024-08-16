@@ -1,10 +1,11 @@
 package com.soundie.comment.dto;
 
+import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostCommentCreateReqDto {
     private String content;
 }
