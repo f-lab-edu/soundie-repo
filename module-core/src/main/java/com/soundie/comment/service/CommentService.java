@@ -1,0 +1,56 @@
+package com.soundie.comment.service;
+
+import com.soundie.comment.domain.Comment;
+import com.soundie.comment.dto.CommentIdElement;
+import com.soundie.comment.dto.GetCommentResDto;
+import com.soundie.comment.dto.PostCommentCreateReqDto;
+import com.soundie.comment.repository.CommentRepository;
+import com.soundie.member.domain.Member;
+import com.soundie.member.repository.MemberRepository;
+import com.soundie.post.domain.Post;
+import com.soundie.post.repository.PostRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+@Service
+@RequiredArgsConstructor
+public class CommentService {
+
+    private final CommentRepository commentRepository;
+    private final MemberRepository memberRepository;
+    private final PostRepository postRepository;
+
+    public GetCommentResDto readCommentList(Long postId) {
+        // 수정 필요: postId 존재 판단
+        List<Comment> findComments = commentRepository.findCommentsByPostId(postId);
+
+        Map<Long, Member> linkedHashMap = new LinkedHashMap<>();
+        for (Comment comment : findComments){
+            Member member = memberRepository.findMemberById(comment.getMemberId());
+            linkedHashMap.put(comment.getId(), member);
+        }
+
+        return GetCommentResDto.of(findComments, linkedHashMap);
+    }
+
+    public CommentIdElement createComment(Long memberId, Long postId, PostCommentCreateReqDto postCommentCreateReqDto) {
+        // 수정 필요: postId 존재 판단
+        Post post = postRepository.findPostById(postId);
+
+        Comment comment = new Comment(
+                memberId,
+                postId,
+                postCommentCreateReqDto.getContent()
+        );
+
+        post.getComments().add(comment);
+
+        comment = commentRepository.save(comment);
+
+        return CommentIdElement.of(comment.getId());
+    }
+}
