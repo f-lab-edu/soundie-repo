@@ -15,4 +15,12 @@ public class Notification {
     private NotificationType notificationType;
     private Boolean read;
     private LocalDateTime createdAt;
+
+    public Notification(Long memberId, Long ownerId, String message, Long contentId, NotificationType notificationType){
+        this.memberId = memberId;
+        this.ownerId = ownerId;
+        this.message = message;
+        this.contentId = contentId;
+        this.notificationType = notificationType;
+    }
 }

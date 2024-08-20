@@ -13,8 +13,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     public MemberIdElement createMember() {
-        Member member = new Member();
-        member.setName("정원석");
+        Member member = new Member("정원석");
 
         Long memberId = memberRepository.save(member).getId();
         return MemberIdElement.of(memberId);
