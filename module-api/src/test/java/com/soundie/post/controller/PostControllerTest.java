@@ -1,17 +1,13 @@
 package com.soundie.post.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soundie.member.domain.Member;
+import com.soundie.post.ControllerTestSupport;
 import com.soundie.post.domain.Post;
 import com.soundie.post.dto.*;
-import com.soundie.post.service.PostService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -26,16 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = PostController.class)
-class PostControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @MockBean
-    private PostService postService;
+class PostControllerTest extends ControllerTestSupport {
 
     @DisplayName("음원 게시물 목록을 조회한다.")
     @Test
