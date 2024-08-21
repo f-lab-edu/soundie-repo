@@ -17,8 +17,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -42,9 +41,8 @@ class PostControllerTest {
     @Test
     void readPostList() throws Exception {
         // given
-        GetPostResDto result = GetPostResDto.of(List.of());
-
-        given(postService.readPostList()).willReturn(result);
+        GetPostResDto response = GetPostResDto.of(List.of());
+        given(postService.readPostList()).willReturn(response);
 
         // when // then
         mockMvc.perform(
@@ -62,16 +60,10 @@ class PostControllerTest {
     void readPost() throws Exception {
         //given
         Long memberId = 1L;
-        Member member = new Member("");
         Long postId = 1L;
-        Post post = new Post(
-                memberId,
-                "", "", "", "", ""
-        );
 
-        GetPostDetailResDto result = GetPostDetailResDto.of(post, member);
-
-        given(postService.readPost(memberId, postId)).willReturn(result);
+        GetPostDetailResDto response = getPostDetailResDto(memberId, postId);
+        given(postService.readPost(any(), any())).willReturn(response);
 
         // when // then
         mockMvc.perform(
@@ -80,7 +72,8 @@ class PostControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("200"))
-                .andExpect(jsonPath("$.message").value("success"));
+                .andExpect(jsonPath("$.message").value("success"))
+                .andExpect(jsonPath("$.data.post").exists());
     }
 
     @DisplayName("음원 게시물을 등록한다.")
@@ -92,7 +85,7 @@ class PostControllerTest {
 
         PostPostCreateReqDto request = postPostCreateReqDto();
         PostIdElement response = postIdElement(postId);
-        given(postService.createPost(eq(memberId), any(PostPostCreateReqDto.class))).willReturn(response);
+        given(postService.createPost(anyLong(), any(PostPostCreateReqDto.class))).willReturn(response);
 
         // when // then
         MultiValueMap <String, String> params = new LinkedMultiValueMap<>();
@@ -121,7 +114,7 @@ class PostControllerTest {
         Boolean liked = true;
 
         PostPostLikeResDto response = postPostLikeResDto(likeCount, liked);
-        given(postService.likePost(eq(memberId), eq(postId))).willReturn(response);
+        given(postService.likePost(anyLong(), anyLong())).willReturn(response);
 
         // when // then
         MultiValueMap <String, String> params = new LinkedMultiValueMap<>();
@@ -137,6 +130,22 @@ class PostControllerTest {
                 .andExpect(jsonPath("$.message").value("success"))
                 .andExpect(jsonPath("$.data.likeCount").value(1))
                 .andExpect(jsonPath("$.data.liked").value(true));
+    }
+
+    private GetPostDetailResDto getPostDetailResDto(Long memberId, Long postId) {
+        Member member = new Member("정원석");
+        member.setId(memberId);
+        Post post = new Post(
+                memberId,
+                "노래 제목",
+                member.getName(),
+                "노래 주소",
+                "앨범 이미지 주소",
+                "앨범 이름"
+        );
+        post.setId(postId);
+
+        return GetPostDetailResDto.of(post, member);
     }
 
     private PostPostCreateReqDto postPostCreateReqDto(){
