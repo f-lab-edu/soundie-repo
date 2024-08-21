@@ -6,6 +6,8 @@ import com.soundie.chatRoom.dto.GetChatRoomDetailResDto;
 import com.soundie.chatRoom.dto.GetChatRoomResDto;
 import com.soundie.chatRoom.dto.PostChatRoomCreateReqDto;
 import com.soundie.chatRoom.repository.ChatRoomRepository;
+import com.soundie.global.common.exception.ApplicationError;
+import com.soundie.global.common.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +25,8 @@ public class ChatRoomService {
     }
 
     public GetChatRoomDetailResDto readChatRoom(Long chatRoomId) {
-        ChatRoom findChatRoom = chatRoomRepository.findChatRoomById(chatRoomId);
+        ChatRoom findChatRoom = chatRoomRepository.findChatRoomById(chatRoomId)
+                .orElseThrow(() -> new NotFoundException(ApplicationError.CHAT_ROOM_NOT_FOUND));
         return GetChatRoomDetailResDto.of(findChatRoom);
     }
 

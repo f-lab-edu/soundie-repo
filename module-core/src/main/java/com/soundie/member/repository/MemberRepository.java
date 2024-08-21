@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -25,8 +26,8 @@ public class MemberRepository {
     /*
     * 회원 Id로, 회원 조회
     * */
-    public Member findMemberById(Long memberId) {
-        return store.get(memberId);
+    public Optional<Member> findMemberById(Long memberId) {
+        return Optional.ofNullable(store.get(memberId));
     }
 
     /*

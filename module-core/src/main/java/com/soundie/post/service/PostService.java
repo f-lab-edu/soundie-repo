@@ -1,5 +1,7 @@
 package com.soundie.post.service;
 
+import com.soundie.global.common.exception.ApplicationError;
+import com.soundie.global.common.exception.NotFoundException;
 import com.soundie.member.domain.Member;
 import com.soundie.member.repository.MemberRepository;
 import com.soundie.post.domain.Post;
@@ -27,10 +29,12 @@ public class PostService {
     }
 
     public GetPostDetailResDto readPost(Long memberId, Long postId) {
-        Post findPost = postRepository.findPostById(postId);
+        Post findPost = postRepository.findPostById(postId)
+                .orElseThrow(() -> new NotFoundException(ApplicationError.POST_NOT_FOUND));
 
         if (memberId != null){
-            Member member = memberRepository.findMemberById(memberId);
+            Member member = memberRepository.findMemberById(memberId)
+                    .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
             return GetPostDetailResDto.of(findPost, member);
         }
 
@@ -38,7 +42,8 @@ public class PostService {
     }
 
     public PostIdElement createPost(Long memberId, PostPostCreateReqDto postPostCreateReqDto) {
-        Member member = memberRepository.findMemberById(memberId);
+        Member member = memberRepository.findMemberById(memberId)
+                .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
         Post post = new Post(
                 memberId,
                 postPostCreateReqDto.getTitle(),
@@ -54,8 +59,10 @@ public class PostService {
     }
 
     public PostPostLikeResDto likePost(Long memberId, Long postId) {
-        Member member = memberRepository.findMemberById(memberId);
-        Post post = postRepository.findPostById(postId);
+        Member member = memberRepository.findMemberById(memberId)
+                .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
+        Post post = postRepository.findPostById(postId)
+                .orElseThrow(() -> new NotFoundException(ApplicationError.POST_NOT_FOUND));
         PostLike postLike = postLikeRepository.findPostLikeByMemberIdAndPostId(memberId, postId)
                 .orElse(null);
 

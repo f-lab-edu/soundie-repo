@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -25,8 +26,8 @@ public class PostRepository {
     /*
      * 음원 게시물 Id로, 음원 게시물 조회
      * */
-    public Post findPostById(Long postId) {
-        return store.get(postId);
+    public Optional<Post> findPostById(Long postId) {
+        return Optional.ofNullable(store.get(postId));
     }
 
     /*

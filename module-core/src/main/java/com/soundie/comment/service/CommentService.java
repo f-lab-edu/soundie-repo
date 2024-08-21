@@ -5,6 +5,8 @@ import com.soundie.comment.dto.CommentIdElement;
 import com.soundie.comment.dto.GetCommentResDto;
 import com.soundie.comment.dto.PostCommentCreateReqDto;
 import com.soundie.comment.repository.CommentRepository;
+import com.soundie.global.common.exception.ApplicationError;
+import com.soundie.global.common.exception.NotFoundException;
 import com.soundie.member.domain.Member;
 import com.soundie.member.repository.MemberRepository;
 import com.soundie.post.domain.Post;
@@ -30,7 +32,8 @@ public class CommentService {
 
         Map<Long, Member> linkedHashMap = new LinkedHashMap<>();
         for (Comment comment : findComments){
-            Member member = memberRepository.findMemberById(comment.getMemberId());
+            Member member = memberRepository.findMemberById(comment.getMemberId())
+                    .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
             linkedHashMap.put(comment.getId(), member);
         }
 
@@ -39,7 +42,8 @@ public class CommentService {
 
     public CommentIdElement createComment(Long memberId, Long postId, PostCommentCreateReqDto postCommentCreateReqDto) {
         // 수정 필요: postId 존재 판단
-        Post post = postRepository.findPostById(postId);
+        Post post = postRepository.findPostById(postId)
+                .orElseThrow(() -> new NotFoundException(ApplicationError.POST_NOT_FOUND));
 
         Comment comment = new Comment(
                 memberId,
