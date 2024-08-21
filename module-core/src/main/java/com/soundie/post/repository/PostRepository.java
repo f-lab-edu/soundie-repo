@@ -39,4 +39,8 @@ public class PostRepository {
 
         return post;
     }
+
+    public void clearStore() {
+        store.clear();
+    }
 }
