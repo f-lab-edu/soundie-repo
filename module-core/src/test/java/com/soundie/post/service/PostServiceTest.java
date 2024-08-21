@@ -1,5 +1,6 @@
 package com.soundie.post.service;
 
+import com.soundie.global.common.exception.NotFoundException;
 import com.soundie.member.domain.Member;
 import com.soundie.member.repository.MemberRepository;
 import com.soundie.post.domain.Post;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 class PostServiceTest {
@@ -76,6 +78,40 @@ class PostServiceTest {
 
         // then
         assertThat(getPostDetailResDto.getPost().getPostId()).isEqualTo(post.getId());
+    }
+
+    @DisplayName("유효하지 않은 postId가 주어졌다면, 음원 게시물 조회가 실패합니다.")
+    @Test
+    void Given_InvalidPostId_When_readPost_Then_Fail() {
+        // given
+        Member member = MemberFixture.createFirstMember();
+        memberRepository.save(member);
+        Post post = PostFixture.createFirstMemberHavingFirstPost();
+        postRepository.save(post);
+
+
+        // when // then
+        Long invalidPostId = 100L;
+        assertThatThrownBy(() -> postService.readPost(member.getId(), invalidPostId))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("음원 게시물을 찾을 수 없습니다.");
+    }
+
+    @DisplayName("유효하지 않은 memberId가 주어졌다면, 음원 게시물 조회가 실패합니다.")
+    @Test
+    void Given_InvalidMemberId_When_readPost_Then_Fail() {
+        // given
+        Member member = MemberFixture.createFirstMember();
+        memberRepository.save(member);
+        Post post = PostFixture.createFirstMemberHavingFirstPost();
+        postRepository.save(post);
+
+
+        // when // then
+        Long invalidMemberId = 100L;
+        assertThatThrownBy(() -> postService.readPost(invalidMemberId, post.getId()))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("사용자를 찾을 수 없습니다.");
     }
 
     @DisplayName("음원 게시물을 등록한다.")
