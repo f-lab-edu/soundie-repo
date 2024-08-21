@@ -6,6 +6,8 @@ import com.soundie.member.repository.MemberRepository;
 import com.soundie.post.domain.Post;
 import com.soundie.post.dto.GetPostDetailResDto;
 import com.soundie.post.dto.GetPostResDto;
+import com.soundie.post.dto.PostIdElement;
+import com.soundie.post.dto.PostPostCreateReqDto;
 import com.soundie.post.global.util.fixture.MemberFixture;
 import com.soundie.post.global.util.fixture.PostFixture;
 import com.soundie.post.repository.PostRepository;
@@ -112,6 +114,27 @@ class PostServiceTest {
         assertThatThrownBy(() -> postService.readPost(invalidMemberId, post.getId()))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("사용자를 찾을 수 없습니다.");
+    }
+
+    @DisplayName("로그인 시 유효한 memberId가 주어졌다면, 음원 게시물 등록이 성공합니다.")
+    @Test
+    void Given_MemberId_When_createPost_Then_Success() {
+        // given
+        Member member = MemberFixture.createFirstMember();
+        memberRepository.save(member);
+
+        PostPostCreateReqDto postPostCreateReqDto = PostPostCreateReqDto.builder()
+                .title("노래 제목")
+                .musicPath("노래 주소")
+                .albumImgPath("앨범 이미지 주소")
+                .albumName("앨범 이름")
+                .build();
+
+        // when
+        PostIdElement postIdElement = postService.createPost(member.getId(), postPostCreateReqDto);
+
+        // then
+        assertThat(postIdElement.getPostId()).isEqualTo(1L);
     }
 
     @DisplayName("음원 게시물을 등록한다.")
