@@ -1,5 +1,8 @@
 package com.soundie.post.controller;
 
+import com.soundie.member.domain.Member;
+import com.soundie.post.domain.Post;
+import com.soundie.post.dto.GetPostDetailResDto;
 import com.soundie.post.dto.GetPostResDto;
 import com.soundie.post.service.PostService;
 import org.junit.jupiter.api.DisplayName;
@@ -43,5 +46,31 @@ class PostControllerTest {
                 .andExpect(jsonPath("$.code").value("200"))
                 .andExpect(jsonPath("$.message").value("success"))
                 .andExpect(jsonPath("$.data.posts").isArray());
+    }
+
+    @DisplayName("음원 게시물을 조회한다.")
+    @Test
+    void readPost() throws Exception {
+        //given
+        Long memberId = 1L;
+        Member member = new Member("");
+        Long postId = 1L;
+        Post post = new Post(
+                memberId,
+                "", "", "", "", ""
+        );
+
+        GetPostDetailResDto result = GetPostDetailResDto.of(post, member);
+
+        given(postService.readPost(memberId, postId)).willReturn(result);
+
+        // when // then
+        mockMvc.perform(
+                        get("/api/posts/" + postId)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("200"))
+                .andExpect(jsonPath("$.message").value("success"));
     }
 }
