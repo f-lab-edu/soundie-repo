@@ -7,8 +7,8 @@ import com.soundie.post.domain.Post;
 import com.soundie.post.domain.PostLike;
 import com.soundie.post.dto.*;
 import com.soundie.post.global.util.fixture.MemberFixture;
-import com.soundie.post.repository.PostLikeRepository;
-import com.soundie.post.repository.PostRepository;
+import com.soundie.post.repository.MemoryPostLikeRepository;
+import com.soundie.post.repository.MemoryPostRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,10 +36,10 @@ class PostServiceTest {
     private MemoryMemberRepository memberRepository;
 
     @Mock
-    private PostRepository postRepository;
+    private MemoryPostRepository postRepository;
 
     @Mock
-    private PostLikeRepository postLikeRepository;
+    private MemoryPostLikeRepository postLikeRepository;
 
     @DisplayName("음원 게시물 목록 조회가 성공합니다.")
     @Test

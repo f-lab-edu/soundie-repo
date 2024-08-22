@@ -7,8 +7,8 @@ import com.soundie.member.repository.MemoryMemberRepository;
 import com.soundie.post.domain.Post;
 import com.soundie.post.domain.PostLike;
 import com.soundie.post.dto.*;
-import com.soundie.post.repository.PostLikeRepository;
-import com.soundie.post.repository.PostRepository;
+import com.soundie.post.repository.MemoryPostLikeRepository;
+import com.soundie.post.repository.MemoryPostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostService {
 
-    private final PostRepository postRepository;
-    private final PostLikeRepository postLikeRepository;
+    private final MemoryPostRepository postRepository;
+    private final MemoryPostLikeRepository postLikeRepository;
     private final MemoryMemberRepository memberRepository;
 
     public GetPostResDto readPostList(){

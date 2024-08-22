@@ -10,7 +10,7 @@ import com.soundie.global.common.exception.NotFoundException;
 import com.soundie.member.domain.Member;
 import com.soundie.member.repository.MemoryMemberRepository;
 import com.soundie.post.domain.Post;
-import com.soundie.post.repository.PostRepository;
+import com.soundie.post.repository.MemoryPostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +24,7 @@ public class CommentService {
 
     private final MemoryCommentRepository commentRepository;
     private final MemoryMemberRepository memberRepository;
-    private final PostRepository postRepository;
+    private final MemoryPostRepository postRepository;
 
     public GetCommentResDto readCommentList(Long postId) {
         // 수정 필요: postId 존재 판단
