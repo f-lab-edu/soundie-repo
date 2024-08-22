@@ -1,4 +1,4 @@
-package com.soundie.post.global.util.fixture;
+package com.soundie.global.util.fixture;
 
 import com.soundie.post.domain.Post;
 

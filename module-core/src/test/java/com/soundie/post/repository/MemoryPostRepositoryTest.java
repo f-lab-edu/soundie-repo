@@ -1,7 +1,7 @@
 package com.soundie.post.repository;
 
 import com.soundie.post.domain.Post;
-import com.soundie.post.global.util.fixture.MemberFixture;
+import com.soundie.global.util.fixture.MemberFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

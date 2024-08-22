@@ -6,15 +6,15 @@ import com.soundie.member.repository.MemoryMemberRepository;
 import com.soundie.post.domain.Post;
 import com.soundie.post.domain.PostLike;
 import com.soundie.post.dto.*;
-import com.soundie.post.global.util.fixture.MemberFixture;
+import com.soundie.global.util.fixture.MemberFixture;
 import com.soundie.post.repository.MemoryPostLikeRepository;
 import com.soundie.post.repository.MemoryPostRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import static com.soundie.post.global.util.fixture.PostFixture.createFirstMemberHavingFirstPost;
-import static com.soundie.post.global.util.fixture.PostFixture.createFirstMemberHavingSecondPost;
+import static com.soundie.global.util.fixture.PostFixture.createFirstMemberHavingFirstPost;
+import static com.soundie.global.util.fixture.PostFixture.createFirstMemberHavingSecondPost;
 import static org.mockito.BDDMockito.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
