@@ -123,12 +123,12 @@ class PostServiceTest {
         Member member = MemberFixture.createFirstMember();
         memberRepository.save(member);
 
-        PostPostCreateReqDto postPostCreateReqDto = PostPostCreateReqDto.builder()
-                .title("노래 제목")
-                .musicPath("노래 주소")
-                .albumImgPath("앨범 이미지 주소")
-                .albumName("앨범 이름")
-                .build();
+        PostPostCreateReqDto postPostCreateReqDto = new PostPostCreateReqDto(
+                "노래 제목",
+                "노래 주소",
+                "앨범 이미지 주소",
+                "앨범 이름"
+        );
 
         // when
         PostIdElement postIdElement = postService.createPost(member.getId(), postPostCreateReqDto);

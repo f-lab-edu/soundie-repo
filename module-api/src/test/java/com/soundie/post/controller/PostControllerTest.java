@@ -136,12 +136,12 @@ class PostControllerTest extends ControllerTestSupport {
     }
 
     private PostPostCreateReqDto postPostCreateReqDto(){
-        return PostPostCreateReqDto.builder()
-                .title("노래 제목")
-                .musicPath("노래 주소")
-                .albumImgPath("앨범 이미지 주소")
-                .albumName("앨범 이름")
-                .build();
+        return new PostPostCreateReqDto(
+                "노래 제목",
+                "노래 주소",
+                "앨범 이미지 주소",
+                "앨범 이름"
+        );
     }
 
     private PostIdElement postIdElement(Long postId){

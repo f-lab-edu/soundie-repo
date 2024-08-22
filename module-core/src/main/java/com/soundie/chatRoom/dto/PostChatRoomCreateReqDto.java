@@ -1,7 +1,6 @@
 package com.soundie.chatRoom.dto;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,8 +10,7 @@ public class PostChatRoomCreateReqDto {
     private String name;
     private String description;
 
-    @Builder
-    private PostChatRoomCreateReqDto(String name, String description){
+    public PostChatRoomCreateReqDto(String name, String description){
         this.name = name;
         this.description = description;
     }

@@ -1,7 +1,6 @@
 package com.soundie.post.dto;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,8 +12,7 @@ public class PostPostCreateReqDto {
     private String albumImgPath;
     private String albumName;
 
-    @Builder
-    private PostPostCreateReqDto(String title, String musicPath, String albumImgPath, String albumName){
+    public PostPostCreateReqDto(String title, String musicPath, String albumImgPath, String albumName){
         this.title = title;
         this.musicPath = musicPath;
         this.albumImgPath = albumImgPath;
