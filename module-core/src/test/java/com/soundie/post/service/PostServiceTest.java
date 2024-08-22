@@ -43,7 +43,7 @@ class PostServiceTest {
 
     @DisplayName("음원 게시물 목록 조회가 성공합니다.")
     @Test
-    void When_readPostList_Then_Success()  {
+    void When_ReadPostList_Then_Success()  {
         // given
         List<Post> postList = List.of(createFirstMemberHavingFirstPost(), createFirstMemberHavingSecondPost());
         given(postRepository.findPosts()).willReturn(postList);
@@ -58,7 +58,7 @@ class PostServiceTest {
 
     @DisplayName("로그인 시 유효한 postId와 memberId가 주어졌다면, 음원 게시물 조회가 성공합니다.")
     @Test
-    void Given_MemberIdAndPostId_When_readPost_Then_Success() {
+    void Given_PostIdAndMemberId_When_ReadPost_Then_Success() {
         // given
         Post post = createFirstMemberHavingFirstPost();
         given(postRepository.findPostById(post.getId())).willReturn(Optional.of(post));
@@ -75,7 +75,7 @@ class PostServiceTest {
 
     @DisplayName("비 로그인 시 유효한 postId가 주어졌다면, 음원 게시물 조회가 성공합니다.")
     @Test
-    void Given_PostId_When_readPost_Then_Success() {
+    void Given_PostId_When_ReadPost_Then_Success() {
         // given
         Post post = createFirstMemberHavingFirstPost();
         given(postRepository.findPostById(post.getId())).willReturn(Optional.of(post));
@@ -90,7 +90,7 @@ class PostServiceTest {
 
     @DisplayName("유효하지 않은 postId가 주어졌다면, 음원 게시물 조회가 실패합니다.")
     @Test
-    void Given_InvalidPostId_When_readPost_Then_Fail() {
+    void Given_InvalidPostId_When_ReadPost_Then_Fail() {
         // given
         Long invalidPostId = 100L;
         given(postRepository.findPostById(invalidPostId)).willReturn(Optional.empty());
@@ -103,13 +103,12 @@ class PostServiceTest {
 
     @DisplayName("유효하지 않은 memberId가 주어졌다면, 음원 게시물 조회가 실패합니다.")
     @Test
-    void Given_InvalidMemberId_When_readPost_Then_Fail() {
+    void Given_InvalidMemberId_When_ReadPost_Then_Fail() {
         // given
         Post post = createFirstMemberHavingFirstPost();
         given(postRepository.findPostById(post.getId())).willReturn(Optional.of(post));
         Long invalidMemberId = 100L;
         given(memberRepository.findMemberById(invalidMemberId)).willReturn(Optional.empty());
-
 
         // when // then
         assertThatThrownBy(() -> postService.readPost(invalidMemberId, post.getId()))
@@ -119,7 +118,7 @@ class PostServiceTest {
 
     @DisplayName("로그인 시 유효한 memberId가 주어졌다면, 음원 게시물 등록이 성공합니다.")
     @Test
-    void Given_MemberId_When_createPost_Then_Success() {
+    void Given_MemberId_When_CreatePost_Then_Success() {
         // given
         Member member = MemberFixture.createFirstMember();
         given(memberRepository.findMemberById(member.getId())).willReturn(Optional.of(member));
