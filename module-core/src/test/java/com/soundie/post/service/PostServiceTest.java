@@ -4,11 +4,10 @@ import com.soundie.global.common.exception.NotFoundException;
 import com.soundie.member.domain.Member;
 import com.soundie.member.repository.MemberRepository;
 import com.soundie.post.domain.Post;
-import com.soundie.post.dto.GetPostDetailResDto;
-import com.soundie.post.dto.GetPostResDto;
-import com.soundie.post.dto.PostIdElement;
-import com.soundie.post.dto.PostPostCreateReqDto;
+import com.soundie.post.domain.PostLike;
+import com.soundie.post.dto.*;
 import com.soundie.post.global.util.fixture.MemberFixture;
+import com.soundie.post.repository.PostLikeRepository;
 import com.soundie.post.repository.PostRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,6 +37,9 @@ class PostServiceTest {
 
     @Mock
     private PostRepository postRepository;
+
+    @Mock
+    private PostLikeRepository postLikeRepository;
 
     @DisplayName("음원 게시물 목록 조회가 성공합니다.")
     @Test
@@ -139,23 +141,93 @@ class PostServiceTest {
                 .isEqualTo(PostIdElement.of(post.getId()));
     }
 
-    @DisplayName("음원 게시물을 등록한다.")
+    @DisplayName("유효하지 않은 memberId가 주어졌다면, 음원 게시물 등록이 실패합니다.")
     @Test
-    void createPost() {
+    void Given_InvalidMemberId_When_CreatePost_Then_Fail() {
         // given
+        Long invalidMemberId = 100L;
+        given(memberRepository.findMemberById(invalidMemberId)).willReturn(Optional.empty());
 
-        // when
+        PostPostCreateReqDto postPostCreateReqDto = new PostPostCreateReqDto(
+                "노래 제목",
+                "노래 주소",
+                "앨범 이미지 주소",
+                "앨범 이름"
+        );
 
-        // then
+        // when // then
+        assertThatThrownBy(() -> postService.createPost(invalidMemberId, postPostCreateReqDto))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("사용자를 찾을 수 없습니다.");
     }
 
-    @DisplayName("음원 게시물에 좋아요를 누른다.")
+    @DisplayName("음원 게시물을 좋아요 하지 않았다면, 음원 게시물 좋아요 달기가 성공합니다.")
     @Test
-    void likePost() {
+    void Given_MemberIdAndPostId_When_SaveLikePost_Then_Success() {
         // given
+        Member member = MemberFixture.createFirstMember();
+        given(memberRepository.findMemberById(member.getId())).willReturn(Optional.of(member));
+        Post post = createFirstMemberHavingFirstPost();
+        given(postRepository.findPostById(post.getId())).willReturn(Optional.of(post));
+        given(postLikeRepository.findPostLikeByMemberIdAndPostId(member.getId(), post.getId())).willReturn(Optional.empty());
+        Long likeCount = 0L;
+        given(postLikeRepository.countPostLikesByPostId(post.getId())).willReturn(likeCount);
 
         // when
+        PostPostLikeResDto response = postService.likePost(member.getId(), post.getId());
 
         // then
+        assertThat(response).usingRecursiveComparison()
+                .isEqualTo(PostPostLikeResDto.of(likeCount + 1, true));
+    }
+
+    @DisplayName("음원 게시물을 좋아요를 했었다면, 음원 게시물 좋아요 취소가 성공합니다.")
+    @Test
+    void Given_MemberIdAndPostId_When_DeleteLikePost_Then_Success() {
+        // given
+        Member member = MemberFixture.createFirstMember();
+        given(memberRepository.findMemberById(member.getId())).willReturn(Optional.of(member));
+        Post post = createFirstMemberHavingFirstPost();
+        given(postRepository.findPostById(post.getId())).willReturn(Optional.of(post));
+        PostLike postLike = new PostLike(member.getId(), post.getId());
+        given(postLikeRepository.findPostLikeByMemberIdAndPostId(member.getId(), post.getId())).willReturn(Optional.of(postLike));
+        Long likeCount = 1L;
+        given(postLikeRepository.countPostLikesByPostId(post.getId())).willReturn(likeCount);
+
+        // when
+        PostPostLikeResDto response = postService.likePost(member.getId(), post.getId());
+
+        // then
+        assertThat(response).usingRecursiveComparison()
+                .isEqualTo(PostPostLikeResDto.of(likeCount - 1, false));
+    }
+
+    @DisplayName("유효하지 않은 memberId가 주어졌다면, 음원 게시물 좋아요 달기가 실패합니다.")
+    @Test
+    void Given_InvalidMemberId_When_SaveLikePost_Then_Fail() {
+        // given
+        Long invalidMemberId = 100L;
+        given(memberRepository.findMemberById(invalidMemberId)).willReturn(Optional.empty());
+        Post post = createFirstMemberHavingFirstPost();
+
+        // when // then
+        assertThatThrownBy(() -> postService.likePost(invalidMemberId, post.getId()))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("사용자를 찾을 수 없습니다.");
+    }
+
+    @DisplayName("유효하지 않은 postId가 주어졌다면, 음원 게시물 좋아요 달기가 실패합니다.")
+    @Test
+    void Given_InvalidPostId_When_SaveLikePost_Then_Fail() {
+        // given
+        Member member = MemberFixture.createFirstMember();
+        given(memberRepository.findMemberById(member.getId())).willReturn(Optional.of(member));
+        Long invalidPostId = 100L;
+        given(postRepository.findPostById(invalidPostId)).willReturn(Optional.empty());
+
+        // when // then
+        assertThatThrownBy(() -> postService.likePost(member.getId(), invalidPostId))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("음원 게시물을 찾을 수 없습니다.");
     }
 }
