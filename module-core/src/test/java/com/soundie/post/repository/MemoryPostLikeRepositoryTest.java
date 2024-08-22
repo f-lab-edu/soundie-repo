@@ -22,7 +22,7 @@ class MemoryPostLikeRepositoryTest {
         postLikeRepository.clearStore();
     }
 
-    @DisplayName("회원 Id와 음원 게시물 Id로, 좋아요를 조회한다.")
+    @DisplayName("회원 Id와 음원 게시물 Id로, 음원 게시물의 좋아요를 조회한다.")
     @Test
     public void findPostLikeByMemberIdAndPostId() {
         // given
@@ -42,9 +42,9 @@ class MemoryPostLikeRepositoryTest {
         assertThat(postLike).isEqualTo(Optional.of(postLike1));
     }
 
-    @DisplayName("음원 게시물이 하나도 없는 경우에는, null 을 반환한다.")
+    @DisplayName("음원 게시물의 좋아요가 하나도 없는 경우에는, null 을 반환한다.")
     @Test
-    public void findPostWhenPostIsEmpty() {
+    public void findPostLikeWhenPostLikeIsEmpty() {
         // given
         Member member = MemberFixture.createFirstMember();
         Post post = PostFixture.createFirstMemberHavingFirstPost();
@@ -81,7 +81,7 @@ class MemoryPostLikeRepositoryTest {
         assertThat(likeCount).isEqualTo(2);
     }
 
-    @DisplayName("좋아요를 저장한다.")
+    @DisplayName("음원 게시물의 좋아요를 저장한다.")
     @Test
     public void save() {
         // given
@@ -96,7 +96,7 @@ class MemoryPostLikeRepositoryTest {
         assertThat(postLike).isEqualTo(postLike1);
     }
 
-    @DisplayName("좋아요를 삭제한다.")
+    @DisplayName("음원 게시물의 좋아요를 삭제한다.")
     @Test
     public void delete() {
         // given
