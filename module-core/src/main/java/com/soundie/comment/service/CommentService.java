@@ -8,7 +8,7 @@ import com.soundie.comment.repository.CommentRepository;
 import com.soundie.global.common.exception.ApplicationError;
 import com.soundie.global.common.exception.NotFoundException;
 import com.soundie.member.domain.Member;
-import com.soundie.member.repository.MemberRepository;
+import com.soundie.member.repository.MemoryMemberRepository;
 import com.soundie.post.domain.Post;
 import com.soundie.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import java.util.Map;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final MemberRepository memberRepository;
+    private final MemoryMemberRepository memberRepository;
     private final PostRepository postRepository;
 
     public GetCommentResDto readCommentList(Long postId) {

@@ -2,7 +2,7 @@ package com.soundie.post.service;
 
 import com.soundie.global.common.exception.NotFoundException;
 import com.soundie.member.domain.Member;
-import com.soundie.member.repository.MemberRepository;
+import com.soundie.member.repository.MemoryMemberRepository;
 import com.soundie.post.domain.Post;
 import com.soundie.post.domain.PostLike;
 import com.soundie.post.dto.*;
@@ -33,7 +33,7 @@ class PostServiceTest {
     private PostService postService;
 
     @Mock
-    private MemberRepository memberRepository;
+    private MemoryMemberRepository memberRepository;
 
     @Mock
     private PostRepository postRepository;
