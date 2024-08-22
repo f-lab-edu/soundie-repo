@@ -4,7 +4,7 @@ import com.soundie.comment.domain.Comment;
 import com.soundie.comment.dto.CommentIdElement;
 import com.soundie.comment.dto.GetCommentResDto;
 import com.soundie.comment.dto.PostCommentCreateReqDto;
-import com.soundie.comment.repository.CommentRepository;
+import com.soundie.comment.repository.MemoryCommentRepository;
 import com.soundie.global.common.exception.ApplicationError;
 import com.soundie.global.common.exception.NotFoundException;
 import com.soundie.member.domain.Member;
@@ -22,7 +22,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CommentService {
 
-    private final CommentRepository commentRepository;
+    private final MemoryCommentRepository commentRepository;
     private final MemoryMemberRepository memberRepository;
     private final PostRepository postRepository;
 
