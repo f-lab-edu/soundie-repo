@@ -1,6 +1,7 @@
 package com.soundie.post.service;
 
 import com.soundie.global.common.exception.NotFoundException;
+import com.soundie.global.util.fixture.PostFixture;
 import com.soundie.member.domain.Member;
 import com.soundie.member.repository.MemoryMemberRepository;
 import com.soundie.post.domain.Post;
@@ -13,8 +14,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import static com.soundie.global.util.fixture.PostFixture.createFirstMemberHavingFirstPost;
-import static com.soundie.global.util.fixture.PostFixture.createFirstMemberHavingSecondPost;
 import static org.mockito.BDDMockito.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -45,7 +44,9 @@ class PostServiceTest {
     @Test
     void When_ReadPostList_Then_Success()  {
         // given
-        List<Post> postList = List.of(createFirstMemberHavingFirstPost(), createFirstMemberHavingSecondPost());
+        List<Post> postList = List.of(
+                PostFixture.createFirstMemberHavingFirstPost(),
+                PostFixture.createFirstMemberHavingSecondPost());
         given(postRepository.findPosts()).willReturn(postList);
 
         // when
@@ -60,7 +61,7 @@ class PostServiceTest {
     @Test
     void Given_PostIdAndMemberId_When_ReadPost_Then_Success() {
         // given
-        Post post = createFirstMemberHavingFirstPost();
+        Post post = PostFixture.createFirstMemberHavingFirstPost();
         given(postRepository.findPostById(post.getId())).willReturn(Optional.of(post));
         Member member = MemberFixture.createFirstMember();
         given(memberRepository.findMemberById(member.getId())).willReturn(Optional.of(member));
@@ -77,7 +78,7 @@ class PostServiceTest {
     @Test
     void Given_PostId_When_ReadPost_Then_Success() {
         // given
-        Post post = createFirstMemberHavingFirstPost();
+        Post post = PostFixture.createFirstMemberHavingFirstPost();
         given(postRepository.findPostById(post.getId())).willReturn(Optional.of(post));
 
         // when
@@ -105,7 +106,7 @@ class PostServiceTest {
     @Test
     void Given_InvalidMemberId_When_ReadPost_Then_Fail() {
         // given
-        Post post = createFirstMemberHavingFirstPost();
+        Post post = PostFixture.createFirstMemberHavingFirstPost();
         given(postRepository.findPostById(post.getId())).willReturn(Optional.of(post));
         Long invalidMemberId = 100L;
         given(memberRepository.findMemberById(invalidMemberId)).willReturn(Optional.empty());
@@ -122,7 +123,7 @@ class PostServiceTest {
         // given
         Member member = MemberFixture.createFirstMember();
         given(memberRepository.findMemberById(member.getId())).willReturn(Optional.of(member));
-        Post post = createFirstMemberHavingFirstPost();
+        Post post = PostFixture.createFirstMemberHavingFirstPost();
         given(postRepository.save(any())).willReturn(post);
 
         PostPostCreateReqDto postPostCreateReqDto = new PostPostCreateReqDto(
@@ -166,7 +167,7 @@ class PostServiceTest {
         // given
         Member member = MemberFixture.createFirstMember();
         given(memberRepository.findMemberById(member.getId())).willReturn(Optional.of(member));
-        Post post = createFirstMemberHavingFirstPost();
+        Post post = PostFixture.createFirstMemberHavingFirstPost();
         given(postRepository.findPostById(post.getId())).willReturn(Optional.of(post));
         given(postLikeRepository.findPostLikeByMemberIdAndPostId(member.getId(), post.getId())).willReturn(Optional.empty());
         Long likeCount = 0L;
@@ -186,7 +187,7 @@ class PostServiceTest {
         // given
         Member member = MemberFixture.createFirstMember();
         given(memberRepository.findMemberById(member.getId())).willReturn(Optional.of(member));
-        Post post = createFirstMemberHavingFirstPost();
+        Post post = PostFixture.createFirstMemberHavingFirstPost();
         given(postRepository.findPostById(post.getId())).willReturn(Optional.of(post));
         PostLike postLike = new PostLike(member.getId(), post.getId());
         given(postLikeRepository.findPostLikeByMemberIdAndPostId(member.getId(), post.getId())).willReturn(Optional.of(postLike));
@@ -207,7 +208,7 @@ class PostServiceTest {
         // given
         Long invalidMemberId = 100L;
         given(memberRepository.findMemberById(invalidMemberId)).willReturn(Optional.empty());
-        Post post = createFirstMemberHavingFirstPost();
+        Post post = PostFixture.createFirstMemberHavingFirstPost();
 
         // when // then
         assertThatThrownBy(() -> postService.likePost(invalidMemberId, post.getId()))
