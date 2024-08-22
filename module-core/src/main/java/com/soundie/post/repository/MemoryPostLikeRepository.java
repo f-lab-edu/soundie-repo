@@ -54,4 +54,8 @@ public class MemoryPostLikeRepository implements PostLikeRepository {
     public void delete(PostLike postLike){
         store.remove(postLike.getId());
     }
+
+    public void clearStore() {
+        store.clear();
+    }
 }
