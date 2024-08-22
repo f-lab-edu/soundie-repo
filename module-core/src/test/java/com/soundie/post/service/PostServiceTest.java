@@ -11,32 +11,27 @@ import com.soundie.post.dto.PostPostCreateReqDto;
 import com.soundie.post.global.util.fixture.MemberFixture;
 import com.soundie.post.global.util.fixture.PostFixture;
 import com.soundie.post.repository.PostRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class PostServiceTest {
 
-    @Autowired
+    @InjectMocks
     private PostService postService;
 
-    @Autowired
+    @Mock
     private MemberRepository memberRepository;
 
-    @Autowired
+    @Mock
     private PostRepository postRepository;
-
-    @AfterEach
-    void tearDown() {
-        postRepository.clearStore();
-        memberRepository.clearStore();
-    }
 
     @DisplayName("음원 게시물 목록 조회가 성공합니다.")
     @Test
