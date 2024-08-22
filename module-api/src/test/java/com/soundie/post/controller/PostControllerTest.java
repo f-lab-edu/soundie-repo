@@ -21,7 +21,7 @@ class PostControllerTest extends ControllerTestSupport {
     void readPostList() throws Exception {
         // when // then
         mockMvc.perform(
-                        get("/api/posts")
+                    get("/api/posts")
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -38,7 +38,7 @@ class PostControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                        get("/api/posts/" + postId)
+                    get("/api/posts/" + postId)
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -59,10 +59,10 @@ class PostControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                post("/api/posts")
-                        .params(params)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
+                    post("/api/posts")
+                            .params(params)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request))
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -83,9 +83,9 @@ class PostControllerTest extends ControllerTestSupport {
 
         // when // then
         mockMvc.perform(
-                        post("/api/posts/" + postId + "/like")
-                                .params(params)
-                                .contentType(MediaType.APPLICATION_JSON)
+                    post("/api/posts/" + postId + "/like")
+                            .params(params)
+                            .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
