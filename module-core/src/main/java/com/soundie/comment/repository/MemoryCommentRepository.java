@@ -42,4 +42,8 @@ public class MemoryCommentRepository implements CommentRepository {
 
         return comment;
     }
+
+    public void clearStore() {
+        store.clear();
+    }
 }
