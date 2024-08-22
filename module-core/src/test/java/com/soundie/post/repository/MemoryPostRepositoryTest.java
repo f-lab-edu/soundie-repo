@@ -68,7 +68,7 @@ class MemoryPostRepositoryTest {
     @Test
     public void findPostWhenPostIsEmpty() {
         // when
-        Optional<Post> post = postRepository.findPostById(null);
+        Optional<Post> post = postRepository.findPostById(0L);
 
         // then
         assertThat(post).isEmpty();
