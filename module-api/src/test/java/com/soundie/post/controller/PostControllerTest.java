@@ -1,6 +1,6 @@
 package com.soundie.post.controller;
 
-import com.soundie.post.ControllerTestSupport;
+import com.soundie.ControllerTestSupport;
 import com.soundie.post.dto.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

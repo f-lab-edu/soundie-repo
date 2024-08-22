@@ -1,4 +1,4 @@
-package com.soundie.post;
+package com.soundie;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
