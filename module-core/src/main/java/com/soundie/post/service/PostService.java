@@ -33,21 +33,22 @@ public class PostService {
                 .orElseThrow(() -> new NotFoundException(ApplicationError.POST_NOT_FOUND));
 
         if (memberId != null){
-            Member member = memberRepository.findMemberById(memberId)
+            Member findMember = memberRepository.findMemberById(memberId)
                     .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
-            return GetPostDetailResDto.of(findPost, member);
+            return GetPostDetailResDto.of(findPost, findMember);
         }
 
         return GetPostDetailResDto.of(findPost, null);
     }
 
     public PostIdElement createPost(Long memberId, PostPostCreateReqDto postPostCreateReqDto) {
-        Member member = memberRepository.findMemberById(memberId)
+        Member findMember = memberRepository.findMemberById(memberId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
+
         Post post = new Post(
-                memberId,
+                findMember.getId(),
                 postPostCreateReqDto.getTitle(),
-                member.getName(),
+                findMember.getName(),
                 postPostCreateReqDto.getMusicPath(),
                 postPostCreateReqDto.getAlbumImgPath(),
                 postPostCreateReqDto.getAlbumName()
@@ -59,16 +60,17 @@ public class PostService {
     }
 
     public PostPostLikeResDto likePost(Long memberId, Long postId) {
-        Member member = memberRepository.findMemberById(memberId)
+        Member findMember = memberRepository.findMemberById(memberId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
-        Post post = postRepository.findPostById(postId)
+        Post findPost = postRepository.findPostById(postId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.POST_NOT_FOUND));
-        PostLike postLike = postLikeRepository.findPostLikeByMemberIdAndPostId(memberId, postId)
+
+        PostLike postLike = postLikeRepository.findPostLikeByMemberIdAndPostId(findMember.getId(), findPost.getId())
                 .orElse(null);
 
-        Long likeCount = postLikeRepository.countPostLikesByPostId(post.getId());
+        Long likeCount = postLikeRepository.countPostLikesByPostId(findPost.getId());
 
-        return togglePostLike(member, post, postLike, likeCount);
+        return togglePostLike(findMember, findPost, postLike, likeCount);
     }
 
     private PostPostLikeResDto togglePostLike(Member member, Post post, PostLike postLike, Long likeCount) {
