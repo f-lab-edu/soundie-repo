@@ -60,15 +60,11 @@ class CommentServiceTest {
                 CommentFixture.createSecondComment(member2, post));
         given(commentRepository.findCommentsByPostId(post.getId())).willReturn(comments);
 
+        Member findMember = new Member("findMember");
         Map<Long, Member> linkedHashMap = new LinkedHashMap<>();
         for (Comment comment : comments){
-            if (comment.getMemberId().equals(member1.getId())){
-                given(memberRepository.findMemberById(comment.getId())).willReturn(Optional.of(member1));
-                linkedHashMap.put(comment.getId(), member1);
-            } else if (comment.getMemberId().equals(member2.getId())) {
-                given(memberRepository.findMemberById(comment.getId())).willReturn(Optional.of(member2));
-                linkedHashMap.put(comment.getId(), member2);
-            }
+                given(memberRepository.findMemberById(comment.getId())).willReturn(Optional.of(findMember));
+                linkedHashMap.put(comment.getId(), findMember);
         }
 
         // when
