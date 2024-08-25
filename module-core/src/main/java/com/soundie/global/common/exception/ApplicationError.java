@@ -8,13 +8,16 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum ApplicationError {
     // 회원 관련
+    MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "M001", "사용자를 찾을 수 없습니다."),
 
     // 음원 게시물 관련
-    
+    POST_NOT_FOUND(HttpStatus.BAD_REQUEST, "P001", "음원 게시물을 찾을 수 없습니다."),
+
     // 댓글 관련
     
     // 채팅방 관련
-    
+    CHAT_ROOM_NOT_FOUND(HttpStatus.BAD_REQUEST, "R001", "채팅방을 찾을 수 없습니다."),
+
     // 알림 관련
 
     // 서버 관련

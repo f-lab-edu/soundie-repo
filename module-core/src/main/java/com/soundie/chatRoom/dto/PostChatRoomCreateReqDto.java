@@ -9,4 +9,9 @@ import lombok.NoArgsConstructor;
 public class PostChatRoomCreateReqDto {
     private String name;
     private String description;
+
+    public PostChatRoomCreateReqDto(String name, String description){
+        this.name = name;
+        this.description = description;
+    }
 }

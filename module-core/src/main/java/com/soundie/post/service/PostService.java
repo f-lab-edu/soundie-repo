@@ -1,12 +1,14 @@
 package com.soundie.post.service;
 
+import com.soundie.global.common.exception.ApplicationError;
+import com.soundie.global.common.exception.NotFoundException;
 import com.soundie.member.domain.Member;
-import com.soundie.member.repository.MemberRepository;
+import com.soundie.member.repository.MemoryMemberRepository;
 import com.soundie.post.domain.Post;
 import com.soundie.post.domain.PostLike;
 import com.soundie.post.dto.*;
-import com.soundie.post.repository.PostLikeRepository;
-import com.soundie.post.repository.PostRepository;
+import com.soundie.post.repository.MemoryPostLikeRepository;
+import com.soundie.post.repository.MemoryPostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +19,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostService {
 
-    private final PostRepository postRepository;
-    private final PostLikeRepository postLikeRepository;
-    private final MemberRepository memberRepository;
+    private final MemoryPostRepository postRepository;
+    private final MemoryPostLikeRepository postLikeRepository;
+    private final MemoryMemberRepository memberRepository;
 
     public GetPostResDto readPostList(){
         List<Post> findPosts = postRepository.findPosts();
@@ -27,22 +29,26 @@ public class PostService {
     }
 
     public GetPostDetailResDto readPost(Long memberId, Long postId) {
-        Post findPost = postRepository.findPostById(postId);
+        Post findPost = postRepository.findPostById(postId)
+                .orElseThrow(() -> new NotFoundException(ApplicationError.POST_NOT_FOUND));
 
         if (memberId != null){
-            Member member = memberRepository.findMemberById(memberId);
-            return GetPostDetailResDto.of(findPost, member);
+            Member findMember = memberRepository.findMemberById(memberId)
+                    .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
+            return GetPostDetailResDto.of(findPost, findMember);
         }
 
         return GetPostDetailResDto.of(findPost, null);
     }
 
     public PostIdElement createPost(Long memberId, PostPostCreateReqDto postPostCreateReqDto) {
-        Member member = memberRepository.findMemberById(memberId);
+        Member findMember = memberRepository.findMemberById(memberId)
+                .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
+
         Post post = new Post(
-                memberId,
+                findMember.getId(),
                 postPostCreateReqDto.getTitle(),
-                member.getName(),
+                findMember.getName(),
                 postPostCreateReqDto.getMusicPath(),
                 postPostCreateReqDto.getAlbumImgPath(),
                 postPostCreateReqDto.getAlbumName()
@@ -54,14 +60,17 @@ public class PostService {
     }
 
     public PostPostLikeResDto likePost(Long memberId, Long postId) {
-        Member member = memberRepository.findMemberById(memberId);
-        Post post = postRepository.findPostById(postId);
-        PostLike postLike = postLikeRepository.findPostLikeByMemberIdAndPostId(memberId, postId)
+        Member findMember = memberRepository.findMemberById(memberId)
+                .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
+        Post findPost = postRepository.findPostById(postId)
+                .orElseThrow(() -> new NotFoundException(ApplicationError.POST_NOT_FOUND));
+
+        PostLike postLike = postLikeRepository.findPostLikeByMemberIdAndPostId(findMember.getId(), findPost.getId())
                 .orElse(null);
 
-        Long likeCount = postLikeRepository.countPostLikesByPostId(post.getId());
+        Long likeCount = postLikeRepository.countPostLikesByPostId(findPost.getId());
 
-        return togglePostLike(member, post, postLike, likeCount);
+        return togglePostLike(findMember, findPost, postLike, likeCount);
     }
 
     private PostPostLikeResDto togglePostLike(Member member, Post post, PostLike postLike, Long likeCount) {

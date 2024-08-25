@@ -11,4 +11,11 @@ public class PostPostCreateReqDto {
     private String musicPath;
     private String albumImgPath;
     private String albumName;
+
+    public PostPostCreateReqDto(String title, String musicPath, String albumImgPath, String albumName){
+        this.title = title;
+        this.musicPath = musicPath;
+        this.albumImgPath = albumImgPath;
+        this.albumName = albumName;
+    }
 }

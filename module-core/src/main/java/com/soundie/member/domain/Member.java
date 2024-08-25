@@ -7,4 +7,8 @@ public class Member {
 
     private Long id;
     private String name;
+
+    public Member(String name){
+        this.name = name;
+    }
 }
