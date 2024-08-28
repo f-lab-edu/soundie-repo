@@ -1,4 +1,4 @@
-package com.soundie.member.controller;
+package com.soundie.api;
 
 import com.soundie.global.common.dto.EnvelopeResponse;
 import com.soundie.member.dto.MemberIdElement;
