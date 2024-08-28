@@ -1,13 +1,11 @@
 package com.soundie.post.repository;
 
 import com.soundie.post.domain.PostLike;
-import org.springframework.stereotype.Repository;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Repository
 public class MemoryPostLikeRepository implements PostLikeRepository {
 
     private final Map<Long, PostLike> store = new ConcurrentHashMap<>();

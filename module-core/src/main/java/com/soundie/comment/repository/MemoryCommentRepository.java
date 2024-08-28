@@ -1,7 +1,6 @@
 package com.soundie.comment.repository;
 
 import com.soundie.comment.domain.Comment;
-import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-@Repository
 public class MemoryCommentRepository implements CommentRepository {
 
     private final Map<Long, Comment> store = new ConcurrentHashMap<>();

@@ -1,7 +1,6 @@
 package com.soundie.post.repository;
 
 import com.soundie.post.domain.Post;
-import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +9,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Repository
 public class MemoryPostRepository implements PostRepository {
 
     private final Map<Long, Post> store = new ConcurrentHashMap<>();

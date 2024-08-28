@@ -1,7 +1,6 @@
 package com.soundie.member.repository;
 
 import com.soundie.member.domain.Member;
-import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +9,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Repository
 public class MemoryMemberRepository implements MemberRepository {
 
     private final Map<Long, Member> store = new ConcurrentHashMap<>();
