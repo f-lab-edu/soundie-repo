@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Post {
+public class PostWithCount {
 
     private Long id;
     private Long memberId;
@@ -17,9 +17,22 @@ public class Post {
     private String musicPath;
     private String albumImgPath;
     private String albumName;
+    private Number likeCount;
+    private Number commentCount;
     private LocalDateTime createdAt;
 
-    public Post(Long id, Long memberId, String title, String artistName, String musicPath, String albumImgPath, String albumName, LocalDateTime createdAt) {
+    public PostWithCount(
+            Long id,
+            Long memberId,
+            String title,
+            String artistName,
+            String musicPath,
+            String albumImgPath,
+            String albumName,
+            Number likeCount,
+            Number commentCount,
+            LocalDateTime createdAt
+    ){
         this.id = id;
         this.memberId = memberId;
         this.title = title;
@@ -27,22 +40,8 @@ public class Post {
         this.musicPath = musicPath;
         this.albumImgPath = albumImgPath;
         this.albumName = albumName;
+        this.likeCount = likeCount;
+        this.commentCount = commentCount;
         this.createdAt = createdAt;
-    }
-
-    public Post(Long memberId, String title, String artistName, String musicPath, String albumImgPath, String albumName) {
-        this.memberId = memberId;
-        this.title = title;
-        this.artistName = artistName;
-        this.musicPath = musicPath;
-        this.albumImgPath = albumImgPath;
-        this.albumName = albumName;
-    }
-
-    /*
-     * MemoryRepository 저장 위함
-     * */
-    public void setId(Long id) {
-        this.id = id;
     }
 }

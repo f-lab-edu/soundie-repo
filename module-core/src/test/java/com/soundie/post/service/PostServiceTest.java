@@ -1,11 +1,13 @@
 package com.soundie.post.service;
 
+import com.soundie.comment.repository.MemoryCommentRepository;
 import com.soundie.global.common.exception.NotFoundException;
 import com.soundie.global.util.fixture.PostFixture;
 import com.soundie.member.domain.Member;
 import com.soundie.member.repository.MemoryMemberRepository;
 import com.soundie.post.domain.Post;
 import com.soundie.post.domain.PostLike;
+import com.soundie.post.domain.PostWithCount;
 import com.soundie.post.dto.*;
 import com.soundie.global.util.fixture.MemberFixture;
 import com.soundie.post.repository.MemoryPostLikeRepository;
@@ -19,6 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,21 +43,44 @@ class PostServiceTest {
     @Mock
     private MemoryPostLikeRepository postLikeRepository;
 
+    @Mock
+    private MemoryCommentRepository commentRepository;
+
     @DisplayName("음원 게시물 목록 조회가 성공합니다.")
     @Test
     void When_ReadPostList_Then_Success()  {
         // given
-        List<Post> postList = List.of(
+        List<Post> posts = List.of(
                 PostFixture.createFirstMemberHavingFirstPost(),
                 PostFixture.createFirstMemberHavingSecondPost());
-        given(postRepository.findPosts()).willReturn(postList);
+        given(postRepository.findPosts()).willReturn(posts);
+
+        List<PostWithCount> postsWithCount = new ArrayList<>();
+        for (Post post : posts){
+            Long likeCount = 0L;
+            given(postLikeRepository.countPostLikesByPostId(post.getId())).willReturn(likeCount);
+            Long commentCount = 0L;
+            given(commentRepository.countCommentsByPostId(post.getId())).willReturn(commentCount);
+            postsWithCount.add(new PostWithCount(
+                    post.getId(),
+                    post.getMemberId(),
+                    post.getTitle(),
+                    post.getArtistName(),
+                    post.getMusicPath(),
+                    post.getAlbumImgPath(),
+                    post.getAlbumName(),
+                    likeCount,
+                    commentCount,
+                    post.getCreatedAt()
+            ));
+        }
 
         // when
         GetPostResDto response = postService.readPostList();
 
         // then
         assertThat(response).usingRecursiveComparison()
-                .isEqualTo(GetPostResDto.of(postList));
+                .isEqualTo(GetPostResDto.of(postsWithCount));
     }
 
     @DisplayName("로그인 시 유효한 postId와 memberId가 주어졌다면, 음원 게시물 조회가 성공합니다.")
@@ -63,15 +89,22 @@ class PostServiceTest {
         // given
         Post post = PostFixture.createFirstMemberHavingFirstPost();
         given(postRepository.findPostById(post.getId())).willReturn(Optional.of(post));
+        Long likeCount = 0L;
+        given(postLikeRepository.countPostLikesByPostId(post.getId())).willReturn(likeCount);
+        Long commentCount = 0L;
+        given(commentRepository.countCommentsByPostId(post.getId())).willReturn(commentCount);
         Member member = MemberFixture.createFirstMember();
         given(memberRepository.findMemberById(member.getId())).willReturn(Optional.of(member));
+        Boolean liked = Boolean.FALSE;
+        given(postLikeRepository.findPostLikeByMemberIdAndPostId(member.getId(), post.getId()))
+                .willReturn(Optional.empty());
 
         // when
         GetPostDetailResDto response = postService.readPost(member.getId(), post.getId());
 
         // then
         assertThat(response).usingRecursiveComparison()
-                .isEqualTo(GetPostDetailResDto.of(post, member));
+                .isEqualTo(GetPostDetailResDto.of(post, likeCount, commentCount, liked));
     }
 
     @DisplayName("비 로그인 시 유효한 postId가 주어졌다면, 음원 게시물 조회가 성공합니다.")
@@ -80,13 +113,17 @@ class PostServiceTest {
         // given
         Post post = PostFixture.createFirstMemberHavingFirstPost();
         given(postRepository.findPostById(post.getId())).willReturn(Optional.of(post));
+        Long likeCount = 0L;
+        given(postLikeRepository.countPostLikesByPostId(post.getId())).willReturn(likeCount);
+        Long commentCount = 0L;
+        given(commentRepository.countCommentsByPostId(post.getId())).willReturn(commentCount);
 
         // when
         GetPostDetailResDto response = postService.readPost(null, post.getId());
 
         // then
         assertThat(response).usingRecursiveComparison()
-                .isEqualTo(GetPostDetailResDto.of(post, null));
+                .isEqualTo(GetPostDetailResDto.of(post, likeCount, commentCount, Boolean.FALSE));
     }
 
     @DisplayName("유효하지 않은 postId가 주어졌다면, 음원 게시물 조회가 실패합니다.")
