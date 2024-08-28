@@ -1,6 +1,7 @@
 package com.soundie.notification.repository;
 
 import com.soundie.notification.domain.Notification;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
+@Repository
 public class MemoryNotificationRepository implements NotificationRepository {
 
     private final Map<Long, Notification> store = new ConcurrentHashMap<>();
