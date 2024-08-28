@@ -2,6 +2,7 @@ package com.soundie.member.service;
 
 import com.soundie.member.domain.Member;
 import com.soundie.member.dto.MemberIdElement;
+import com.soundie.member.dto.PostMemberCreateReqDto;
 import com.soundie.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,10 +13,11 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    public MemberIdElement createMember() {
-        Member member = new Member("정원석");
+    public MemberIdElement createMember(PostMemberCreateReqDto postMemberCreateReqDto) {
+        Member member = new Member(postMemberCreateReqDto.getName());
 
-        Long memberId = memberRepository.save(member).getId();
-        return MemberIdElement.of(memberId);
+        member = memberRepository.save(member);
+
+        return MemberIdElement.of(member.getId());
     }
 }
