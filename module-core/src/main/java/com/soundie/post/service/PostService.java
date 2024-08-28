@@ -3,12 +3,12 @@ package com.soundie.post.service;
 import com.soundie.global.common.exception.ApplicationError;
 import com.soundie.global.common.exception.NotFoundException;
 import com.soundie.member.domain.Member;
-import com.soundie.member.repository.MemoryMemberRepository;
+import com.soundie.member.repository.MemberRepository;
 import com.soundie.post.domain.Post;
 import com.soundie.post.domain.PostLike;
 import com.soundie.post.dto.*;
-import com.soundie.post.repository.MemoryPostLikeRepository;
-import com.soundie.post.repository.MemoryPostRepository;
+import com.soundie.post.repository.PostLikeRepository;
+import com.soundie.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostService {
 
-    private final MemoryPostRepository postRepository;
-    private final MemoryPostLikeRepository postLikeRepository;
-    private final MemoryMemberRepository memberRepository;
+    private final PostRepository postRepository;
+    private final PostLikeRepository postLikeRepository;
+    private final MemberRepository memberRepository;
 
     public GetPostResDto readPostList(){
         List<Post> findPosts = postRepository.findPosts();
