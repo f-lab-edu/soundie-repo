@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 public class Config {
 
     @Autowired
-    MemoryRepositoryConfig repositoryConfig;
+    MyBatisRepositoryConfig repositoryConfig;
 
     @Bean
     public MemberService memberService(){
