@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soundie.post.mapper.PostMapper">
+    <!-- 음원 게시물 목록 조회 -->
+    <select id="findPosts" resultType="com.soundie.post.vo.PostVo">
+        select
+            id as "id",
+            member_id as "memberId",
+            title as "title",
+            artist_name as "artistName",
+            music_path as "musicPath",
+            album_img_path as "albumImgPath",
+            album_name as "albumName",
+            created_at as "createdAt"
+        from post
+    </select>
+
+    <!-- 음원 게시물 Id로, 음원 게시물 조회 -->
+    <select id="findPostById" resultType="com.soundie.post.vo.PostVo">
+        select
+            id as "id",
+            member_id as "memberId",
+            title as "title",
+            artist_name as "artistName",
+            music_path as "musicPath",
+            album_img_path as "albumImgPath",
+            album_name as "albumName",
+            created_at as "createdAt"
+        from post
+        where id = #{id}
+    </select>
+
+    <!-- 음원 게시물 저장 -->
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into post (member_id,
+                            title,
+                            artist_name,
+                            music_path,
+                            album_img_path,
+                            album_name)
+        values (#{post.memberId},
+                #{post.title},
+                #{post.artistName},
+                #{post.musicPath},
+                #{post.albumImgPath},
+                #{post.albumName})
+    </insert>
+</mapper>
