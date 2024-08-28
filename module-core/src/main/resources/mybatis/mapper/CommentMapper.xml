@@ -25,6 +25,13 @@
         where post_id = #{post_id}
     </select>
 
+    <!-- 음원 게시물 Id로, 댓글 개수 조회 -->
+    <select id="countCommentsByPostId" resultType="Long">
+        select count(*)
+        from comment
+        where post_id = ${post_id}
+    </select>
+
     <!-- 댓글 저장 -->
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
         insert into comment (member_id,

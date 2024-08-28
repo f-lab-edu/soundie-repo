@@ -32,6 +32,15 @@ public class MemoryCommentRepository implements CommentRepository {
     }
 
     /*
+    * 음원 게시물 Id로, 댓글 개수 조회
+    * */
+    public Long countCommentsByPostId(Long postId){
+        return findComments().stream()
+                .filter(c -> c.getPostId().equals(postId))
+                .count();
+    }
+
+    /*
      * 댓글 저장
      * */
     public Comment save(Comment comment){

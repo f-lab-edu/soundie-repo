@@ -10,5 +10,7 @@ public interface CommentRepository {
 
     List<Comment> findCommentsByPostId(Long postId);
 
+    Long countCommentsByPostId(Long postId);
+
     Comment save(Comment comment);
 }
