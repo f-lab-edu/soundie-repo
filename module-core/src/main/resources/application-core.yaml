@@ -13,3 +13,9 @@ spring:
     console:
       enabled: true
       path: /h2-console
+
+# mybatis
+mybatis:
+  mapper-locations: classpath*:mybatis/mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
