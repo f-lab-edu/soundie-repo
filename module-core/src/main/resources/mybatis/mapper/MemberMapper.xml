@@ -4,13 +4,17 @@
 <mapper namespace="com.soundie.member.mapper.MemberMapper">
     <!-- 회원 목록 조회 -->
     <select id="findMembers" resultType="com.soundie.member.domain.Member">
-        select id, name
+        select
+            id as "id",
+            name as "name"
         from member
     </select>
 
     <!-- 회원Id로, 회원 조회 -->
     <select id="findMemberById" resultType="com.soundie.member.domain.Member">
-        select id, name
+        select
+            id as "id",
+            name as "name"
         from member
         where id = #{id}
     </select>
