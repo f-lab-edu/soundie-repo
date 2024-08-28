@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -19,7 +20,18 @@ public class MyBatisPostRepository implements PostRepository {
      * */
     @Override
     public List<Post> findPosts() {
-        return postMapper.findPosts();
+        return postMapper.findPosts().stream()
+                .map(postVo -> new Post(
+                         postVo.getId(),
+                         postVo.getMemberId(),
+                         postVo.getTitle(),
+                         postVo.getArtistName(),
+                         postVo.getMusicPath(),
+                         postVo.getAlbumImgPath(),
+                         postVo.getAlbumName(),
+                         postVo.getCreatedAt()
+                ))
+                .collect(Collectors.toList());
     }
 
     /*
@@ -27,7 +39,17 @@ public class MyBatisPostRepository implements PostRepository {
      * */
     @Override
     public Optional<Post> findPostById(Long postId) {
-        return postMapper.findPostById(postId);
+        return postMapper.findPostById(postId)
+                .map(postVo -> new Post(
+                        postVo.getId(),
+                        postVo.getMemberId(),
+                        postVo.getTitle(),
+                        postVo.getArtistName(),
+                        postVo.getMusicPath(),
+                        postVo.getAlbumImgPath(),
+                        postVo.getAlbumName(),
+                        postVo.getCreatedAt()
+                ));
     }
 
     /*
