@@ -27,17 +27,7 @@ public class MyBatisPostRepository implements PostRepository {
      * */
     @Override
     public Optional<Post> findPostById(Long postId) {
-        return postMapper.findPostById(postId)
-                .map(postVo -> new Post(
-                        postVo.getId(),
-                        postVo.getMemberId(),
-                        postVo.getTitle(),
-                        postVo.getArtistName(),
-                        postVo.getMusicPath(),
-                        postVo.getAlbumImgPath(),
-                        postVo.getAlbumName(),
-                        postVo.getCreatedAt()
-                ));
+        return postMapper.findPostById(postId);
     }
 
     /*
