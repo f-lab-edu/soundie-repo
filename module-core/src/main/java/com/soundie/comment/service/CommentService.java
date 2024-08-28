@@ -54,8 +54,6 @@ public class CommentService {
                 postCommentCreateReqDto.getContent()
         );
 
-        findPost.getComments().add(comment);
-
         comment = commentRepository.save(comment);
 
         return CommentIdElement.of(comment.getId());

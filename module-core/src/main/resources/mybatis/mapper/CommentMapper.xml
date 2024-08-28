@@ -37,8 +37,8 @@
         insert into comment (member_id,
                                 post_id,
                                 content)
-        values (#{comment.member_id},
-                #{comment.post_id},
+        values (#{comment.memberId},
+                #{comment.postId},
                 #{comment.content})
     </insert>
 </mapper>
