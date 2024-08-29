@@ -17,6 +17,7 @@ public class MemoryCommentRepository implements CommentRepository {
     /*
      * 댓글 목록 조회
     * */
+    @Override
     public List<Comment> findComments() {
         return new ArrayList<>(store.values());
     }
@@ -25,6 +26,7 @@ public class MemoryCommentRepository implements CommentRepository {
     /*
      * 음원 게시물 Id로, 댓글 목록 조회
      * */
+    @Override
     public List<Comment> findCommentsByPostId(Long postId) {
         return findComments().stream()
                 .filter(c -> c.getPostId().equals(postId))
@@ -34,6 +36,7 @@ public class MemoryCommentRepository implements CommentRepository {
     /*
     * 음원 게시물 Id로, 댓글 개수 조회
     * */
+    @Override
     public Long countCommentsByPostId(Long postId){
         return findComments().stream()
                 .filter(c -> c.getPostId().equals(postId))
@@ -43,6 +46,7 @@ public class MemoryCommentRepository implements CommentRepository {
     /*
      * 댓글 저장
      * */
+    @Override
     public Comment save(Comment comment){
         comment.setId(sequence.incrementAndGet());
         store.put(comment.getId(), comment);

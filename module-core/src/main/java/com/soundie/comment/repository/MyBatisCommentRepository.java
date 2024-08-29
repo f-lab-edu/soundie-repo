@@ -32,6 +32,7 @@ public class MyBatisCommentRepository implements CommentRepository {
     /*
      * 음원 게시물 Id로, 댓글 개수 조회
      * */
+    @Override
     public Long countCommentsByPostId(Long postId){
         return commentMapper.countCommentsByPostId(postId);
     }

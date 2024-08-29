@@ -19,6 +19,7 @@ public class MemoryChatRoomRepository implements ChatRoomRepository {
     /*
      * 채팅방 목록 조회
      * */
+    @Override
     public List<ChatRoom> findChatRooms() {
         return new ArrayList<>(store.values());
     }
@@ -26,6 +27,7 @@ public class MemoryChatRoomRepository implements ChatRoomRepository {
     /*
     * 회원 Id로, 채팅방 목록 조회
     * */
+    @Override
     public List<ChatRoom> findChatRoomsByHostMemberIdOrGuestMemberId(Long memberId){
         return findChatRooms().stream()
                 .filter(cr -> cr.getHostMemberId().equals(memberId) || cr.getGuestMemberId().equals(memberId))
@@ -36,6 +38,7 @@ public class MemoryChatRoomRepository implements ChatRoomRepository {
     /*
      * 채팅방 Id로, 채팅방 조회
      * */
+    @Override
     public Optional<ChatRoom> findChatRoomById(Long chatRoomId){
         return Optional.ofNullable(store.get(chatRoomId));
     }
@@ -43,6 +46,7 @@ public class MemoryChatRoomRepository implements ChatRoomRepository {
     /*
      * 채팅방 저장
      * */
+    @Override
     public ChatRoom save(ChatRoom chatRoom){
         chatRoom.setId(sequence.incrementAndGet());
         store.put(chatRoom.getId(), chatRoom);

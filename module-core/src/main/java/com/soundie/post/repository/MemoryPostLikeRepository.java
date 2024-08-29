@@ -14,6 +14,7 @@ public class MemoryPostLikeRepository implements PostLikeRepository {
     /*
      * 좋아요 목록 조회
      * */
+    @Override
     public List<PostLike> findPostLikes() {
         return new ArrayList<>(store.values());
     }
@@ -21,6 +22,7 @@ public class MemoryPostLikeRepository implements PostLikeRepository {
     /*
      * 회원 Id + 음원 게시물 Id로, 좋아요 조회
      * */
+    @Override
     public Optional<PostLike> findPostLikeByMemberIdAndPostId(Long memberId, Long postId) {
         return findPostLikes().stream()
                 .filter(pl -> pl.getMemberId().equals(memberId) && pl.getPostId().equals(postId) )
@@ -30,6 +32,7 @@ public class MemoryPostLikeRepository implements PostLikeRepository {
     /*
      * 좋아요 개수 조회
      * */
+    @Override
     public Long countPostLikesByPostId(Long postId){
         return findPostLikes().stream()
                 .filter(pl -> pl.getPostId().equals(postId))
@@ -39,6 +42,7 @@ public class MemoryPostLikeRepository implements PostLikeRepository {
     /*
      * 좋아요 저장
      * */
+    @Override
     public PostLike save(PostLike postLike) {
         postLike.setId(sequence.incrementAndGet());
         store.put(postLike.getId(), postLike);
@@ -49,6 +53,7 @@ public class MemoryPostLikeRepository implements PostLikeRepository {
     /*
     * 좋아요 삭제
     * */
+    @Override
     public void delete(PostLike postLike){
         store.remove(postLike.getId());
     }

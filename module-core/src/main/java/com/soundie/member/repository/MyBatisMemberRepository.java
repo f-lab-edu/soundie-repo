@@ -14,16 +14,25 @@ public class MyBatisMemberRepository implements MemberRepository {
 
     private final MemberMapper memberMapper;
 
+    /*
+     * 회원 목록 조회
+     * */
     @Override
     public List<Member> findMembers() {
         return memberMapper.findMembers();
     }
 
+    /*
+     * 회원 Id로, 회원 조회
+     * */
     @Override
     public Optional<Member> findMemberById(Long memberId) {
         return memberMapper.findMemberById(memberId);
     }
 
+    /*
+     * 회원 저장
+     * */
     @Override
     public Member save(Member member) {
         memberMapper.save(member);
