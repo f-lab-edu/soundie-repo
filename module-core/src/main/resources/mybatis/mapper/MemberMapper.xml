@@ -6,7 +6,8 @@
     <select id="findMembers" resultType="com.soundie.member.domain.Member">
         select
             id as "id",
-            name as "name"
+            name as "name",
+            created_at as "createdAt"
         from member
     </select>
 
@@ -14,7 +15,8 @@
     <select id="findMemberById" resultType="com.soundie.member.domain.Member">
         select
             id as "id",
-            name as "name"
+            name as "name",
+            created_at as "createdAt"
         from member
         where id = #{id}
     </select>
