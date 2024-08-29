@@ -1,17 +1,17 @@
 package com.soundie.post.service;
 
-import com.soundie.comment.repository.MemoryCommentRepository;
+import com.soundie.comment.repository.CommentRepository;
 import com.soundie.global.common.exception.NotFoundException;
 import com.soundie.global.util.fixture.PostFixture;
 import com.soundie.member.domain.Member;
-import com.soundie.member.repository.MemoryMemberRepository;
+import com.soundie.member.repository.MemberRepository;
 import com.soundie.post.domain.Post;
 import com.soundie.post.domain.PostLike;
 import com.soundie.post.domain.PostWithCount;
 import com.soundie.post.dto.*;
 import com.soundie.global.util.fixture.MemberFixture;
-import com.soundie.post.repository.MemoryPostLikeRepository;
-import com.soundie.post.repository.MemoryPostRepository;
+import com.soundie.post.repository.PostLikeRepository;
+import com.soundie.post.repository.PostRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,16 +35,16 @@ class PostServiceTest {
     private PostService postService;
 
     @Mock
-    private MemoryMemberRepository memberRepository;
+    private MemberRepository memberRepository;
 
     @Mock
-    private MemoryPostRepository postRepository;
+    private PostRepository postRepository;
 
     @Mock
-    private MemoryPostLikeRepository postLikeRepository;
+    private PostLikeRepository postLikeRepository;
 
     @Mock
-    private MemoryCommentRepository commentRepository;
+    private CommentRepository commentRepository;
 
     @DisplayName("음원 게시물 목록 조회가 성공합니다.")
     @Test

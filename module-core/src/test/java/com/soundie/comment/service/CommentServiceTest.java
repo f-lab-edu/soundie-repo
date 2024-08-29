@@ -5,15 +5,15 @@ import com.soundie.comment.domain.Comment;
 import com.soundie.comment.dto.CommentIdElement;
 import com.soundie.comment.dto.GetCommentResDto;
 import com.soundie.comment.dto.PostCommentCreateReqDto;
-import com.soundie.comment.repository.MemoryCommentRepository;
+import com.soundie.comment.repository.CommentRepository;
 import com.soundie.global.common.exception.NotFoundException;
 import com.soundie.global.util.fixture.CommentFixture;
 import com.soundie.global.util.fixture.MemberFixture;
 import com.soundie.global.util.fixture.PostFixture;
 import com.soundie.member.domain.Member;
-import com.soundie.member.repository.MemoryMemberRepository;
+import com.soundie.member.repository.MemberRepository;
 import com.soundie.post.domain.Post;
-import com.soundie.post.repository.MemoryPostRepository;
+import com.soundie.post.repository.PostRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,13 +37,13 @@ class CommentServiceTest {
     @InjectMocks CommentService commentService;
 
     @Mock
-    private MemoryCommentRepository commentRepository;
+    private CommentRepository commentRepository;
 
     @Mock
-    private MemoryMemberRepository memberRepository;
+    private MemberRepository memberRepository;
 
     @Mock
-    private MemoryPostRepository postRepository;
+    private PostRepository postRepository;
 
     @DisplayName("유효한 postId가 주어졌다면, 음원 게시물의 댓글 목록 조회가 성공합니다.")
     @Test
