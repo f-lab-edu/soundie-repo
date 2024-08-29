@@ -19,17 +19,6 @@ public class Post {
     private String albumName;
     private LocalDateTime createdAt;
 
-    public Post(Long id, Long memberId, String title, String artistName, String musicPath, String albumImgPath, String albumName, LocalDateTime createdAt) {
-        this.id = id;
-        this.memberId = memberId;
-        this.title = title;
-        this.artistName = artistName;
-        this.musicPath = musicPath;
-        this.albumImgPath = albumImgPath;
-        this.albumName = albumName;
-        this.createdAt = createdAt;
-    }
-
     public Post(Long memberId, String title, String artistName, String musicPath, String albumImgPath, String albumName) {
         this.memberId = memberId;
         this.title = title;
