@@ -11,9 +11,9 @@ public interface CommentMapper {
 
     List<Comment> findComments();
 
-    List<Comment> findCommentsByPostId(@Param("post_id") Long postId);
+    List<Comment> findCommentsByPostId(@Param("postId") Long postId);
 
-    Long countCommentsByPostId(@Param("post_id") Long postId);
+    Long countCommentsByPostId(@Param("postId") Long postId);
 
     void save(@Param("comment") Comment comment);
 }

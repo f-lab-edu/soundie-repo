@@ -22,21 +22,19 @@
             content as "content",
             created_at as "createdAt"
         from comment
-        where post_id = #{post_id}
+        where post_id = #{postId}
     </select>
 
     <!-- 음원 게시물 Id로, 댓글 개수 조회 -->
     <select id="countCommentsByPostId" resultType="Long">
         select count(*)
         from comment
-        where post_id = ${post_id}
+        where post_id = #{postId}
     </select>
 
     <!-- 댓글 저장 -->
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
-        insert into comment (member_id,
-                                post_id,
-                                content)
+        insert into comment (member_id, post_id, content)
         values (#{comment.memberId},
                 #{comment.postId},
                 #{comment.content})
