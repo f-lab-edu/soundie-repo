@@ -25,7 +25,7 @@
     </select>
 
     <!-- 좋아요 개수 조회 -->
-    <select id="countPostLikesByPostId" resultType="com.soundie.post.domain.PostLike">
+    <select id="countPostLikesByPostId" resultType="Long">
         select count(*)
         from postlike
         where post_id = #{post_id}
