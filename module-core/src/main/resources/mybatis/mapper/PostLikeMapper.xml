@@ -20,21 +20,21 @@
             post_id as "postId",
             created_at as "createdAt"
         from postlike
-        where member_id = #{member_id}
-            and post_id = #{post_id}
+        where member_id = #{memberId}
+            and post_id = #{postId}
     </select>
 
     <!-- 좋아요 개수 조회 -->
     <select id="countPostLikesByPostId" resultType="Long">
         select count(*)
         from postlike
-        where post_id = #{post_id}
+        where post_id = #{postId}
     </select>
 
     <!-- 좋아요 저장 -->
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
         insert into postlike (member_id, post_id)
-        values (#{postlike.memberId}, #{postlike.postId})
+        values (#{postLike.memberId}, #{postLike.postId})
     </insert>
 
     <!-- 좋아요 삭제 -->

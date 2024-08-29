@@ -13,13 +13,13 @@ public interface PostLikeMapper {
     List<PostLike> findPostLikes();
 
     Optional<PostLike> findPostLikeByMemberIdAndPostId(
-            @Param("member_id") Long memberId,
-            @Param("post_id") Long postId);
+            @Param("memberId") Long memberId,
+            @Param("postId") Long postId);
 
-    Long countPostLikesByPostId(@Param("post_id") Long postId);
+    Long countPostLikesByPostId(@Param("postId") Long postId);
 
-    void save(@Param("postlike") PostLike postLike);
+    void save(@Param("postLike") PostLike postLike);
 
-    void delete(@Param("postlike") PostLike postLike);
+    void delete(@Param("postLike") PostLike postLike);
 
 }

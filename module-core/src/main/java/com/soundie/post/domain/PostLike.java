@@ -1,10 +1,13 @@
 package com.soundie.post.domain;
 
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostLike {
 
     private Long id;
@@ -15,6 +18,12 @@ public class PostLike {
     public PostLike(Long memberId, Long postId){
         this.memberId = memberId;
         this.postId = postId;
-        this.createdAt = LocalDateTime.now();
+    }
+
+    /*
+     * MemoryRepository 저장 위함
+     * */
+    public void setId(Long id) {
+        this.id = id;
     }
 }
