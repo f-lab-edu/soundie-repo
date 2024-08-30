@@ -17,7 +17,7 @@ public class GetPostResDto {
     public static GetPostResDto of(List<PostWithCount> postsWithCount) {
         return GetPostResDto.builder()
                 .posts(postsWithCount.stream()
-                        .map(pwc -> GetPostElement.of(pwc))
+                        .map(GetPostElement::of)
                         .collect(Collectors.toList()))
                 .build();
     }
