@@ -1,4 +1,4 @@
-package com.soundie.comment.controller;
+package com.soundie.api;
 
 import com.soundie.comment.dto.CommentIdElement;
 import com.soundie.comment.dto.GetCommentResDto;

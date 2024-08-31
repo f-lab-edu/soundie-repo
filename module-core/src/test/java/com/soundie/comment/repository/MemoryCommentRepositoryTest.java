@@ -65,6 +65,28 @@ class MemoryCommentRepositoryTest {
         assertThat(comment).isEqualTo(comment1);
     }
 
+    @DisplayName("음원 게시물의 댓글 수를 조회한다.")
+    @Test
+    public void countCommentsByPostId() {
+        // given
+        Member member1 = MemberFixture.createFirstMember();
+        Member member2 = MemberFixture.createSecondMember();
+        Post post = PostFixture.createFirstMemberHavingFirstPost();
+
+        Comment comment1 = createComment(member1.getId(), post.getId(), "댓글 내용1");
+        commentRepository.save(comment1);
+        Comment comment2 = createComment(member2.getId(), post.getId(), "댓글 내용2");
+        commentRepository.save(comment2);
+
+        // when
+        Long commentCount = commentRepository.countCommentsByPostId(
+                post.getId()
+        );
+
+        // then
+        assertThat(commentCount).isEqualTo(2);
+    }
+
     private Comment createComment(Long memberId, Long postId, String content) {
         return new Comment(memberId, postId, content);
     }

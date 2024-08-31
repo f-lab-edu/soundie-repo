@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class Post {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class PostWithCount {
 
     private Long id;
     private Long memberId;
@@ -17,21 +17,31 @@ public class Post {
     private String musicPath;
     private String albumImgPath;
     private String albumName;
+    private Number likeCount;
+    private Number commentCount;
     private LocalDateTime createdAt;
 
-    public Post(Long memberId, String title, String artistName, String musicPath, String albumImgPath, String albumName) {
+    public PostWithCount(
+            Long id,
+            Long memberId,
+            String title,
+            String artistName,
+            String musicPath,
+            String albumImgPath,
+            String albumName,
+            Number likeCount,
+            Number commentCount,
+            LocalDateTime createdAt
+    ){
+        this.id = id;
         this.memberId = memberId;
         this.title = title;
         this.artistName = artistName;
         this.musicPath = musicPath;
         this.albumImgPath = albumImgPath;
         this.albumName = albumName;
-    }
-
-    /*
-     * MemoryRepository 저장 위함
-     * */
-    public void setId(Long id) {
-        this.id = id;
+        this.likeCount = likeCount;
+        this.commentCount = commentCount;
+        this.createdAt = createdAt;
     }
 }

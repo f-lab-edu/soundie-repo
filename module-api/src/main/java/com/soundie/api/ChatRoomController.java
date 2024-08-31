@@ -1,4 +1,4 @@
-package com.soundie.chatRoom.controller;
+package com.soundie.api;
 
 import com.soundie.chatRoom.dto.ChatRoomIdElement;
 import com.soundie.chatRoom.dto.GetChatRoomDetailResDto;

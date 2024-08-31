@@ -5,7 +5,7 @@ import com.soundie.chatRoom.dto.ChatRoomIdElement;
 import com.soundie.chatRoom.dto.GetChatRoomDetailResDto;
 import com.soundie.chatRoom.dto.GetChatRoomResDto;
 import com.soundie.chatRoom.dto.PostChatRoomCreateReqDto;
-import com.soundie.chatRoom.repository.MemoryChatRoomRepository;
+import com.soundie.chatRoom.repository.ChatRoomRepository;
 import com.soundie.global.common.exception.ApplicationError;
 import com.soundie.global.common.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChatRoomService {
 
-    private final MemoryChatRoomRepository chatRoomRepository;
+    private final ChatRoomRepository chatRoomRepository;
 
     public GetChatRoomResDto readChatRoomList(Long memberId) {
         List<ChatRoom> findChatRooms = chatRoomRepository.findChatRoomsByHostMemberIdOrGuestMemberId(memberId);

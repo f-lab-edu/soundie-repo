@@ -19,6 +19,7 @@ public class MemoryNotificationRepository implements NotificationRepository {
     /*
      * 알림 목록 조회
      * */
+    @Override
     public List<Notification> findNotifications() {
         return new ArrayList<>(store.values());
     }
@@ -26,6 +27,7 @@ public class MemoryNotificationRepository implements NotificationRepository {
     /*
      * 사용자 Id로, 알림 목록 조회
      * */
+    @Override
     public List<Notification> findNotificationsByMemberId(Long memberId){
         return findNotifications().stream()
                 .filter(n -> n.getMemberId().equals(memberId))

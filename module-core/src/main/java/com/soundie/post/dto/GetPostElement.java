@@ -1,6 +1,6 @@
 package com.soundie.post.dto;
 
-import com.soundie.post.domain.Post;
+import com.soundie.post.domain.PostWithCount;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -20,17 +20,17 @@ public class GetPostElement {
     private Number commentCount;
     private LocalDateTime createdAt;
 
-    public static GetPostElement of(Post post){
+    public static GetPostElement of(PostWithCount postWithCount){
         return GetPostElement.builder()
-                .postId(post.getId())
-                .title(post.getTitle())
-                .artistName(post.getArtistName())
-                .musicPath(post.getMusicPath())
-                .albumImgPath(post.getAlbumImgPath())
-                .albumName(post.getAlbumName())
-                .likeCount(post.getLikes().size())
-                .commentCount(post.getComments().size())
-                .createdAt(post.getCreatedAt())
+                .postId(postWithCount.getId())
+                .title(postWithCount.getTitle())
+                .artistName(postWithCount.getArtistName())
+                .musicPath(postWithCount.getMusicPath())
+                .albumImgPath(postWithCount.getAlbumImgPath())
+                .albumName(postWithCount.getAlbumName())
+                .likeCount(postWithCount.getLikeCount())
+                .commentCount(postWithCount.getCommentCount())
+                .createdAt(postWithCount.getCreatedAt())
                 .build();
     }
 }

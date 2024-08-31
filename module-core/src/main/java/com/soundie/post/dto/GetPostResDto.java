@@ -1,6 +1,6 @@
 package com.soundie.post.dto;
 
-import com.soundie.post.domain.Post;
+import com.soundie.post.domain.PostWithCount;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -14,10 +14,10 @@ public class GetPostResDto {
 
     private Collection<GetPostElement> posts;
 
-    public static GetPostResDto of(List<Post> posts) {
+    public static GetPostResDto of(List<PostWithCount> postsWithCount) {
         return GetPostResDto.builder()
-                .posts(posts.stream()
-                        .map(p -> GetPostElement.of(p))
+                .posts(postsWithCount.stream()
+                        .map(GetPostElement::of)
                         .collect(Collectors.toList()))
                 .build();
     }

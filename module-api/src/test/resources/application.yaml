@@ -1,0 +1,6 @@
+# spring
+spring:
+  profiles:
+    active: test
+    include:
+      - core_test

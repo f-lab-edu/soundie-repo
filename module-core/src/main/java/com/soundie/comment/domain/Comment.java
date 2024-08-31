@@ -1,10 +1,13 @@
 package com.soundie.comment.domain;
 
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Comment {
 
     private Long id;
@@ -17,6 +20,12 @@ public class Comment {
         this.memberId = memberId;
         this.postId = postId;
         this.content = content;
-        this.createdAt = LocalDateTime.now();
+    }
+
+    /*
+     * MemoryRepository 저장 위함
+     * */
+    public void setId(Long id) {
+        this.id = id;
     }
 }

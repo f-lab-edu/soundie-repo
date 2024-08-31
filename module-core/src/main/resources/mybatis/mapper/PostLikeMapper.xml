@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soundie.post.mapper.PostLikeMapper">
+    <!-- 좋아요 목록 조회 -->
+    <select id="findPostLikes" resultType="com.soundie.post.domain.PostLike">
+        select
+            id as "id",
+            member_id as "memberId",
+            post_id as "postId",
+            created_at as "createdAt"
+        from postlike
+    </select>
+
+    <!-- 회원 Id + 음원 게시물 Id로, 좋아요 조회 -->
+    <select id="findPostLikeByMemberIdAndPostId" resultType="com.soundie.post.domain.PostLike">
+        select
+            id as "id",
+            member_id as "memberId",
+            post_id as "postId",
+            created_at as "createdAt"
+        from postlike
+        where member_id = #{memberId}
+            and post_id = #{postId}
+    </select>
+
+    <!-- 좋아요 개수 조회 -->
+    <select id="countPostLikesByPostId" resultType="Long">
+        select count(*)
+        from postlike
+        where post_id = #{postId}
+    </select>
+
+    <!-- 좋아요 저장 -->
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into postlike (member_id, post_id)
+        values (#{postLike.memberId}, #{postLike.postId})
+    </insert>
+
+    <!-- 좋아요 삭제 -->
+    <delete id="delete">
+        delete from postlike
+        where id = #{postLike.id}
+    </delete>
+</mapper>

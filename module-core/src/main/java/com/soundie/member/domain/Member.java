@@ -1,14 +1,27 @@
 package com.soundie.member.domain;
 
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Data
+import java.time.LocalDateTime;
+
+@Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Member {
 
     private Long id;
     private String name;
+    private LocalDateTime createdAt;
 
     public Member(String name){
         this.name = name;
+    }
+
+    /*
+    * MemoryRepository 저장 위함
+    * */
+    public void setId(Long id) {
+        this.id = id;
     }
 }
