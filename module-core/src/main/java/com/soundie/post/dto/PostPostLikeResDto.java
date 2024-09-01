@@ -4,16 +4,23 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@Builder
+@Builder(builderMethodName = "innerBuilder")
 public class PostPostLikeResDto {
 
-    private Number likeCount;
-    private Boolean liked;
+    private final Number likeCount;
+    private final Boolean liked;
+
+    private static PostPostLikeResDtoBuilder builder(Number likeCount, Boolean liked){
+        return innerBuilder()
+                .likeCount(likeCount)
+                .liked(liked);
+    }
 
     public static PostPostLikeResDto of(Number likeCount, Boolean liked){
-        return PostPostLikeResDto.builder()
-                .likeCount(likeCount)
-                .liked(liked)
+        return PostPostLikeResDto.builder(
+                    likeCount,
+                    liked
+                )
                 .build();
     }
 }

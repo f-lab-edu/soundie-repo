@@ -1,17 +1,24 @@
 package com.soundie.chatRoom.dto;
 
+import com.soundie.chatRoom.domain.ChatRoom;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@Builder
+@Builder(builderMethodName = "innerBuilder")
 public class ChatRoomIdElement {
 
     private final Long chatRoomId;
 
-    public static ChatRoomIdElement of(Long chatRoomId){
-        return ChatRoomIdElement.builder()
-                .chatRoomId(chatRoomId)
+    private static ChatRoomIdElementBuilder builder(Long chatRoomId){
+        return innerBuilder()
+                .chatRoomId(chatRoomId);
+    }
+
+    public static ChatRoomIdElement of(ChatRoom chatRoom){
+        return ChatRoomIdElement.builder(
+                    chatRoom.getId()
+                )
                 .build();
     }
 }

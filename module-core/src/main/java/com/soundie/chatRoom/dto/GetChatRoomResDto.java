@@ -9,16 +9,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-@Builder
+@Builder(builderMethodName = "innerBuilder")
 public class GetChatRoomResDto {
 
-    private Collection<GetChatRoomElement> chatRooms;
+    private final Collection<GetChatRoomElement> chatRooms;
+
+    private static GetChatRoomResDtoBuilder builder(Collection<GetChatRoomElement> chatRooms) {
+        return innerBuilder()
+                .chatRooms(chatRooms);
+    }
 
     public static GetChatRoomResDto of(List<ChatRoom> chatRooms) {
-        return GetChatRoomResDto.builder()
-                .chatRooms(chatRooms.stream()
-                        .map(cr -> GetChatRoomElement.of(cr))
-                        .collect(Collectors.toList()))
+        return GetChatRoomResDto.builder(
+                    chatRooms.stream()
+                            .map(GetChatRoomElement::of)
+                            .collect(Collectors.toList())
+                )
                 .build();
 
     }

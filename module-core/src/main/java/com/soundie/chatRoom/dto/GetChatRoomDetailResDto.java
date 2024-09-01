@@ -5,14 +5,20 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@Builder
+@Builder(builderMethodName = "innerBuilder")
 public class GetChatRoomDetailResDto {
 
-    private GetChatRoomDetailElement chatRoom;
+    private final GetChatRoomDetailElement chatRoom;
+
+    private static GetChatRoomDetailResDtoBuilder builder(GetChatRoomDetailElement chatRoom) {
+        return innerBuilder()
+                .chatRoom(chatRoom);
+    }
 
     public static GetChatRoomDetailResDto of(ChatRoom chatRoom) {
-        return GetChatRoomDetailResDto.builder()
-                .chatRoom(GetChatRoomDetailElement.of(chatRoom))
+        return GetChatRoomDetailResDto.builder(
+                    GetChatRoomDetailElement.of(chatRoom)
+                )
                 .build();
     }
 }

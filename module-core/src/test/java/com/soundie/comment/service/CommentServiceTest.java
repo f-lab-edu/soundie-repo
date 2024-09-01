@@ -113,7 +113,7 @@ class CommentServiceTest {
 
         // then
         assertThat(response).usingRecursiveComparison()
-                .isEqualTo(CommentIdElement.of(comment.getId()));
+                .isEqualTo(CommentIdElement.of(comment));
     }
 
     @DisplayName("유효하지 않은 memberId가 주어졌다면, 음원 게시물의 댓글 등록이 실패합니다.")

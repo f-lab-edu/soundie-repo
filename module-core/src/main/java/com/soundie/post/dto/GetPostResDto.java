@@ -9,16 +9,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-@Builder
+@Builder(builderMethodName = "innerBuilder")
 public class GetPostResDto {
 
-    private Collection<GetPostElement> posts;
+    private final Collection<GetPostElement> posts;
+
+    private static GetPostResDtoBuilder builder(Collection<GetPostElement> posts){
+        return innerBuilder()
+                .posts(posts);
+    }
 
     public static GetPostResDto of(List<PostWithCount> postsWithCount) {
-        return GetPostResDto.builder()
-                .posts(postsWithCount.stream()
-                        .map(GetPostElement::of)
-                        .collect(Collectors.toList()))
+        return GetPostResDto.builder(
+                    postsWithCount.stream()
+                            .map(GetPostElement::of)
+                            .collect(Collectors.toList())
+                )
                 .build();
     }
 }

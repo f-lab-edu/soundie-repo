@@ -5,16 +5,23 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@Builder
+@Builder(builderMethodName = "innerBuilder")
 public class AuthorElement {
 
-    private Long memberId;
-    private String name;
+    private final Long memberId;
+    private final String name;
+
+    private static AuthorElementBuilder builder(Long memberId, String name){
+        return innerBuilder()
+                .memberId(memberId)
+                .name(name);
+    }
 
     public static AuthorElement of(Member member){
-        return AuthorElement.builder()
-                .memberId(member.getId())
-                .name(member.getName())
+        return AuthorElement.builder(
+                    member.getId(),
+                    member.getName()
+                )
                 .build();
     }
 }
