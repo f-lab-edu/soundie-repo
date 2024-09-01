@@ -56,6 +56,6 @@ public class CommentService {
 
         comment = commentRepository.save(comment);
 
-        return CommentIdElement.of(comment.getId());
+        return CommentIdElement.of(comment);
     }
 }

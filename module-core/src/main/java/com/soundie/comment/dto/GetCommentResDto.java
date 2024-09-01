@@ -11,19 +11,25 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Getter
-@Builder
+@Builder(builderMethodName = "innerBuilder")
 public class GetCommentResDto {
 
-    private Collection<GetCommentElement> comments;
+    private final Collection<GetCommentElement> comments;
+
+    private static GetCommentResDtoBuilder builder(Collection<GetCommentElement> comments) {
+        return innerBuilder()
+                .comments(comments);
+    }
 
     public static GetCommentResDto of(List<Comment> comments, Map<Long, Member> linkedHashMap) {
-        return GetCommentResDto.builder()
-                .comments(comments.stream()
+        return GetCommentResDto.builder(
+                    comments.stream()
                         .map(c -> {
                             Member member = linkedHashMap.get(c.getId());
                             return GetCommentElement.of(c, member);
                         })
-                        .collect(Collectors.toList()))
+                        .collect(Collectors.toList())
+                )
                 .build();
     }
 }
