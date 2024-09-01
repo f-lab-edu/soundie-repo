@@ -7,20 +7,33 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-@Builder
+@Builder(builderMethodName = "innerBuilder")
 public class GetChatRoomElement {
 
-    private Long chatRoomId;
-    private String name;
-    private String description;
-    private LocalDateTime createdAt;
+    private final Long chatRoomId;
+    private final String name;
+    private final String description;
+    private final LocalDateTime createdAt;
+
+    private static GetChatRoomElementBuilder builder(
+            Long chatRoomId,
+            String name,
+            String description,
+            LocalDateTime createdAt) {
+        return innerBuilder()
+                .chatRoomId(chatRoomId)
+                .name(name)
+                .description(description)
+                .createdAt(createdAt);
+    }
 
     public static GetChatRoomElement of(ChatRoom chatRoom) {
-        return GetChatRoomElement.builder()
-                .chatRoomId(chatRoom.getId())
-                .name(chatRoom.getName())
-                .description(chatRoom.getDescription())
-                .createdAt(chatRoom.getCreatedAt())
+        return GetChatRoomElement.builder(
+                    chatRoom.getId(),
+                    chatRoom.getName(),
+                    chatRoom.getDescription(),
+                    chatRoom.getCreatedAt()
+                )
                 .build();
     }
 }

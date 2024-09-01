@@ -40,6 +40,6 @@ public class ChatRoomService {
 
         chatRoom = chatRoomRepository.save(chatRoom);
 
-        return ChatRoomIdElement.of(chatRoom.getId());
+        return ChatRoomIdElement.of(chatRoom);
     }
 }
