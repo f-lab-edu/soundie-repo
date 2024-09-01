@@ -175,7 +175,7 @@ class PostServiceTest {
 
         // then
         assertThat(response).usingRecursiveComparison()
-                .isEqualTo(PostIdElement.of(post.getId()));
+                .isEqualTo(PostIdElement.of(post));
     }
 
     @DisplayName("유효하지 않은 memberId가 주어졌다면, 음원 게시물 등록이 실패합니다.")

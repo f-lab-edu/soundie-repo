@@ -84,7 +84,7 @@ public class PostService {
 
         post = postRepository.save(post);
 
-        return PostIdElement.of(post.getId());
+        return PostIdElement.of(post);
     }
 
     public PostPostLikeResDto likePost(Long memberId, Long postId) {

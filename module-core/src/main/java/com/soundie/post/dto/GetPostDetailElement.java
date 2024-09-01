@@ -7,32 +7,57 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-@Builder
+@Builder(builderMethodName = "innerBuilder")
 public class GetPostDetailElement {
 
-    private Long postId;
-    private String title;
-    private String artistName;
-    private String musicPath;
-    private String albumImgPath;
-    private String albumName;
-    private Number likeCount;
-    private Number commentCount;
-    private LocalDateTime createdAt;
-    private Boolean liked;
+    private final Long postId;
+    private final String title;
+    private final String artistName;
+    private final String musicPath;
+    private final String albumImgPath;
+    private final String albumName;
+    private final Number likeCount;
+    private final Number commentCount;
+    private final LocalDateTime createdAt;
+    private final Boolean liked;
+
+    private static GetPostDetailElementBuilder builder(
+            Long postId,
+            String title,
+            String artistName,
+            String musicPath,
+            String albumImgPath,
+            String albumName,
+            Number likeCount,
+            Number commentCount,
+            LocalDateTime createdAt,
+            Boolean liked) {
+        return innerBuilder()
+                .postId(postId)
+                .title(title)
+                .artistName(artistName)
+                .musicPath(musicPath)
+                .albumImgPath(albumImgPath)
+                .albumName(albumName)
+                .likeCount(likeCount)
+                .commentCount(commentCount)
+                .createdAt(createdAt)
+                .liked(liked);
+    }
 
     public static GetPostDetailElement of(Post post, Long postLikeCount, Long commentCount, Boolean liked) {
-        return GetPostDetailElement.builder()
-                .postId(post.getId())
-                .title(post.getTitle())
-                .artistName(post.getArtistName())
-                .musicPath(post.getMusicPath())
-                .albumImgPath(post.getAlbumImgPath())
-                .albumName(post.getAlbumName())
-                .likeCount(postLikeCount)
-                .commentCount(commentCount)
-                .createdAt(post.getCreatedAt())
-                .liked(liked)
+        return GetPostDetailElement.builder(
+                    post.getId(),
+                    post.getTitle(),
+                    post.getArtistName(),
+                    post.getMusicPath(),
+                    post.getAlbumImgPath(),
+                    post.getAlbumName(),
+                    postLikeCount,
+                    commentCount,
+                    post.getCreatedAt(),
+                    liked
+                )
                 .build();
     }
 }

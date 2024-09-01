@@ -7,30 +7,53 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-@Builder
+@Builder(builderMethodName = "innerBuilder")
 public class GetPostElement {
 
-    private Long postId;
-    private String title;
-    private String artistName;
-    private String musicPath;
-    private String albumImgPath;
-    private String albumName;
-    private Number likeCount;
-    private Number commentCount;
-    private LocalDateTime createdAt;
+    private final Long postId;
+    private final String title;
+    private final String artistName;
+    private final String musicPath;
+    private final String albumImgPath;
+    private final String albumName;
+    private final Number likeCount;
+    private final Number commentCount;
+    private final LocalDateTime createdAt;
+
+    private static GetPostElementBuilder builder(
+            Long postId,
+            String title,
+            String artistName,
+            String musicPath,
+            String albumImgPath,
+            String albumName,
+            Number likeCount,
+            Number commentCount,
+            LocalDateTime createdAt) {
+        return innerBuilder()
+                .postId(postId)
+                .title(title)
+                .artistName(artistName)
+                .musicPath(musicPath)
+                .albumImgPath(albumImgPath)
+                .albumName(albumName)
+                .likeCount(likeCount)
+                .commentCount(commentCount)
+                .createdAt(createdAt);
+    }
 
     public static GetPostElement of(PostWithCount postWithCount){
-        return GetPostElement.builder()
-                .postId(postWithCount.getId())
-                .title(postWithCount.getTitle())
-                .artistName(postWithCount.getArtistName())
-                .musicPath(postWithCount.getMusicPath())
-                .albumImgPath(postWithCount.getAlbumImgPath())
-                .albumName(postWithCount.getAlbumName())
-                .likeCount(postWithCount.getLikeCount())
-                .commentCount(postWithCount.getCommentCount())
-                .createdAt(postWithCount.getCreatedAt())
+        return GetPostElement.builder(
+                    postWithCount.getId(),
+                    postWithCount.getTitle(),
+                    postWithCount.getArtistName(),
+                    postWithCount.getMusicPath(),
+                    postWithCount.getAlbumImgPath(),
+                    postWithCount.getAlbumName(),
+                    postWithCount.getLikeCount(),
+                    postWithCount.getCommentCount(),
+                    postWithCount.getCreatedAt()
+                )
                 .build();
     }
 }
