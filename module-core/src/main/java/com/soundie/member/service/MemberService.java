@@ -18,6 +18,6 @@ public class MemberService {
 
         member = memberRepository.save(member);
 
-        return MemberIdElement.of(member.getId());
+        return MemberIdElement.of(member);
     }
 }
