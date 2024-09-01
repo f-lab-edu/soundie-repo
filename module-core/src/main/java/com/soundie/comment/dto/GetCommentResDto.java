@@ -24,11 +24,11 @@ public class GetCommentResDto {
     public static GetCommentResDto of(List<Comment> comments, Map<Long, Member> linkedHashMap) {
         return GetCommentResDto.builder(
                     comments.stream()
-                        .map(c -> {
-                            Member member = linkedHashMap.get(c.getId());
-                            return GetCommentElement.of(c, member);
-                        })
-                        .collect(Collectors.toList())
+                            .map(c -> {
+                                Member member = linkedHashMap.get(c.getId());
+                                return GetCommentElement.of(c, member);
+                            })
+                            .collect(Collectors.toList())
                 )
                 .build();
     }
