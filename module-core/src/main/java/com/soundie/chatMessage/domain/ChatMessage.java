@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
@@ -27,10 +26,16 @@ public class ChatMessage implements Serializable {
             Long chatRoomId,
             String content,
             LocalDateTime createdAt){
-        this.id = UUID.randomUUID().toString();
         this.type = type;
         this.chatRoomId = chatRoomId;
         this.content = content;
         this.createdAt = createdAt;
+    }
+
+    /*
+    * 전송 메시지 위함
+    * */
+    public void setId(String id) {
+        this.id = id;
     }
 }
