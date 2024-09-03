@@ -7,8 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 
-import java.util.UUID;
-
 @Controller
 @RequiredArgsConstructor
 public class ChatMessageController {
@@ -18,7 +16,6 @@ public class ChatMessageController {
 
     @MessageMapping("/chatMessage")
     public void message(ChatMessage chatMessage) {
-        chatMessage.setId(UUID.randomUUID().toString());
         chatMessageProducer.sendMessage(chatMessage);
         redisChatMessageService.createMessage(chatMessage);
     }

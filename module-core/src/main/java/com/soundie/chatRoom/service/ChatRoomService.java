@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -88,7 +87,6 @@ public class ChatRoomService {
                 content,
                 LocalDateTime.now()
         );
-        chatMessage.setId(UUID.randomUUID().toString());
         chatMessageProducer.sendMessage(chatMessage);
         redisChatMessageService.createMessage(chatMessage);
 
@@ -114,7 +112,6 @@ public class ChatRoomService {
                 content,
                 LocalDateTime.now()
         );
-        chatMessage.setId(UUID.randomUUID().toString());
         chatMessageProducer.sendMessage(chatMessage);
         redisChatMessageService.createMessage(chatMessage);
 
