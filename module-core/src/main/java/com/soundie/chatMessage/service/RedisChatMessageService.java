@@ -5,6 +5,8 @@ import com.soundie.chatMessage.repository.RedisChatMessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class RedisChatMessageService {
@@ -13,6 +15,12 @@ public class RedisChatMessageService {
     private static final String DELIMITER = ":";
 
     private final RedisChatMessageRepository redisChatMessageRepository;
+
+    public List<ChatMessage> readMessageList(Long chatRoomId) {
+        return redisChatMessageRepository.findChatMessagesByChatRoomId(
+                CHAT_ROOM + DELIMITER + chatRoomId
+        );
+    }
 
     public void createMessage(ChatMessage chatMessage) {
         redisChatMessageRepository.save(

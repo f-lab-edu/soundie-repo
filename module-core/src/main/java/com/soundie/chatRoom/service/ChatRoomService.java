@@ -41,10 +41,15 @@ public class ChatRoomService {
         return GetChatRoomResDto.of(findChatRooms);
     }
 
-    public GetChatRoomDetailResDto readChatRoom(Long chatRoomId) {
+    public GetChatRoomDetailResDto readChatRoom(Long chatRoomId, Long memberId) {
         ChatRoom findChatRoom = chatRoomRepository.findChatRoomById(chatRoomId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.CHAT_ROOM_NOT_FOUND));
-        return GetChatRoomDetailResDto.of(findChatRoom);
+        Member findMember = memberRepository.findMemberById(memberId)
+                .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
+
+        List<ChatMessage> findChatMessages = redisChatMessageService.readMessageList(findChatRoom.getId());
+
+        return GetChatRoomDetailResDto.of(findChatRoom, findChatMessages);
     }
 
     public ChatRoomIdElement createChatRoom(Long hostMemberId, Long guestMemberId, PostChatRoomCreateReqDto postChatRoomCreateReqDto) {
