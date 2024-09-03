@@ -14,4 +14,6 @@ public interface ChatRoomRepository {
     Optional<ChatRoom> findChatRoomById(Long chatRoomId);
 
     ChatRoom save(ChatRoom chatRoom);
+
+    void delete(ChatRoom chatRoom);
 }

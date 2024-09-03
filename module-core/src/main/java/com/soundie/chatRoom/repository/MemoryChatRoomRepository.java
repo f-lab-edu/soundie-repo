@@ -50,4 +50,12 @@ public class MemoryChatRoomRepository implements ChatRoomRepository {
 
         return chatRoom;
     }
+
+    /*
+     * 채팅방 삭제
+     * */
+    @Override
+    public void delete(ChatRoom chatRoom){
+        store.remove(chatRoom.getId());
+    }
 }

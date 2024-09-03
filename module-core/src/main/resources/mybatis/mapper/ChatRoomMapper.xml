@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soundie.chatRoom.mapper.ChatRoomMapper">
+    <!-- 채팅방 목록 조회 -->
+    <select id="findChatRooms" resultType="com.soundie.chatRoom.domain.ChatRoom">
+        select
+            id as "id",
+            host_member_id as "hostMemberId",
+            guest_member_id as "guestMemberId",
+            name as "name"
+            description as "description"
+            created_at as "createdAt"
+        from chatroom
+    </select>
+
+    <!-- 회원 Id로, 채팅방 목록 조회 -->
+    <select id="findChatRoomsByHostMemberIdOrGuestMemberId" resultType="com.soundie.chatRoom.domain.ChatRoom">
+        select
+            id as "id",
+            host_member_id as "hostMemberId",
+            guest_member_id as "guestMemberId",
+            name as "name"
+            description as "description"
+            created_at as "createdAt"
+        from chatroom
+        where host_member_id = #{memberId}
+            or guest_member_id = #{memberId}
+    </select>
+
+    <!-- 채팅방 Id로, 채팅방 조회 -->
+    <select id="findChatRoomById" resultType="com.soundie.chatRoom.domain.ChatRoom">
+        select
+            id as "id",
+            host_member_id as "hostMemberId",
+            guest_member_id as "guestMemberId",
+            name as "name"
+            description as "description"
+            created_at as "createdAt"
+        from chatroom
+        where id = #{id}
+    </select>
+
+    <!-- 채팅방 저장 -->
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into chatroom (host_member_id,
+                                guest_member_id,
+                                name,
+                                description)
+        values (#{chatRoom.hostMemberId},
+                #{chatRoom.guestMemberId},
+                #{chatRoom.name},
+                #{chatRoom.description})
+    </insert>
+
+    <!-- 채팅방 삭제 -->
+    <delete id="delete">
+        delete from chatroom
+        where id = #{chatRoom.id}
+    </delete>
+</mapper>
