@@ -1,7 +1,6 @@
 package com.soundie.chatRoom.repository;
 
 import com.soundie.chatRoom.domain.ChatRoom;
-import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-@Repository
 public class MemoryChatRoomRepository implements ChatRoomRepository {
     private final Map<Long, ChatRoom> store = new ConcurrentHashMap<>();
     private AtomicLong sequence = new AtomicLong(0L);
@@ -33,7 +31,6 @@ public class MemoryChatRoomRepository implements ChatRoomRepository {
                 .filter(cr -> cr.getHostMemberId().equals(memberId) || cr.getGuestMemberId().equals(memberId))
                 .collect(Collectors.toList());
     }
-    
     
     /*
      * 채팅방 Id로, 채팅방 조회
