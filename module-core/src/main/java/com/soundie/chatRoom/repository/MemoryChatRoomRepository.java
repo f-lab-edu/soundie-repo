@@ -1,7 +1,6 @@
 package com.soundie.chatRoom.repository;
 
 import com.soundie.chatRoom.domain.ChatRoom;
-import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-@Repository
 public class MemoryChatRoomRepository implements ChatRoomRepository {
     private final Map<Long, ChatRoom> store = new ConcurrentHashMap<>();
     private AtomicLong sequence = new AtomicLong(0L);
@@ -34,13 +32,23 @@ public class MemoryChatRoomRepository implements ChatRoomRepository {
                 .collect(Collectors.toList());
     }
     
-    
     /*
      * 채팅방 Id로, 채팅방 조회
      * */
     @Override
     public Optional<ChatRoom> findChatRoomById(Long chatRoomId){
         return Optional.ofNullable(store.get(chatRoomId));
+    }
+
+    /*
+     * Host 회원 Id + Guest 회원 Id로, 채팅방 조회
+     * */
+    @Override
+    public Optional<ChatRoom> findChatRoomByHostMemberIdAndGuestMemberId(Long hostMemberId, Long guestMemberId) {
+        return findChatRooms().stream()
+                .filter(cr -> cr.getHostMemberId().equals(hostMemberId) && cr.getGuestMemberId().equals(guestMemberId))
+                .findAny();
+
     }
 
     /*
@@ -52,5 +60,13 @@ public class MemoryChatRoomRepository implements ChatRoomRepository {
         store.put(chatRoom.getId(), chatRoom);
 
         return chatRoom;
+    }
+
+    /*
+     * 채팅방 삭제
+     * */
+    @Override
+    public void delete(ChatRoom chatRoom){
+        store.remove(chatRoom.getId());
     }
 }

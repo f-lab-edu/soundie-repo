@@ -1,10 +1,13 @@
 package com.soundie.chatRoom.domain;
 
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ChatRoom {
     private Long id;
     private Long hostMemberId;
@@ -18,6 +21,12 @@ public class ChatRoom {
         this.guestMemberId = guestMemberId;
         this.name = name;
         this.description = description;
-        this.createdAt = LocalDateTime.now();
+    }
+
+    /*
+     * MemoryRepository 저장 위함
+     * */
+    public void setId(Long id) {
+        this.id = id;
     }
 }

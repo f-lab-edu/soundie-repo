@@ -13,5 +13,9 @@ public interface ChatRoomRepository {
 
     Optional<ChatRoom> findChatRoomById(Long chatRoomId);
 
+    Optional<ChatRoom> findChatRoomByHostMemberIdAndGuestMemberId(Long hostMemberId, Long guestMemberId);
+
     ChatRoom save(ChatRoom chatRoom);
+
+    void delete(ChatRoom chatRoom);
 }

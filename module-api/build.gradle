@@ -2,5 +2,12 @@ dependencies {
     // Spring Boot Web Starter: 웹 애플리케이션 개발을 위한 기본 설정 및 의존성
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
+    // (중복) Spring Boot WebSocket Starter : 웹 소켓 사용을 위한 기본 설정 및 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    // (중복) Spring KafKa : KafKa 사용을 위한 기본 설정 및 의존성
+    implementation 'org.springframework.kafka:spring-kafka'
+    testImplementation 'org.springframework.kafka:spring-kafka-test'
+
     implementation project(':module-core')
 }

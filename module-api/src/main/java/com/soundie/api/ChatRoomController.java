@@ -39,4 +39,12 @@ public class ChatRoomController {
                 .data(chatRoomService.createChatRoom(hostMemberId, guestMemberId, postChatRoomCreateReqDto))
                 .build();
     }
+
+    @DeleteMapping("/{chatRoomId}")
+    public EnvelopeResponse<ChatRoomIdElement> deleteChatRoom(@PathVariable Long chatRoomId,
+                                                              @RequestParam Long memberId) {
+        return EnvelopeResponse.<ChatRoomIdElement>builder()
+                .data(chatRoomService.deleteChatRoom(chatRoomId, memberId))
+                .build();
+    }
 }
