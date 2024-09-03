@@ -14,6 +14,23 @@ spring:
       enabled: true
       path: /h2-console
 
+  # kafka
+  kafka:
+    # Kafka 클러스터에 대한 주소
+    bootstrap-servers: localhost:9092
+
+    # Kafka 토픽
+    template:
+      default-topic: chatroom
+
+    # Kafka 컨슈머에 대한 설정
+    consumer:
+      # 컨슈머 그룹의 고유 식별자인 그룹 ID를 설정
+      group-id: foo
+
+      # 마지막 커밋 기록이 없을 경우, 가장 예전(낮은 번호 오프셋) 레코드부터 처리
+      auto-offset-reset: earliest
+
 # mybatis
 mybatis:
   mapper-locations: classpath*:mybatis/mapper/**/*.xml
