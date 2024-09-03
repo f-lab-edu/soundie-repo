@@ -17,6 +17,6 @@ public class ChatMessageController {
     @MessageMapping("/chatMessage")
     public void message(ChatMessage chatMessage) {
         chatMessageProducer.sendMessage(chatMessage);
-        redisChatMessageService.createMessage(chatMessage);
+        ChatMessage saveMessage = redisChatMessageService.createMessage(chatMessage);
     }
 }
