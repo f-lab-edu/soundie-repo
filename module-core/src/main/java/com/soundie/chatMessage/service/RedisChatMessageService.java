@@ -14,7 +14,7 @@ public class RedisChatMessageService {
 
     private final RedisChatMessageRepository redisChatMessageRepository;
 
-    public void saveMessage(ChatMessage chatMessage) {
+    public void createMessage(ChatMessage chatMessage) {
         redisChatMessageRepository.save(
                 CHAT_ROOM + DELIMITER + chatMessage.getChatRoomId(),
                 chatMessage);

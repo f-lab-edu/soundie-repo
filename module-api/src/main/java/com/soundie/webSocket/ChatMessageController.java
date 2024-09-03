@@ -20,6 +20,6 @@ public class ChatMessageController {
     public void message(ChatMessage chatMessage) {
         chatMessage.setId(UUID.randomUUID().toString());
         chatMessageProducer.sendMessage(chatMessage);
-        redisChatMessageService.saveMessage(chatMessage);
+        redisChatMessageService.createMessage(chatMessage);
     }
 }

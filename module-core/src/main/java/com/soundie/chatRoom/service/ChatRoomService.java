@@ -85,7 +85,7 @@ public class ChatRoomService {
         );
         chatMessage.setId(UUID.randomUUID().toString());
         chatMessageProducer.sendMessage(chatMessage);
-        redisChatMessageService.saveMessage(chatMessage);
+        redisChatMessageService.createMessage(chatMessage);
 
         return ChatRoomIdElement.of(chatRoom);
     }
@@ -111,7 +111,7 @@ public class ChatRoomService {
         );
         chatMessage.setId(UUID.randomUUID().toString());
         chatMessageProducer.sendMessage(chatMessage);
-        redisChatMessageService.saveMessage(chatMessage);
+        redisChatMessageService.createMessage(chatMessage);
 
         return ChatRoomIdElement.ofId(chatRoomId);
     }
