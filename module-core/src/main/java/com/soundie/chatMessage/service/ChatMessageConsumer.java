@@ -19,7 +19,7 @@ public class ChatMessageConsumer {
      */
     @KafkaListener(topics = "${spring.kafka.template.default-topic}", groupId = "${spring.kafka.consumer.group-id}")
     public void sendMessage(ChatMessage chatMessage) {
-        log.info("messageType:{}, messageRoodId:{}", chatMessage.getType(),chatMessage.getChatRoomId());
+        log.info("messageType:{}, messageChatRoomId:{}", chatMessage.getType(),chatMessage.getChatRoomId());
         log.info("messageSenderId:{}, messageContent:{}", chatMessage.getSenderId(),chatMessage.getContent());
         messagingTemplate.convertAndSend(
                 "/sub/chatRooms/" + chatMessage.getChatRoomId(),
