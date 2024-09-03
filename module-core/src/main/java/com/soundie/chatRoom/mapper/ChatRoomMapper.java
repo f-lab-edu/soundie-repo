@@ -1,11 +1,13 @@
 package com.soundie.chatRoom.mapper;
 
 import com.soundie.chatRoom.domain.ChatRoom;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Optional;
 
+@Mapper
 public interface ChatRoomMapper {
 
     List<ChatRoom> findChatRooms();
