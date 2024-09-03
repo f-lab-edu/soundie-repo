@@ -8,6 +8,7 @@ import com.soundie.chatRoom.dto.PostChatRoomCreateReqDto;
 import com.soundie.chatRoom.repository.ChatRoomRepository;
 import com.soundie.global.common.exception.ApplicationError;
 import com.soundie.global.common.exception.BadRequestException;
+import com.soundie.global.common.exception.DuplicateException;
 import com.soundie.global.common.exception.NotFoundException;
 import com.soundie.member.domain.Member;
 import com.soundie.member.repository.MemberRepository;
@@ -42,6 +43,20 @@ public class ChatRoomService {
                 .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
         Member findGuestMember = memberRepository.findMemberById(guestMemberId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
+
+        // Host 회원과 Guest 회원, 채팅방이 이미 존재
+        Boolean hasChatRoom = chatRoomRepository.findChatRoomByHostMemberIdAndGuestMemberId(findHostMember.getId(), findGuestMember.getId())
+                .isPresent();
+        if (hasChatRoom) {
+            throw new DuplicateException(ApplicationError.DUPLICATE_CHAT_ROOM);
+        }
+
+        // Host 회원과 Guest 회원이 반대인, 채팅방이 이미 존재
+        Boolean hasReverseChatRoom = chatRoomRepository.findChatRoomByHostMemberIdAndGuestMemberId(findGuestMember.getId(), findHostMember.getId())
+                .isPresent();
+        if (hasReverseChatRoom) {
+            throw new DuplicateException(ApplicationError.DUPLICATE_CHAT_ROOM);
+        }
 
         ChatRoom chatRoom = new ChatRoom(
                 findHostMember.getId(),

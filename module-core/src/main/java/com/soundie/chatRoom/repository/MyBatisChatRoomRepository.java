@@ -39,6 +39,14 @@ public class MyBatisChatRoomRepository implements ChatRoomRepository {
     }
 
     /*
+    * Host 회원 Id + Guest 회원 Id로, 채팅방 조회
+    * */
+    @Override
+    public Optional<ChatRoom> findChatRoomByHostMemberIdAndGuestMemberId(Long hostMemberId, Long guestMemberId) {
+        return chatRoomMapper.findChatRoomByHostMemberIdAndGuestMemberId(hostMemberId, guestMemberId);
+    }
+
+    /*
      * 채팅방 저장
      * */
     @Override

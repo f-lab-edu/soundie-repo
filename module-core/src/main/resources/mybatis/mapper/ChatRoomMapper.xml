@@ -41,6 +41,20 @@
         where id = #{id}
     </select>
 
+    <!-- Host 회원 Id + Guest 회원 Id로, 채팅방 조회 -->
+    <select id="findChatRoomByHostMemberIdAndGuestMemberId" resultType="com.soundie.chatRoom.domain.ChatRoom">
+        select
+            id as "id",
+            host_member_id as "hostMemberId",
+            guest_member_id as "guestMemberId",
+            name as "name",
+            description as "description",
+            created_at as "createdAt"
+        from chatroom
+        where host_member_id = #{hostMemberId}
+            and guest_member_id = #{guestMemberId}
+    </select>
+
     <!-- 채팅방 저장 -->
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
         insert into chatroom (host_member_id,

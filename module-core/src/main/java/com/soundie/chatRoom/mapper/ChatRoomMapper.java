@@ -16,6 +16,10 @@ public interface ChatRoomMapper {
 
     Optional<ChatRoom> findChatRoomById(@Param("id") Long id);
 
+    Optional<ChatRoom> findChatRoomByHostMemberIdAndGuestMemberId(
+            @Param("hostMemberId") Long hostMemberId,
+            @Param("guestMemberId") Long guestMemberId);
+
     void save(@Param("chatRoom") ChatRoom chatRoom);
 
     void delete(@Param("chatRoom") ChatRoom chatRoom);
