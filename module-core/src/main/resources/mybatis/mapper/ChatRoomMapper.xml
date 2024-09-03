@@ -8,8 +8,8 @@
             id as "id",
             host_member_id as "hostMemberId",
             guest_member_id as "guestMemberId",
-            name as "name"
-            description as "description"
+            name as "name",
+            description as "description",
             created_at as "createdAt"
         from chatroom
     </select>
@@ -20,8 +20,8 @@
             id as "id",
             host_member_id as "hostMemberId",
             guest_member_id as "guestMemberId",
-            name as "name"
-            description as "description"
+            name as "name",
+            description as "description",
             created_at as "createdAt"
         from chatroom
         where host_member_id = #{memberId}
@@ -34,8 +34,8 @@
             id as "id",
             host_member_id as "hostMemberId",
             guest_member_id as "guestMemberId",
-            name as "name"
-            description as "description"
+            name as "name",
+            description as "description",
             created_at as "createdAt"
         from chatroom
         where id = #{id}
