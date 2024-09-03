@@ -24,7 +24,10 @@ public class ChatRoomService {
     private final MemberRepository memberRepository;
 
     public GetChatRoomResDto readChatRoomList(Long memberId) {
-        List<ChatRoom> findChatRooms = chatRoomRepository.findChatRoomsByHostMemberIdOrGuestMemberId(memberId);
+        Member findMember = memberRepository.findMemberById(memberId)
+                .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
+
+        List<ChatRoom> findChatRooms = chatRoomRepository.findChatRoomsByHostMemberIdOrGuestMemberId(findMember.getId());
         return GetChatRoomResDto.of(findChatRooms);
     }
 
@@ -35,9 +38,14 @@ public class ChatRoomService {
     }
 
     public ChatRoomIdElement createChatRoom(Long hostMemberId, Long guestMemberId, PostChatRoomCreateReqDto postChatRoomCreateReqDto) {
+        Member findHostMember = memberRepository.findMemberById(hostMemberId)
+                .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
+        Member findGuestMember = memberRepository.findMemberById(guestMemberId)
+                .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
+
         ChatRoom chatRoom = new ChatRoom(
-                hostMemberId,
-                guestMemberId,
+                findHostMember.getId(),
+                findGuestMember.getId(),
                 postChatRoomCreateReqDto.getName(),
                 postChatRoomCreateReqDto.getDescription()
         );
