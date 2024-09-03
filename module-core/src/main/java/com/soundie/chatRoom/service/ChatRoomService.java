@@ -1,5 +1,6 @@
 package com.soundie.chatRoom.service;
 
+import com.soundie.chatMessage.service.ChatMessageProducer;
 import com.soundie.chatRoom.domain.ChatRoom;
 import com.soundie.chatRoom.dto.ChatRoomIdElement;
 import com.soundie.chatRoom.dto.GetChatRoomDetailResDto;
@@ -23,6 +24,8 @@ public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final MemberRepository memberRepository;
+
+    private final ChatMessageProducer chatMessageProducer;
 
     public GetChatRoomResDto readChatRoomList(Long memberId) {
         Member findMember = memberRepository.findMemberById(memberId)
@@ -67,6 +70,8 @@ public class ChatRoomService {
 
         chatRoom = chatRoomRepository.save(chatRoom);
 
+        chatMessageProducer.sendEnterMessage(chatRoom, findHostMember);
+
         return ChatRoomIdElement.of(chatRoom);
     }
 
@@ -81,6 +86,8 @@ public class ChatRoomService {
         }
 
         chatRoomRepository.delete(findChatRoom);
+
+        chatMessageProducer.sendExitMessage(findChatRoom, findMember);
 
         return ChatRoomIdElement.ofId(chatRoomId);
     }

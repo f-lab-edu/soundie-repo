@@ -2,14 +2,14 @@ package com.soundie.chatMessage.service;
 
 import com.soundie.chatMessage.domain.ChatMessage;
 import com.soundie.chatMessage.domain.ChatMessageType;
-import com.soundie.global.common.exception.ApplicationError;
-import com.soundie.global.common.exception.NotFoundException;
+import com.soundie.chatRoom.domain.ChatRoom;
 import com.soundie.member.domain.Member;
-import com.soundie.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -18,17 +18,31 @@ public class ChatMessageProducer {
     private final KafkaTemplate<String, ChatMessage> kafkaTemplate;
 
     private final NewTopic topic;
-    private final MemberRepository memberRepository;
 
     public void sendMessage(ChatMessage chatMessage) {
-        if (ChatMessageType.ENTER.equals(chatMessage.getType())) {
+        kafkaTemplate.send(topic.name(), chatMessage);
+    }
 
-            Member findMember = memberRepository.findMemberById(chatMessage.getSenderId())
-                    .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
+    public void sendEnterMessage(ChatRoom chatRoom, Member member) {
+        String content = member.getName() + "님이 대화를 개설 했습니다.";
+        ChatMessage chatMessage = new ChatMessage(
+                ChatMessageType.ENTER,
+                chatRoom.getId(),
+                content,
+                LocalDateTime.now()
+        );
 
-            String enterContent = findMember.getName() + "님이 입장하셨습니다.";
-            chatMessage.setContent(enterContent);
-        }
+        kafkaTemplate.send(topic.name(), chatMessage);
+    }
+
+    public void sendExitMessage(ChatRoom chatRoom, Member member) {
+        String content = member.getName() + "님이 대화를 종료 했습니다.";
+        ChatMessage chatMessage = new ChatMessage(
+                ChatMessageType.EXIT,
+                chatRoom.getId(),
+                content,
+                LocalDateTime.now()
+        );
 
         kafkaTemplate.send(topic.name(), chatMessage);
     }

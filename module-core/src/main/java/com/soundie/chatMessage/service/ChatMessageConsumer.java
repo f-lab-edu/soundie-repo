@@ -2,10 +2,12 @@ package com.soundie.chatMessage.service;
 
 import com.soundie.chatMessage.domain.ChatMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChatMessageConsumer {
@@ -17,6 +19,8 @@ public class ChatMessageConsumer {
      */
     @KafkaListener(topics = "${spring.kafka.template.default-topic}", groupId = "${spring.kafka.consumer.group-id}")
     public void sendMessage(ChatMessage chatMessage) {
+        log.info("messageType:{}, messageRoodId:{}", chatMessage.getType(),chatMessage.getChatRoomId());
+        log.info("messageSenderId:{}, messageContent:{}", chatMessage.getSenderId(),chatMessage.getContent());
         messagingTemplate.convertAndSend(
                 "/sub/chatRooms/" + chatMessage.getChatRoomId(),
                 chatMessage
