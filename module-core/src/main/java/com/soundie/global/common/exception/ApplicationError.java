@@ -18,6 +18,7 @@ public enum ApplicationError {
     
     // 채팅방 관련
     CHAT_ROOM_NOT_FOUND(HttpStatus.BAD_REQUEST, "R001", "채팅방을 찾을 수 없습니다."),
+    DUPLICATE_CHAT_ROOM(HttpStatus.BAD_REQUEST, "R002", "해당 채팅방이 이미 존재합니다."),
 
     // 알림 관련
 
