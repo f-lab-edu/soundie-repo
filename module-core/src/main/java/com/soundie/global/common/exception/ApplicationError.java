@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum ApplicationError {
     // 회원 관련
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "M001", "사용자를 찾을 수 없습니다."),
+    INVALID_AUTHORITY(HttpStatus.BAD_REQUEST, "M002", "잘못된 권한입니다."),
 
     // 음원 게시물 관련
     POST_NOT_FOUND(HttpStatus.BAD_REQUEST, "P001", "음원 게시물을 찾을 수 없습니다."),
