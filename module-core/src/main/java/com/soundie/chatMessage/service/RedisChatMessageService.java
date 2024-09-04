@@ -27,4 +27,10 @@ public class RedisChatMessageService {
                 CHAT_ROOM + DELIMITER + chatMessage.getChatRoomId(),
                 chatMessage);
     }
+
+    public void deleteMessageList(Long chatRoomId) {
+        redisChatMessageRepository.delete(
+                CHAT_ROOM + DELIMITER + chatRoomId
+        );
+    }
 }

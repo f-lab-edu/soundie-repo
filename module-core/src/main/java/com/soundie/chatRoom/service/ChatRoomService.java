@@ -104,16 +104,7 @@ public class ChatRoomService {
         }
 
         chatRoomRepository.delete(findChatRoom);
-
-        String content = findMember.getName() + "님이 대화를 종료 했습니다.";
-        ChatMessage chatMessage = new ChatMessage(
-                ChatMessageType.EXIT,
-                findChatRoom.getId(),
-                content,
-                LocalDateTime.now()
-        );
-        chatMessageProducer.sendMessage(chatMessage);
-        redisChatMessageService.createMessage(chatMessage);
+        redisChatMessageService.deleteMessageList(findChatRoom.getId());
 
         return ChatRoomIdElement.ofId(chatRoomId);
     }

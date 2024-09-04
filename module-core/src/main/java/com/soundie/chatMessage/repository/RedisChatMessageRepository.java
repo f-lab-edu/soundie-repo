@@ -7,6 +7,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Repository
@@ -31,5 +32,17 @@ public class RedisChatMessageRepository {
         HashOperations<String, String, ChatMessage> hashOperations = redisTemplate.opsForHash();
         hashOperations.put(chatRoomKey, chatMessage.getId(), chatMessage); // converter 필요
         return chatMessage;
+    }
+    
+    /*
+    * 채팅방 Id를 key 로, 채팅 메시지 삭제
+    * */
+    public void delete(String chatRoomKey) {
+        HashOperations<String, String, ChatMessage> hashOperations = redisTemplate.opsForHash();
+
+        Map<String, ChatMessage> entries = hashOperations.entries(chatRoomKey);
+        entries.forEach((subKey, chatMessage) -> {
+            hashOperations.delete(chatRoomKey, subKey);
+        });
     }
 }
