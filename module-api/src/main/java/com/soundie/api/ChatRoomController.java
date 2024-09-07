@@ -27,7 +27,7 @@ public class ChatRoomController {
     public EnvelopeResponse<GetChatRoomDetailResDto> readChatRoom(@PathVariable Long chatRoomId,
                                                                   @RequestParam Long memberId){
         return EnvelopeResponse.<GetChatRoomDetailResDto>builder()
-                .data(chatRoomService.readChatRoom(chatRoomId))
+                .data(chatRoomService.readChatRoom(chatRoomId, memberId))
                 .build();
     }
 

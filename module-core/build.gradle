@@ -15,4 +15,7 @@ dependencies {
     // Spring KafKa : KafKa 사용을 위한 기본 설정 및 의존성
     implementation 'org.springframework.kafka:spring-kafka'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
+
+    // Spring Boot Redis Starter: Redis 사용을 위한 기본 설정 및 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }

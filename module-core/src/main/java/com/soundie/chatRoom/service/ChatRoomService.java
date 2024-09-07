@@ -1,6 +1,9 @@
 package com.soundie.chatRoom.service;
 
+import com.soundie.chatMessage.domain.ChatMessage;
+import com.soundie.chatMessage.domain.ChatMessageType;
 import com.soundie.chatMessage.service.ChatMessageProducer;
+import com.soundie.chatMessage.service.RedisChatMessageService;
 import com.soundie.chatRoom.domain.ChatRoom;
 import com.soundie.chatRoom.dto.ChatRoomIdElement;
 import com.soundie.chatRoom.dto.GetChatRoomDetailResDto;
@@ -16,6 +19,7 @@ import com.soundie.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -26,6 +30,7 @@ public class ChatRoomService {
     private final MemberRepository memberRepository;
 
     private final ChatMessageProducer chatMessageProducer;
+    private final RedisChatMessageService redisChatMessageService;
 
     public GetChatRoomResDto readChatRoomList(Long memberId) {
         Member findMember = memberRepository.findMemberById(memberId)
@@ -35,10 +40,15 @@ public class ChatRoomService {
         return GetChatRoomResDto.of(findChatRooms);
     }
 
-    public GetChatRoomDetailResDto readChatRoom(Long chatRoomId) {
+    public GetChatRoomDetailResDto readChatRoom(Long chatRoomId, Long memberId) {
         ChatRoom findChatRoom = chatRoomRepository.findChatRoomById(chatRoomId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.CHAT_ROOM_NOT_FOUND));
-        return GetChatRoomDetailResDto.of(findChatRoom);
+        Member findMember = memberRepository.findMemberById(memberId)
+                .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
+
+        List<ChatMessage> findChatMessages = redisChatMessageService.readMessageList(findChatRoom.getId());
+
+        return GetChatRoomDetailResDto.of(findChatRoom, findChatMessages);
     }
 
     public ChatRoomIdElement createChatRoom(Long hostMemberId, Long guestMemberId, PostChatRoomCreateReqDto postChatRoomCreateReqDto) {
@@ -70,7 +80,15 @@ public class ChatRoomService {
 
         chatRoom = chatRoomRepository.save(chatRoom);
 
-        chatMessageProducer.sendEnterMessage(chatRoom, findHostMember);
+        String content = findHostMember.getName() + "님이 대화를 개설 했습니다.";
+        ChatMessage chatMessage = new ChatMessage(
+                ChatMessageType.ENTER,
+                chatRoom.getId(),
+                content,
+                LocalDateTime.now()
+        );
+        chatMessageProducer.sendMessage(chatMessage);
+        redisChatMessageService.createMessage(chatMessage);
 
         return ChatRoomIdElement.of(chatRoom);
     }
@@ -86,8 +104,7 @@ public class ChatRoomService {
         }
 
         chatRoomRepository.delete(findChatRoom);
-
-        chatMessageProducer.sendExitMessage(findChatRoom, findMember);
+        redisChatMessageService.deleteMessageList(findChatRoom.getId());
 
         return ChatRoomIdElement.ofId(chatRoomId);
     }

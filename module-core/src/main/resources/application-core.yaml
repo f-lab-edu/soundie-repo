@@ -31,6 +31,11 @@ spring:
       # 마지막 커밋 기록이 없을 경우, 가장 예전(낮은 번호 오프셋) 레코드부터 처리
       auto-offset-reset: earliest
 
+  # redis
+  redis:
+    host: localhost
+    port: 6379
+
 # mybatis
 mybatis:
   mapper-locations: classpath*:mybatis/mapper/**/*.xml
