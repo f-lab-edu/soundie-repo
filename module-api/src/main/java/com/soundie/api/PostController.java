@@ -14,14 +14,14 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping
-    public EnvelopeResponse<GetPostResDto> readPostList(@RequestParam(required = false) Long memberId){
+    public EnvelopeResponse<GetPostResDto> readPosts(@RequestParam(required = false) Long memberId){
         return EnvelopeResponse.<GetPostResDto>builder()
                 .data(postService.readPostList())
                 .build();
     }
 
     @GetMapping("/cursor")
-    public EnvelopeResponse<GetPostCursorResDto> readPostListByCursor(@RequestBody GetPostCursorReqDto getPostCursorReqDto,
+    public EnvelopeResponse<GetPostCursorResDto> readPostsByCursor(@RequestBody GetPostCursorReqDto getPostCursorReqDto,
                                                                       @RequestParam(required = false) Long memberId) {
         return EnvelopeResponse.<GetPostCursorResDto>builder()
                 .data(postService.readPostListByCursor(getPostCursorReqDto))
