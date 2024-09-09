@@ -4,6 +4,8 @@ import com.soundie.comment.domain.Comment;
 import com.soundie.comment.dto.CommentIdElement;
 import com.soundie.comment.dto.GetCommentResDto;
 import com.soundie.comment.dto.PostCommentCreateReqDto;
+import com.soundie.comment.dto.GetCommentCursorReqDto;
+import com.soundie.comment.dto.GetCommentCursorResDto;
 import com.soundie.comment.repository.CommentRepository;
 import com.soundie.global.common.exception.ApplicationError;
 import com.soundie.global.common.exception.NotFoundException;
@@ -40,6 +42,29 @@ public class CommentService {
         }
 
         return GetCommentResDto.of(comments, linkedHashMap);
+    }
+
+    public GetCommentCursorResDto readCommentListByCursor(Long postId, GetCommentCursorReqDto getCommentCursorReqDto) {
+        Post findPost = postRepository.findPostById(postId)
+                .orElseThrow(() -> new NotFoundException(ApplicationError.POST_NOT_FOUND));
+
+        Long cursor = getCommentCursorReqDto.getCursor();
+        Integer size = getCommentCursorReqDto.getSize();
+        List<Comment> comments = findCommentsByCursorCheckExistsCursor(findPost.getId(), cursor, size);
+
+        Map<Long, Member> linkedHashMap = new LinkedHashMap<>();
+        for (Comment comment : comments){
+            Member findMember = memberRepository.findMemberById(comment.getMemberId())
+                    .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
+            linkedHashMap.put(comment.getId(), findMember);
+        }
+
+        return GetCommentCursorResDto.of(comments, linkedHashMap, size);
+    }
+
+    private List<Comment> findCommentsByCursorCheckExistsCursor(Long postId, Long cursor, Integer size) {
+        return cursor == null ? commentRepository.findCommentsByPostIdOrderByIdAscCreatedAtAsc(postId, size)
+                : commentRepository.findCommentsByPostIdAndIdLessThanOrderByIdAscCreatedAtAsc(postId, cursor, size);
     }
 
     public CommentIdElement createComment(Long memberId, Long postId, PostCommentCreateReqDto postCommentCreateReqDto) {
