@@ -20,6 +20,14 @@ public class PostController {
                 .build();
     }
 
+    @GetMapping("/cursor")
+    public EnvelopeResponse<GetPostCursorResDto> readPostListByCursor(@RequestBody GetPostCursorReqDto getPostCursorReqDto,
+                                                                      @RequestParam(required = false) Long memberId) {
+        return EnvelopeResponse.<GetPostCursorResDto>builder()
+                .data(postService.readPostListByCursor(getPostCursorReqDto))
+                .build();
+    }
+
     @GetMapping("/{postId}")
     public EnvelopeResponse<GetPostDetailResDto> readPost(@PathVariable Long postId,
                                                           @RequestParam(required = false) Long memberId){

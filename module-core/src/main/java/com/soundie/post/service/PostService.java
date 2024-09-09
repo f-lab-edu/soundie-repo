@@ -50,6 +50,38 @@ public class PostService {
         return GetPostResDto.of(findPostsWithCount);
     }
 
+    public GetPostCursorResDto readPostListByCursor(GetPostCursorReqDto getPostCursorReqDto) {
+        Long cursor = getPostCursorReqDto.getCursor();
+        Integer size = getPostCursorReqDto.getSize();
+
+        List<Post> findPosts = findPostsByCursorCheckExistsCursor(cursor, size);
+        List<PostWithCount> findPostsWithCount = findPosts.stream()
+                .map(findPost -> {
+                    Long findPostLikeCount = postLikeRepository.countPostLikesByPostId(findPost.getId());
+                    Long findCommentCount = commentRepository.countCommentsByPostId(findPost.getId());
+                    return new PostWithCount(
+                            findPost.getId(),
+                            findPost.getMemberId(),
+                            findPost.getTitle(),
+                            findPost.getArtistName(),
+                            findPost.getMusicPath(),
+                            findPost.getAlbumImgPath(),
+                            findPost.getAlbumName(),
+                            findPostLikeCount,
+                            findCommentCount,
+                            findPost.getCreatedAt()
+                    );
+                })
+                .collect(Collectors.toList());
+
+        return GetPostCursorResDto.of(findPostsWithCount, size);
+    }
+
+    private List<Post> findPostsByCursorCheckExistsCursor(Long cursor, Integer size) {
+        return cursor == null ? postRepository.findPostsByOrderByIdDescCreatedAtDesc(size)
+                : postRepository.findPostsByIdLessThanOrderByIdDescCreatedAtDesc(cursor, size);
+    }
+
     public GetPostDetailResDto readPost(Long memberId, Long postId) {
         Post findPost = postRepository.findPostById(postId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.POST_NOT_FOUND));
