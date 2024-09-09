@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GetPostCursorReqDto {
 
-    private Long cursor;
+    private Long cursor = -1L;
     private Integer size = 5;
 
     public GetPostCursorReqDto(Long cursor, Integer size){

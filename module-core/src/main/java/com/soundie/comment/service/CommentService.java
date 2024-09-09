@@ -63,7 +63,7 @@ public class CommentService {
     }
 
     private List<Comment> findCommentsByCursorCheckExistsCursor(Long postId, Long cursor, Integer size) {
-        return cursor == null ? commentRepository.findCommentsByPostIdOrderByIdAscCreatedAtAsc(postId, size)
+        return cursor.equals(-1L) ? commentRepository.findCommentsByPostIdOrderByIdAscCreatedAtAsc(postId, size)
                 : commentRepository.findCommentsByPostIdAndIdLessThanOrderByIdAscCreatedAtAsc(postId, cursor, size);
     }
 

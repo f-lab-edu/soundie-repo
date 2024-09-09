@@ -78,7 +78,7 @@ public class PostService {
     }
 
     private List<Post> findPostsByCursorCheckExistsCursor(Long cursor, Integer size) {
-        return cursor == null ? postRepository.findPostsByOrderByIdDescCreatedAtDesc(size)
+        return cursor.equals(-1L) ? postRepository.findPostsByOrderByIdDescCreatedAtDesc(size)
                 : postRepository.findPostsByIdLessThanOrderByIdDescCreatedAtDesc(cursor, size);
     }
 
