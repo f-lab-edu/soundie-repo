@@ -16,6 +16,39 @@
         from post
     </select>
 
+    <select id="findPostsByOrderByIdDescCreatedAtDesc"
+            resultType="com.soundie.post.domain.Post">
+        select
+            id as "id",
+            member_id as "memberId",
+            title as "title",
+            artist_name as "artistName",
+            music_path as "musicPath",
+            album_img_path as "albumImgPath",
+            album_name as "albumName",
+            created_at as "createdAt"
+        from post
+        order by id desc, created_at desc
+        limit #{size}
+    </select>
+
+    <select id="findPostsByIdLessThanOrderByIdDescCreatedAtDesc"
+            resultType="com.soundie.post.domain.Post">
+        select
+            id as "id",
+            member_id as "memberId",
+            title as "title",
+            artist_name as "artistName",
+            music_path as "musicPath",
+            album_img_path as "albumImgPath",
+            album_name as "albumName",
+            created_at as "createdAt"
+        from post
+        where id &lt; #{id}
+        order by id desc, created_at desc
+        limit #{size}
+    </select>
+
     <!-- 음원 게시물 Id로, 음원 게시물 조회 -->
     <select id="findPostById" resultType="com.soundie.post.domain.Post">
         select
