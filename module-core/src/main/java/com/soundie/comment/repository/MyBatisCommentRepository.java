@@ -29,6 +29,16 @@ public class MyBatisCommentRepository implements CommentRepository {
         return commentMapper.findCommentsByPostId(postId);
     }
 
+    @Override
+    public List<Comment> findCommentsByPostIdOrderByIdAscCreatedAtAsc(Long postId, Integer size) {
+        return commentMapper.findCommentsByPostIdOrderByIdAscCreatedAtAsc(postId, size);
+    }
+
+    @Override
+    public List<Comment> findCommentsByPostIdAndIdLessThanOrderByIdAscCreatedAtAsc(Long postId, Long cursor, Integer size) {
+        return commentMapper.findCommentsByPostIdAndIdLessThanOrderByIdAscCreatedAtAsc(postId, cursor, size);
+    }
+
     /*
      * 음원 게시물 Id로, 댓글 개수 조회
      * */
