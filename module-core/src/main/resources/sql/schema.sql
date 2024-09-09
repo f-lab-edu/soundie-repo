@@ -23,8 +23,8 @@ create table post
 		    on delete cascade
 		    on update cascade
 );
-create index idx_created_at on post(created_at) ;
-create index idx_id on post(id) ;
+create index post_idx_created_at on post(created_at);
+create index post_idx_id on post(id);
 
 drop table if exists comment CASCADE;
 create table comment
