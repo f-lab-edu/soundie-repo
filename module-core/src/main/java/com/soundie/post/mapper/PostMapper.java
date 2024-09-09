@@ -12,10 +12,11 @@ public interface PostMapper {
 
     List<Post> findPosts();
 
-    List<Post> findPostsByOrderByIdDescCreatedAtDesc(Integer size);
+    List<Post> findPostsByOrderByIdDescCreatedAtDesc(@Param("size") Integer size);
 
-    List<Post> findPostsByIdLessThanOrderByIdDescCreatedAtDesc(@Param("id") Long postId,
-                                                               Integer size);
+    List<Post> findPostsByIdLessThanOrderByIdDescCreatedAtDesc(
+            @Param("id") Long postId,
+            @Param("size") Integer size);
 
     Optional<Post> findPostById(@Param("id") Long postId);
 

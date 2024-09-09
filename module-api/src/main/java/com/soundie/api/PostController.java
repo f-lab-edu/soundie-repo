@@ -22,7 +22,7 @@ public class PostController {
 
     @GetMapping("/cursor")
     public EnvelopeResponse<GetPostCursorResDto> readPostsByCursor(@RequestBody GetPostCursorReqDto getPostCursorReqDto,
-                                                                      @RequestParam(required = false) Long memberId) {
+                                                                   @RequestParam(required = false) Long memberId) {
         return EnvelopeResponse.<GetPostCursorResDto>builder()
                 .data(postService.readPostListByCursor(getPostCursorReqDto))
                 .build();
