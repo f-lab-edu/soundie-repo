@@ -42,6 +42,8 @@ create table comment
 		    on delete cascade
 		    on update cascade
 );
+create index comment_idx_created_at on comment(created_at);
+create index comment_idx_id on comment(id);
 
 drop table if exists postlike CASCADE;
 create table postlike
