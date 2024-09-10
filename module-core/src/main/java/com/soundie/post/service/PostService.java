@@ -51,7 +51,7 @@ public class PostService {
         return GetPostResDto.of(findPostsWithCount);
     }
 
-    @Cacheable(cacheNames = "post", key = "'readPostListByCursor' + #cursor + #size")
+    @Cacheable(cacheNames = "post", key = "'cursor_' + #getPostCursorReqDto.cursor + ':size_' + #getPostCursorReqDto.size")
     public GetPostCursorResDto readPostListByCursor(GetPostCursorReqDto getPostCursorReqDto) {
         Long cursor = getPostCursorReqDto.getCursor();
         Integer size = getPostCursorReqDto.getSize();
@@ -84,7 +84,7 @@ public class PostService {
                 : postRepository.findPostsByIdLessThanOrderByIdDescCreatedAtDesc(cursor, size);
     }
 
-    @Cacheable(cacheNames = "post", key = "'readPost:postId-' + #postId + ':memberId-' + #memberId")
+    @Cacheable(cacheNames = "post", key = "'postId_' + #postId + ':memberId_' + #memberId")
     public GetPostDetailResDto readPost(Long memberId, Long postId) {
         Post findPost = postRepository.findPostById(postId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.POST_NOT_FOUND));
