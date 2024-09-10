@@ -48,6 +48,7 @@ public class CacheConfig {
         // 3. 리소스 유형에 따라 만료 시간을 다르게 지정
         Map<String, RedisCacheConfiguration> redisCacheConfigMap = new HashMap<>();
         redisCacheConfigMap.put("post", defaultCacheConfig.entryTtl(Duration.ofHours(1)));
+        redisCacheConfigMap.put("comment", defaultCacheConfig.entryTtl(Duration.ofHours(1)));
 
         RedisCacheManager redisCacheManager = RedisCacheManager.builder(redisCacheConnectionFactory())
                 .withInitialCacheConfigurations(redisCacheConfigMap)

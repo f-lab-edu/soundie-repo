@@ -2,8 +2,7 @@ package com.soundie.comment.dto;
 
 import com.soundie.comment.domain.Comment;
 import com.soundie.member.domain.Member;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -11,21 +10,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Getter
-@Builder(builderMethodName = "innerBuilder")
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class GetCommentCursorResDto {
 
-    private final Collection<GetCommentElement> comments;
-    private final Long cursor;
-
-    private static GetCommentCursorResDtoBuilder builder(Collection<GetCommentElement> comments,
-                                                         Long cursor) {
-        return innerBuilder()
-                .comments(comments)
-                .cursor(cursor);
-    }
+    private Collection<GetCommentElement> comments;
+    private Long cursor;
 
     public static GetCommentCursorResDto of(List<Comment> comments, Map<Long, Member> linkedHashMap, Integer size) {
-        return GetCommentCursorResDto.builder(
+        return new GetCommentCursorResDto(
                         comments.stream()
                                 .map(c -> {
                                     Member member = linkedHashMap.get(c.getId());
@@ -33,8 +26,7 @@ public class GetCommentCursorResDto {
                                 })
                                 .collect(Collectors.toList()),
                         getNextCursor(comments, size)
-                )
-                .build();
+                );
     }
 
     private static Long getNextCursor(List<Comment> comments, Integer size) {

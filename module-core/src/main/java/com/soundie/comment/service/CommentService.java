@@ -14,6 +14,7 @@ import com.soundie.member.repository.MemberRepository;
 import com.soundie.post.domain.Post;
 import com.soundie.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
@@ -44,6 +45,7 @@ public class CommentService {
         return GetCommentResDto.of(comments, linkedHashMap);
     }
 
+    @Cacheable(cacheNames = "comment", key = "'postId_' + #postId + ':cursor_' + #getCommentCursorReqDto.cursor + ':size_' + #getCommentCursorReqDto.size")
     public GetCommentCursorResDto readCommentListByCursor(Long postId, GetCommentCursorReqDto getCommentCursorReqDto) {
         Post findPost = postRepository.findPostById(postId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.POST_NOT_FOUND));

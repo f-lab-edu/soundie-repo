@@ -1,37 +1,35 @@
 package com.soundie.comment.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.soundie.comment.domain.Comment;
 import com.soundie.member.domain.Member;
 import com.soundie.member.dto.AuthorElement;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Builder(builderMethodName = "innerBuilder")
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class GetCommentElement {
 
-    private final Long commentId;
-    private final String content;
-    private final LocalDateTime createdAt;
-    private final AuthorElement author;
+    private Long commentId;
+    private String content;
+    private AuthorElement author;
 
-    private static GetCommentElementBuilder builder(Long commentId, String content, LocalDateTime createdAt, Member member){
-        return innerBuilder()
-                .commentId(commentId)
-                .content(content)
-                .createdAt(createdAt)
-                .author(AuthorElement.of(member));
-    }
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime createdAt;
 
     public static GetCommentElement of(Comment comment, Member member){
-        return GetCommentElement.builder(
+        return new GetCommentElement(
                     comment.getId(),
                     comment.getContent(),
-                    comment.getCreatedAt(),
-                    member
-                )
-                .build();
+                    AuthorElement.of(member),
+                    comment.getCreatedAt()
+                );
     }
 }
