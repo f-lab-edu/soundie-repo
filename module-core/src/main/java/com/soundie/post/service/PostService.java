@@ -3,6 +3,7 @@ package com.soundie.post.service;
 import com.soundie.comment.repository.CommentRepository;
 import com.soundie.global.common.exception.ApplicationError;
 import com.soundie.global.common.exception.NotFoundException;
+import com.soundie.global.common.util.CacheNames;
 import com.soundie.member.domain.Member;
 import com.soundie.member.repository.MemberRepository;
 import com.soundie.post.domain.Post;
@@ -50,7 +51,7 @@ public class PostService {
         return GetPostResDto.of(findPostsWithCount);
     }
 
-    @Cacheable(cacheNames = "post", key = "'cursor_' + #getPostCursorReqDto.cursor + ':size_' + #getPostCursorReqDto.size")
+    @Cacheable(cacheNames = CacheNames.POST, key = "'cursor_' + #getPostCursorReqDto.cursor + ':size_' + #getPostCursorReqDto.size")
     public GetPostCursorResDto readPostListByCursor(GetPostCursorReqDto getPostCursorReqDto) {
         Long cursor = getPostCursorReqDto.getCursor();
         Integer size = getPostCursorReqDto.getSize();
@@ -82,7 +83,7 @@ public class PostService {
                 : postRepository.findPostsByIdLessThanOrderByIdDescCreatedAtDesc(cursor, size);
     }
 
-    @Cacheable(cacheNames = "post", key = "'postId_' + #postId + ':memberId_' + #memberId")
+    @Cacheable(cacheNames = CacheNames.POST, key = "'postId_' + #postId + ':memberId_' + #memberId")
     public GetPostDetailResDto readPost(Long memberId, Long postId) {
         Post findPost = postRepository.findPostById(postId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.POST_NOT_FOUND));

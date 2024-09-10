@@ -9,6 +9,7 @@ import com.soundie.comment.dto.GetCommentCursorResDto;
 import com.soundie.comment.repository.CommentRepository;
 import com.soundie.global.common.exception.ApplicationError;
 import com.soundie.global.common.exception.NotFoundException;
+import com.soundie.global.common.util.CacheNames;
 import com.soundie.member.domain.Member;
 import com.soundie.member.repository.MemberRepository;
 import com.soundie.post.domain.Post;
@@ -45,7 +46,7 @@ public class CommentService {
         return GetCommentResDto.of(comments, linkedHashMap);
     }
 
-    @Cacheable(cacheNames = "comment", key = "'postId_' + #postId + ':cursor_' + #getCommentCursorReqDto.cursor + ':size_' + #getCommentCursorReqDto.size")
+    @Cacheable(cacheNames = CacheNames.COMMENT, key = "'postId_' + #postId + ':cursor_' + #getCommentCursorReqDto.cursor + ':size_' + #getCommentCursorReqDto.size")
     public GetCommentCursorResDto readCommentListByCursor(Long postId, GetCommentCursorReqDto getCommentCursorReqDto) {
         Post findPost = postRepository.findPostById(postId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.POST_NOT_FOUND));
