@@ -22,6 +22,16 @@ public class MyBatisPostRepository implements PostRepository {
         return postMapper.findPosts();
     }
 
+    @Override
+    public List<Post> findPostsByOrderByIdDescCreatedAtDesc(Integer size) {
+        return postMapper.findPostsByOrderByIdDescCreatedAtDesc(size);
+    }
+
+    @Override
+    public List<Post> findPostsByIdLessThanOrderByIdDescCreatedAtDesc(Long postId, Integer size) {
+        return postMapper.findPostsByIdLessThanOrderByIdDescCreatedAtDesc(postId, size);
+    }
+
     /*
      * 음원 게시물 Id로, 음원 게시물 조회
      * */

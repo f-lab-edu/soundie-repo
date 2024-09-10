@@ -22,6 +22,19 @@ public class MemoryPostRepository implements PostRepository {
         return new ArrayList<>(store.values());
     }
 
+    
+    @Override
+    public List<Post> findPostsByOrderByIdDescCreatedAtDesc(Integer size) {
+        // 구현 필요
+        return null;
+    }
+
+    @Override
+    public List<Post> findPostsByIdLessThanOrderByIdDescCreatedAtDesc(Long postId, Integer size) {
+        // 구현 필요
+        return null;
+    }
+
     /*
      * 음원 게시물 Id로, 음원 게시물 조회
      * */

@@ -13,6 +13,15 @@ public interface CommentMapper {
 
     List<Comment> findCommentsByPostId(@Param("postId") Long postId);
 
+    List<Comment> findCommentsByPostIdOrderByIdAscCreatedAtAsc(
+            @Param("postId") Long postId,
+            @Param("size") Integer size);
+
+    List<Comment> findCommentsByPostIdAndIdLessThanOrderByIdAscCreatedAtAsc(
+            @Param("postId") Long postId,
+            @Param("id") Long commentId,
+            @Param("size") Integer size);
+
     Long countCommentsByPostId(@Param("postId") Long postId);
 
     void save(@Param("comment") Comment comment);

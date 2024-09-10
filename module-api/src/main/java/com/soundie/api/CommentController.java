@@ -1,8 +1,6 @@
 package com.soundie.api;
 
-import com.soundie.comment.dto.CommentIdElement;
-import com.soundie.comment.dto.GetCommentResDto;
-import com.soundie.comment.dto.PostCommentCreateReqDto;
+import com.soundie.comment.dto.*;
 import com.soundie.comment.service.CommentService;
 import com.soundie.global.common.dto.EnvelopeResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +18,15 @@ public class CommentController {
                                                            @RequestParam(required = false) Long memberId){
         return EnvelopeResponse.<GetCommentResDto>builder()
                 .data(commentService.readCommentList(postId))
+                .build();
+    }
+
+    @GetMapping("/cursor")
+    public EnvelopeResponse<GetCommentCursorResDto> readCommentsByCursor(@RequestBody GetCommentCursorReqDto getCommentCursorReqDto,
+                                                                         @RequestParam Long postId,
+                                                                         @RequestParam(required = false) Long memberId){
+        return EnvelopeResponse.<GetCommentCursorResDto>builder()
+                .data(commentService.readCommentListByCursor(postId, getCommentCursorReqDto))
                 .build();
     }
 

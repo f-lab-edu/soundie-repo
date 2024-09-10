@@ -25,6 +25,35 @@
         where post_id = #{postId}
     </select>
 
+    <select id="findCommentsByPostIdOrderByIdAscCreatedAtAsc"
+            resultType="com.soundie.comment.domain.Comment">
+        select
+            id as "id",
+            member_id as "memberId",
+            post_id as "postId",
+            content as "content",
+            created_at as "createdAt"
+        from comment
+        where post_id = #{postId}
+        order by id asc, created_at asc
+        limit #{size}
+    </select>
+
+    <select id="findCommentsByPostIdAndIdLessThanOrderByIdAscCreatedAtAsc"
+            resultType="com.soundie.comment.domain.Comment">
+        select
+            id as "id",
+            member_id as "memberId",
+            post_id as "postId",
+            content as "content",
+            created_at as "createdAt"
+        from comment
+        where post_id = #{postId}
+            and id &gt; #{id}
+        order by id asc, created_at asc
+        limit #{size}
+    </select>
+
     <!-- 음원 게시물 Id로, 댓글 개수 조회 -->
     <select id="countCommentsByPostId" resultType="Long">
         select count(*)

@@ -33,6 +33,18 @@ public class MemoryCommentRepository implements CommentRepository {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<Comment> findCommentsByPostIdOrderByIdAscCreatedAtAsc(Long postId, Integer size) {
+        // 구현 필요
+        return null;
+    }
+
+    @Override
+    public List<Comment> findCommentsByPostIdAndIdLessThanOrderByIdAscCreatedAtAsc(Long postId, Long cursor, Integer size) {
+        // 구현 필요
+        return null;
+    }
+
     /*
     * 음원 게시물 Id로, 댓글 개수 조회
     * */
