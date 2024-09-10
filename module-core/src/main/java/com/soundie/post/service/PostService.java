@@ -84,6 +84,7 @@ public class PostService {
                 : postRepository.findPostsByIdLessThanOrderByIdDescCreatedAtDesc(cursor, size);
     }
 
+    @Cacheable(cacheNames = "post", key = "'readPost:postId-' + #postId + ':memberId-' + #memberId")
     public GetPostDetailResDto readPost(Long memberId, Long postId) {
         Post findPost = postRepository.findPostById(postId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.POST_NOT_FOUND));

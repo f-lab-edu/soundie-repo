@@ -1,52 +1,35 @@
 package com.soundie.post.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.soundie.post.domain.Post;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Builder(builderMethodName = "innerBuilder")
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class GetPostDetailElement {
 
-    private final Long postId;
-    private final String title;
-    private final String artistName;
-    private final String musicPath;
-    private final String albumImgPath;
-    private final String albumName;
-    private final Number likeCount;
-    private final Number commentCount;
-    private final LocalDateTime createdAt;
-    private final Boolean liked;
+    private Long postId;
+    private String title;
+    private String artistName;
+    private String musicPath;
+    private String albumImgPath;
+    private String albumName;
+    private Number likeCount;
+    private Number commentCount;
+    private Boolean liked;
 
-    private static GetPostDetailElementBuilder builder(
-            Long postId,
-            String title,
-            String artistName,
-            String musicPath,
-            String albumImgPath,
-            String albumName,
-            Number likeCount,
-            Number commentCount,
-            LocalDateTime createdAt,
-            Boolean liked) {
-        return innerBuilder()
-                .postId(postId)
-                .title(title)
-                .artistName(artistName)
-                .musicPath(musicPath)
-                .albumImgPath(albumImgPath)
-                .albumName(albumName)
-                .likeCount(likeCount)
-                .commentCount(commentCount)
-                .createdAt(createdAt)
-                .liked(liked);
-    }
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime createdAt;
 
     public static GetPostDetailElement of(Post post, Long postLikeCount, Long commentCount, Boolean liked) {
-        return GetPostDetailElement.builder(
+        return new GetPostDetailElement(
                     post.getId(),
                     post.getTitle(),
                     post.getArtistName(),
@@ -55,9 +38,8 @@ public class GetPostDetailElement {
                     post.getAlbumName(),
                     postLikeCount,
                     commentCount,
-                    post.getCreatedAt(),
-                    liked
-                )
-                .build();
+                    liked,
+                    post.getCreatedAt()
+                );
     }
 }
