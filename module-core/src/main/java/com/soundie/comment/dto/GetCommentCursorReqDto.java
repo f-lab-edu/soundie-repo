@@ -1,5 +1,6 @@
 package com.soundie.comment.dto;
 
+import com.soundie.global.common.util.PaginationUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GetCommentCursorReqDto {
 
-    private Long cursor = -1L;
-    private Integer size = 10;
+    private Long cursor = PaginationUtil.START_CURSOR;
+    private Integer size = PaginationUtil.COMMENT_SIZE;
 
     public GetCommentCursorReqDto(Long cursor, Integer size){
         this.cursor = cursor;

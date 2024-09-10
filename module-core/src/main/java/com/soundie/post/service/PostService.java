@@ -4,6 +4,7 @@ import com.soundie.comment.repository.CommentRepository;
 import com.soundie.global.common.exception.ApplicationError;
 import com.soundie.global.common.exception.NotFoundException;
 import com.soundie.global.common.util.CacheNames;
+import com.soundie.global.common.util.PaginationUtil;
 import com.soundie.member.domain.Member;
 import com.soundie.member.repository.MemberRepository;
 import com.soundie.post.domain.Post;
@@ -79,7 +80,7 @@ public class PostService {
     }
 
     private List<Post> findPostsByCursorCheckExistsCursor(Long cursor, Integer size) {
-        return cursor.equals(-1L) ? postRepository.findPostsByOrderByIdDescCreatedAtDesc(size)
+        return cursor.equals(PaginationUtil.START_CURSOR) ? postRepository.findPostsByOrderByIdDescCreatedAtDesc(size)
                 : postRepository.findPostsByIdLessThanOrderByIdDescCreatedAtDesc(cursor, size);
     }
 
