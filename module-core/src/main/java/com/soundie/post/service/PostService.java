@@ -12,6 +12,7 @@ import com.soundie.post.dto.*;
 import com.soundie.post.repository.PostLikeRepository;
 import com.soundie.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,6 +51,7 @@ public class PostService {
         return GetPostResDto.of(findPostsWithCount);
     }
 
+    @Cacheable(cacheNames = "post", key = "'readPostListByCursor' + #cursor + #size")
     public GetPostCursorResDto readPostListByCursor(GetPostCursorReqDto getPostCursorReqDto) {
         Long cursor = getPostCursorReqDto.getCursor();
         Integer size = getPostCursorReqDto.getSize();
