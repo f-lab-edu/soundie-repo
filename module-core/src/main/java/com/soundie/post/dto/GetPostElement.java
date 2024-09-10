@@ -17,7 +17,6 @@ public class GetPostElement {
     private Long postId;
     private String title;
     private String artistName;
-    private String musicPath;
     private String albumImgPath;
     private String albumName;
     private Number likeCount;
@@ -32,7 +31,6 @@ public class GetPostElement {
                 postWithCount.getId(),
                 postWithCount.getTitle(),
                 postWithCount.getArtistName(),
-                postWithCount.getMusicPath(),
                 postWithCount.getAlbumImgPath(),
                 postWithCount.getAlbumName(),
                 postWithCount.getLikeCount(),

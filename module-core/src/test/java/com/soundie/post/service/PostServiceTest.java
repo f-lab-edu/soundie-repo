@@ -66,7 +66,6 @@ class PostServiceTest {
                     post.getMemberId(),
                     post.getTitle(),
                     post.getArtistName(),
-                    post.getMusicPath(),
                     post.getAlbumImgPath(),
                     post.getAlbumName(),
                     likeCount,
