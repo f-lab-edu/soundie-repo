@@ -36,23 +36,7 @@ public class PostService {
 
     public GetPostResDto readPostList(){
         List<Post> findPosts = postRepository.findPosts();
-        List<PostWithCount> findPostsWithCount = findPosts.stream()
-                .map(findPost -> {
-                    Long findPostLikeCount = postLikeRepository.countPostLikesByPostId(findPost.getId());
-                    Long findCommentCount = commentRepository.countCommentsByPostId(findPost.getId());
-                    return new PostWithCount(
-                        findPost.getId(),
-                        findPost.getMemberId(),
-                        findPost.getTitle(),
-                        findPost.getArtistName(),
-                        findPost.getAlbumImgPath(),
-                        findPost.getAlbumName(),
-                        findPostLikeCount,
-                        findCommentCount,
-                        findPost.getCreatedAt()
-                    );
-                })
-                .collect(Collectors.toList());
+        List<PostWithCount> findPostsWithCount = findPostsWithCount(findPosts);
 
         return GetPostResDto.of(findPostsWithCount);
     }
@@ -63,30 +47,9 @@ public class PostService {
         Integer size = getPostCursorReqDto.getSize();
 
         List<Post> findPosts = findPostsByCursorCheckExistsCursor(cursor, size);
-        List<PostWithCount> findPostsWithCount = findPosts.stream()
-                .map(findPost -> {
-                    Long findPostLikeCount = postLikeRepository.countPostLikesByPostId(findPost.getId());
-                    Long findCommentCount = commentRepository.countCommentsByPostId(findPost.getId());
-                    return new PostWithCount(
-                            findPost.getId(),
-                            findPost.getMemberId(),
-                            findPost.getTitle(),
-                            findPost.getArtistName(),
-                            findPost.getAlbumImgPath(),
-                            findPost.getAlbumName(),
-                            findPostLikeCount,
-                            findCommentCount,
-                            findPost.getCreatedAt()
-                    );
-                })
-                .collect(Collectors.toList());
+        List<PostWithCount> findPostsWithCount = findPostsWithCount(findPosts);
 
         return GetPostCursorResDto.of(findPostsWithCount, size);
-    }
-
-    private List<Post> findPostsByCursorCheckExistsCursor(Long cursor, Integer size) {
-        return cursor.equals(PaginationUtil.START_CURSOR) ? postRepository.findPostsByOrderByIdDescCreatedAtDesc(size)
-                : postRepository.findPostsByIdLessThanOrderByIdDescCreatedAtDesc(cursor, size);
     }
 
     @Cacheable(cacheNames = CacheNames.POST, key = "'postId_' + #postId + ':memberId_' + #memberId")
@@ -131,24 +94,7 @@ public class PostService {
                 + "cursor_" + PaginationUtil.START_CURSOR
                 + ":size_" + PaginationUtil.POST_SIZE;
         List<Post> findPosts = findPostsByCursorCheckExistsCursor(PaginationUtil.START_CURSOR, PaginationUtil.POST_SIZE);
-        List<PostWithCount> findPostsWithCount = findPosts.stream()
-                .map(findPost -> {
-                    Long findPostLikeCount = postLikeRepository.countPostLikesByPostId(findPost.getId());
-                    Long findCommentCount = commentRepository.countCommentsByPostId(findPost.getId());
-                    return new PostWithCount(
-                            findPost.getId(),
-                            findPost.getMemberId(),
-                            findPost.getTitle(),
-                            findPost.getArtistName(),
-                            findPost.getAlbumImgPath(),
-                            findPost.getAlbumName(),
-                            findPostLikeCount,
-                            findCommentCount,
-                            findPost.getCreatedAt()
-                    );
-                })
-                .collect(Collectors.toList());
-
+        List<PostWithCount> findPostsWithCount = findPostsWithCount(findPosts);
         ops.set(key, GetPostCursorResDto.of(findPostsWithCount, PaginationUtil.POST_SIZE), 1, TimeUnit.HOURS);
 
         return PostIdElement.of(post);
@@ -186,5 +132,30 @@ public class PostService {
 
     private void deleteLike(PostLike postLike) {
         postLikeRepository.delete(postLike);
+    }
+
+    private List<Post> findPostsByCursorCheckExistsCursor(Long cursor, Integer size) {
+        return cursor.equals(PaginationUtil.START_CURSOR) ? postRepository.findPostsByOrderByIdDescCreatedAtDesc(size)
+                : postRepository.findPostsByIdLessThanOrderByIdDescCreatedAtDesc(cursor, size);
+    }
+
+    private List<PostWithCount> findPostsWithCount(List<Post> findPosts) {
+        return findPosts.stream()
+                .map(findPost -> {
+                    Long findPostLikeCount = postLikeRepository.countPostLikesByPostId(findPost.getId());
+                    Long findCommentCount = commentRepository.countCommentsByPostId(findPost.getId());
+                    return new PostWithCount(
+                            findPost.getId(),
+                            findPost.getMemberId(),
+                            findPost.getTitle(),
+                            findPost.getArtistName(),
+                            findPost.getAlbumImgPath(),
+                            findPost.getAlbumName(),
+                            findPostLikeCount,
+                            findCommentCount,
+                            findPost.getCreatedAt()
+                    );
+                })
+                .collect(Collectors.toList());
     }
 }
