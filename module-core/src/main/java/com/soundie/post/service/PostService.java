@@ -15,9 +15,12 @@ import com.soundie.post.repository.PostLikeRepository;
 import com.soundie.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +31,8 @@ public class PostService {
     private final PostLikeRepository postLikeRepository;
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
+
+    private final RedisTemplate<String, Object> redisCacheTemplate;
 
     public GetPostResDto readPostList(){
         List<Post> findPosts = postRepository.findPosts();
@@ -117,7 +122,34 @@ public class PostService {
                 postPostCreateReqDto.getAlbumName()
         );
 
+        // 1. 레포지토리 저장
         post = postRepository.save(post);
+
+        // 2. 캐시 초기화
+        ValueOperations<String, Object> ops = redisCacheTemplate.opsForValue();
+        String key = CacheNames.POST + "::"
+                + "cursor_" + PaginationUtil.START_CURSOR
+                + ":size_" + PaginationUtil.POST_SIZE;
+        List<Post> findPosts = findPostsByCursorCheckExistsCursor(PaginationUtil.START_CURSOR, PaginationUtil.POST_SIZE);
+        List<PostWithCount> findPostsWithCount = findPosts.stream()
+                .map(findPost -> {
+                    Long findPostLikeCount = postLikeRepository.countPostLikesByPostId(findPost.getId());
+                    Long findCommentCount = commentRepository.countCommentsByPostId(findPost.getId());
+                    return new PostWithCount(
+                            findPost.getId(),
+                            findPost.getMemberId(),
+                            findPost.getTitle(),
+                            findPost.getArtistName(),
+                            findPost.getAlbumImgPath(),
+                            findPost.getAlbumName(),
+                            findPostLikeCount,
+                            findCommentCount,
+                            findPost.getCreatedAt()
+                    );
+                })
+                .collect(Collectors.toList());
+
+        ops.set(key, GetPostCursorResDto.of(findPostsWithCount, PaginationUtil.POST_SIZE), 1, TimeUnit.HOURS);
 
         return PostIdElement.of(post);
     }

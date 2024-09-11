@@ -1,5 +1,6 @@
 package com.soundie.global.config;
 
+import com.soundie.global.common.util.CacheNames;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -9,8 +10,10 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -47,13 +50,22 @@ public class CacheConfig {
 
         // 3. 리소스 유형에 따라 만료 시간을 다르게 지정
         Map<String, RedisCacheConfiguration> redisCacheConfigMap = new HashMap<>();
-        redisCacheConfigMap.put("post", defaultCacheConfig.entryTtl(Duration.ofHours(1)));
-        redisCacheConfigMap.put("comment", defaultCacheConfig.entryTtl(Duration.ofHours(1)));
+        redisCacheConfigMap.put(CacheNames.POST, defaultCacheConfig.entryTtl(Duration.ofHours(1)));
+        redisCacheConfigMap.put(CacheNames.COMMENT, defaultCacheConfig.entryTtl(Duration.ofHours(1)));
 
         RedisCacheManager redisCacheManager = RedisCacheManager.builder(redisCacheConnectionFactory())
                 .withInitialCacheConfigurations(redisCacheConfigMap)
                 .build();
 
         return redisCacheManager;
+    }
+
+    @Bean(name = "redisCacheTemplate")
+    public RedisTemplate<String, Object> redisCacheTemplate() {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisCacheConnectionFactory());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        return redisTemplate;
     }
 }
