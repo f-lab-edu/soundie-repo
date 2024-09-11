@@ -84,11 +84,8 @@ public class PostService {
                 postPostCreateReqDto.getAlbumImgPath(),
                 postPostCreateReqDto.getAlbumName()
         );
-
-        // 1. 레포지토리 저장
         post = postRepository.save(post);
 
-        // 2. 캐시 초기화
         ValueOperations<String, Object> ops = redisCacheTemplate.opsForValue();
         String key = CacheNames.POST + "::"
                 + "cursor_" + PaginationUtil.START_CURSOR
@@ -126,7 +123,6 @@ public class PostService {
 
     private void saveLike(Member member, Post post) {
         PostLike postLike = new PostLike(member.getId(), post.getId());
-
         postLikeRepository.save(postLike);
     }
 
