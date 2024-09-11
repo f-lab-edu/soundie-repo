@@ -21,11 +21,11 @@ public class GetCommentResDto {
                 .comments(comments);
     }
 
-    public static GetCommentResDto of(List<Comment> comments, Map<Long, Member> linkedHashMap) {
+    public static GetCommentResDto of(List<Comment> comments, Map<Long, Member> commentsByMember) {
         return GetCommentResDto.builder(
                     comments.stream()
                             .map(c -> {
-                                Member member = linkedHashMap.get(c.getId());
+                                Member member = commentsByMember.get(c.getId());
                                 return GetCommentElement.of(c, member);
                             })
                             .collect(Collectors.toList())

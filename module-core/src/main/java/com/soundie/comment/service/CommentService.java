@@ -36,15 +36,9 @@ public class CommentService {
                 .orElseThrow(() -> new NotFoundException(ApplicationError.POST_NOT_FOUND));
 
         List<Comment> comments = commentRepository.findCommentsByPostId(findPost.getId());
+        Map<Long, Member> findCommentsByMember = findCommentsByMember(comments);
 
-        Map<Long, Member> linkedHashMap = new LinkedHashMap<>();
-        for (Comment comment : comments){
-            Member findMember = memberRepository.findMemberById(comment.getMemberId())
-                    .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
-            linkedHashMap.put(comment.getId(), findMember);
-        }
-
-        return GetCommentResDto.of(comments, linkedHashMap);
+        return GetCommentResDto.of(comments, findCommentsByMember);
     }
 
     @Cacheable(cacheNames = CacheNames.COMMENT, key = "'postId_' + #postId + ':cursor_' + #getCommentCursorReqDto.cursor + ':size_' + #getCommentCursorReqDto.size")
@@ -54,16 +48,11 @@ public class CommentService {
 
         Long cursor = getCommentCursorReqDto.getCursor();
         Integer size = getCommentCursorReqDto.getSize();
+
         List<Comment> comments = findCommentsByCursorCheckExistsCursor(findPost.getId(), cursor, size);
+        Map<Long, Member> findCommentsByMember = findCommentsByMember(comments);
 
-        Map<Long, Member> linkedHashMap = new LinkedHashMap<>();
-        for (Comment comment : comments){
-            Member findMember = memberRepository.findMemberById(comment.getMemberId())
-                    .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
-            linkedHashMap.put(comment.getId(), findMember);
-        }
-
-        return GetCommentCursorResDto.of(comments, linkedHashMap, size);
+        return GetCommentCursorResDto.of(comments, findCommentsByMember, size);
     }
 
     private List<Comment> findCommentsByCursorCheckExistsCursor(Long postId, Long cursor, Integer size) {
@@ -86,5 +75,16 @@ public class CommentService {
         comment = commentRepository.save(comment);
 
         return CommentIdElement.of(comment);
+    }
+
+    private Map<Long, Member> findCommentsByMember(List<Comment> comments) {
+        Map<Long, Member> findCommentsByMember = new LinkedHashMap<>();
+        for (Comment comment : comments){
+            Member findMember = memberRepository.findMemberById(comment.getMemberId())
+                    .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
+            findCommentsByMember.put(comment.getId(), findMember);
+        }
+
+        return findCommentsByMember;
     }
 }

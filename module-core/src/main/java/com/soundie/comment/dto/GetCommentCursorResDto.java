@@ -17,11 +17,11 @@ public class GetCommentCursorResDto {
     private Collection<GetCommentElement> comments;
     private Long cursor;
 
-    public static GetCommentCursorResDto of(List<Comment> comments, Map<Long, Member> linkedHashMap, Integer size) {
+    public static GetCommentCursorResDto of(List<Comment> comments, Map<Long, Member> commentsByMember, Integer size) {
         return new GetCommentCursorResDto(
                         comments.stream()
                                 .map(c -> {
-                                    Member member = linkedHashMap.get(c.getId());
+                                    Member member = commentsByMember.get(c.getId());
                                     return GetCommentElement.of(c, member);
                                 })
                                 .collect(Collectors.toList()),
