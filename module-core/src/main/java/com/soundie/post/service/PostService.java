@@ -15,7 +15,6 @@ import com.soundie.post.dto.*;
 import com.soundie.post.repository.PostLikeRepository;
 import com.soundie.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -69,7 +68,6 @@ public class PostService {
         return GetPostCursorResDto.of(findPostsWithCount, size);
     }
 
-    @Cacheable(cacheNames = CacheNames.POST, key = "'postId_' + #postId + ':memberId_' + #memberId")
     public GetPostDetailResDto readPost(Long memberId, Long postId) {
         Post findPost = postRepository.findPostById(postId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.POST_NOT_FOUND));
