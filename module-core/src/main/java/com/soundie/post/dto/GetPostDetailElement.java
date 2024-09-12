@@ -1,9 +1,5 @@
 package com.soundie.post.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.soundie.post.domain.Post;
 import lombok.*;
 
@@ -23,9 +19,6 @@ public class GetPostDetailElement {
     private Number likeCount;
     private Number commentCount;
     private Boolean liked;
-
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime createdAt;
 
     public static GetPostDetailElement of(Post post, Long postLikeCount, Long commentCount, Boolean liked) {
