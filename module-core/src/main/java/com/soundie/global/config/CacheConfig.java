@@ -39,33 +39,29 @@ public class CacheConfig {
 
     @Bean
     public RedisCacheManager cacheManager() {
-        // RedisCacheManager 관련 옵션
-        // 1. serializeKeysWith : Key Serializer 기본 값은 StringRedisSerializer 로 지정
-        // 2. serializeValuesWith : 캐시 Value 를 직렬화-역직렬화 하는데 사용하는 Pair 지정
-        // Value 는 다양한 자료구조가 올 수 있기 때문에 GenericJackson2JsonRedisSerializer 를 사용
+        // 리소스 유형에 따라, 만료 시간을 다르게 지정
         RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
+                .serializeKeysWith(
+                        RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer())
+                )
                 .serializeValuesWith(
                         RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())
                 );
-
-        // 3. 리소스 유형에 따라 만료 시간을 다르게 지정
         Map<String, RedisCacheConfiguration> redisCacheConfigMap = new HashMap<>();
         redisCacheConfigMap.put(CacheNames.POST, defaultCacheConfig.entryTtl(Duration.ofHours(1)));
         redisCacheConfigMap.put(CacheNames.COMMENT, defaultCacheConfig.entryTtl(Duration.ofHours(1)));
 
-        RedisCacheManager redisCacheManager = RedisCacheManager.builder(redisCacheConnectionFactory())
+        return RedisCacheManager.builder(redisCacheConnectionFactory())
                 .withInitialCacheConfigurations(redisCacheConfigMap)
                 .build();
-
-        return redisCacheManager;
     }
 
     @Bean(name = "redisCacheTemplate")
     public RedisTemplate<String, Object> redisCacheTemplate() {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisCacheConnectionFactory());
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        redisTemplate.setConnectionFactory(redisCacheConnectionFactory());
         return redisTemplate;
     }
 }
