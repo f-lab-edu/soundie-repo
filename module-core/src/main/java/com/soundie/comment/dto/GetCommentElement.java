@@ -1,9 +1,5 @@
 package com.soundie.comment.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.soundie.comment.domain.Comment;
 import com.soundie.member.domain.Member;
 import com.soundie.member.dto.AuthorElement;
@@ -19,9 +15,6 @@ public class GetCommentElement {
     private Long commentId;
     private String content;
     private AuthorElement author;
-
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime createdAt;
 
     public static GetCommentElement of(Comment comment, Member member){
