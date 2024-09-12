@@ -45,24 +45,27 @@ public class PostService {
         Long cursor = getPostCursorReqDto.getCursor();
         Integer size = getPostCursorReqDto.getSize();
 
-        // 캐시 존재 판단에 따른, 캐시 조회
         // 캐시 존재 판단에 따른, 캐시 저장
-        List<Post> findPosts = null;
-        if (redisCacheTemplate.hasKey(getPostKeyByCursor(cursor))) {
-            findPosts = redisCacheTemplate.opsForList().range(getPostKeyByCursor(cursor), 0, -1).stream()
-                    .map(v -> (Post) v)
-                    .collect(Collectors.toList());
-        } else {
-            findPosts = findPostsByCursorCheckExistsCursor(cursor, size);
+        if (Boolean.FALSE.equals(redisCacheTemplate.hasKey(getPostKeyByCursor(cursor)))){
+            List<Post> findPosts = findPostsByCursorCheckExistsCursor(cursor, size);
             ListOperations<String, Object> opsForList = redisCacheTemplate.opsForList();
             for (Post findPost : findPosts) {
                 opsForList.rightPush(getPostKeyByCursor(cursor), findPost);
             }
             opsForList.getOperations().expire(getPostKeyByCursor(cursor), CacheExpireTime.POST, TimeUnit.HOURS);
+
+            // 캐시 필요
+            List<PostWithCount> findPostsWithCount = findPostsWithCount(findPosts);
+            return GetPostCursorResDto.of(findPostsWithCount, size);
         }
-        
+
+        // 캐시 조회
+        List<Post> cachedPosts = redisCacheTemplate.opsForList().range(getPostKeyByCursor(cursor), 0, -1).stream()
+                    .map(v -> (Post) v)
+                    .collect(Collectors.toList());
+
         // 캐시 필요
-        List<PostWithCount> findPostsWithCount = findPostsWithCount(findPosts);
+        List<PostWithCount> findPostsWithCount = findPostsWithCount(cachedPosts);
         return GetPostCursorResDto.of(findPostsWithCount, size);
     }
 
@@ -100,7 +103,7 @@ public class PostService {
         post = postRepository.save(post);
 
         // 캐시 존재 판단에 따른, 캐시 초기화
-        if (redisCacheTemplate.hasKey(getPostKeyByCursor(PaginationUtil.START_CURSOR))) {
+        if (Boolean.TRUE.equals(redisCacheTemplate.hasKey(getPostKeyByCursor(PaginationUtil.START_CURSOR)))) {
             ListOperations<String, Object> opsForList = redisCacheTemplate.opsForList();
             opsForList.leftPush(
                     getPostKeyByCursor(PaginationUtil.START_CURSOR),
