@@ -1,8 +1,10 @@
 package com.soundie.member.repository;
 
+import com.soundie.global.common.util.CacheNames;
 import com.soundie.member.domain.Member;
 import com.soundie.member.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,6 +28,7 @@ public class MyBatisMemberRepository implements MemberRepository {
      * 회원 Id로, 회원 조회
      * */
     @Override
+    @Cacheable(cacheNames = CacheNames.MEMBER, key = "'memberId_' + #memberId")
     public Optional<Member> findMemberById(Long memberId) {
         return memberMapper.findMemberById(memberId);
     }
