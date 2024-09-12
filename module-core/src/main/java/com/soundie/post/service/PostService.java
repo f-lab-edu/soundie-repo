@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -103,13 +102,26 @@ public class PostService {
         );
         post = postRepository.save(post);
 
-        ValueOperations<String, Object> ops = redisCacheTemplate.opsForValue();
-        String key = CacheNames.POST + "::"
-                + "cursor_" + PaginationUtil.START_CURSOR
-                + ":size_" + PaginationUtil.POST_SIZE;
-        List<Post> findPosts = findPostsByCursorCheckExistsCursor(PaginationUtil.START_CURSOR, PaginationUtil.POST_SIZE);
-        List<PostWithCount> findPostsWithCount = findPostsWithCount(findPosts);
-        ops.set(key, GetPostCursorResDto.of(findPostsWithCount, PaginationUtil.POST_SIZE), 1, TimeUnit.HOURS);
+        // 캐시 존재 판단에 따른, 캐시 초기화
+        if (redisCacheTemplate.hasKey(getPostKeyByCursorAndSize(PaginationUtil.START_CURSOR, PaginationUtil.POST_SIZE))) {
+            ListOperations<String, Object> opsForList = redisCacheTemplate.opsForList();
+            opsForList.leftPush(
+                    getPostKeyByCursorAndSize(PaginationUtil.START_CURSOR, PaginationUtil.POST_SIZE),
+                    new PostWithCount(
+                            post.getId(),
+                            post.getMemberId(),
+                            post.getTitle(),
+                            post.getArtistName(),
+                            post.getAlbumImgPath(),
+                            post.getAlbumName(),
+                            0,
+                            0,
+                            post.getCreatedAt()
+                    ));
+            opsForList.rightPop(
+                    getPostKeyByCursorAndSize(PaginationUtil.START_CURSOR, PaginationUtil.POST_SIZE)
+            );
+        }
 
         return PostIdElement.of(post);
     }
