@@ -9,6 +9,7 @@ import com.soundie.comment.dto.GetCommentCursorResDto;
 import com.soundie.comment.repository.CommentRepository;
 import com.soundie.global.common.exception.ApplicationError;
 import com.soundie.global.common.exception.NotFoundException;
+import com.soundie.global.common.util.CacheExpireTime;
 import com.soundie.global.common.util.CacheNames;
 import com.soundie.global.common.util.PaginationUtil;
 import com.soundie.member.domain.Member;
@@ -16,12 +17,15 @@ import com.soundie.member.repository.MemberRepository;
 import com.soundie.post.domain.Post;
 import com.soundie.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +34,8 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
+
+    private final RedisTemplate<String, Object> redisCacheTemplate;
 
     public GetCommentResDto readCommentList(Long postId) {
         Post findPost = postRepository.findPostById(postId)
@@ -41,7 +47,6 @@ public class CommentService {
         return GetCommentResDto.of(comments, findCommentsByMember);
     }
 
-    @Cacheable(cacheNames = CacheNames.COMMENT, key = "'postId_' + #postId + ':cursor_' + #getCommentCursorReqDto.cursor + ':size_' + #getCommentCursorReqDto.size")
     public GetCommentCursorResDto readCommentListByCursor(Long postId, GetCommentCursorReqDto getCommentCursorReqDto) {
         Post findPost = postRepository.findPostById(postId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.POST_NOT_FOUND));
@@ -49,9 +54,23 @@ public class CommentService {
         Long cursor = getCommentCursorReqDto.getCursor();
         Integer size = getCommentCursorReqDto.getSize();
 
-        List<Comment> comments = findCommentsByCursorCheckExistsCursor(findPost.getId(), cursor, size);
-        Map<Long, Member> findCommentsByMember = findCommentsByMember(comments);
+        // 캐시 존재 판단에 따른, 캐시 조회
+        // 캐시 존재 판단에 따른, 캐시 저장
+        List<Comment> comments = null;
+        if (redisCacheTemplate.hasKey(getCommentKeyByPostAndCursorAndSize(postId, cursor, size))){
+            comments = redisCacheTemplate.opsForList().range(getCommentKeyByPostAndCursorAndSize(postId, cursor, size), 0, -1).stream()
+                    .map(v -> (Comment) v)
+                    .collect(Collectors.toList());
+        } else {
+            comments = findCommentsByCursorCheckExistsCursor(findPost.getId(), cursor, size);
+            ListOperations<String, Object> opsForList = redisCacheTemplate.opsForList();
+            for (Comment findComment : comments) {
+                opsForList.rightPush(getCommentKeyByPostAndCursorAndSize(postId, cursor, size), findComment);
+            }
+            opsForList.getOperations().expire(getCommentKeyByPostAndCursorAndSize(postId, cursor, size), CacheExpireTime.COMMENT, TimeUnit.HOURS);
+        }
 
+        Map<Long, Member> findCommentsByMember = findCommentsByMember(comments);
         return GetCommentCursorResDto.of(comments, findCommentsByMember, size);
     }
 
@@ -86,5 +105,12 @@ public class CommentService {
         }
 
         return findCommentsByMember;
+    }
+
+    private String getCommentKeyByPostAndCursorAndSize(Long postId, Long cursor, Integer size) {
+        return CacheNames.COMMENT + "::"
+                + "postId_" + postId
+                + ":cursor_" + cursor
+                + ":size_" + size;
     }
 }
