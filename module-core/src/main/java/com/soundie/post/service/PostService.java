@@ -48,17 +48,17 @@ public class PostService {
         // 캐시 존재 판단에 따른, 캐시 조회
         // 캐시 존재 판단에 따른, 캐시 저장
         List<Post> findPosts = null;
-        if (redisCacheTemplate.hasKey(getPostKeyByCursorAndSize(cursor, size))) {
-            findPosts = redisCacheTemplate.opsForList().range(getPostKeyByCursorAndSize(cursor, size), 0, -1).stream()
+        if (redisCacheTemplate.hasKey(getPostKeyByCursor(cursor))) {
+            findPosts = redisCacheTemplate.opsForList().range(getPostKeyByCursor(cursor), 0, -1).stream()
                     .map(v -> (Post) v)
                     .collect(Collectors.toList());
         } else {
             findPosts = findPostsByCursorCheckExistsCursor(cursor, size);
             ListOperations<String, Object> opsForList = redisCacheTemplate.opsForList();
             for (Post findPost : findPosts) {
-                opsForList.rightPush(getPostKeyByCursorAndSize(cursor, size), findPost);
+                opsForList.rightPush(getPostKeyByCursor(cursor), findPost);
             }
-            opsForList.getOperations().expire(getPostKeyByCursorAndSize(cursor, size), CacheExpireTime.POST, TimeUnit.HOURS);
+            opsForList.getOperations().expire(getPostKeyByCursor(cursor), CacheExpireTime.POST, TimeUnit.HOURS);
         }
         
         // 캐시 필요
@@ -100,14 +100,14 @@ public class PostService {
         post = postRepository.save(post);
 
         // 캐시 존재 판단에 따른, 캐시 초기화
-        if (redisCacheTemplate.hasKey(getPostKeyByCursorAndSize(PaginationUtil.START_CURSOR, PaginationUtil.POST_SIZE))) {
+        if (redisCacheTemplate.hasKey(getPostKeyByCursor(PaginationUtil.START_CURSOR))) {
             ListOperations<String, Object> opsForList = redisCacheTemplate.opsForList();
             opsForList.leftPush(
-                    getPostKeyByCursorAndSize(PaginationUtil.START_CURSOR, PaginationUtil.POST_SIZE),
+                    getPostKeyByCursor(PaginationUtil.START_CURSOR),
                     post
             );
             opsForList.rightPop(
-                    getPostKeyByCursorAndSize(PaginationUtil.START_CURSOR, PaginationUtil.POST_SIZE)
+                    getPostKeyByCursor(PaginationUtil.START_CURSOR)
             );
         }
 
@@ -172,9 +172,8 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    private String getPostKeyByCursorAndSize(Long cursor, Integer size) {
+    private String getPostKeyByCursor(Long cursor) {
         return CacheNames.POST + "::"
-                + "cursor_" + cursor
-                + ":size_" + size;
+                + "cursor_" + cursor;
     }
 }

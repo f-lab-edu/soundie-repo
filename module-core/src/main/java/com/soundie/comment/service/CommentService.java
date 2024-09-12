@@ -55,20 +55,20 @@ public class CommentService {
         Integer size = getCommentCursorReqDto.getSize();
         
         // 캐시 존재 판단에 따른, 캐시 저장
-        if (Boolean.FALSE.equals(redisCacheTemplate.hasKey(getCommentKeyByPostAndCursorAndSize(postId, cursor, size)))){
+        if (Boolean.FALSE.equals(redisCacheTemplate.hasKey(getCommentKeyByPostAndCursor(postId, cursor)))){
             List<Comment> comments = findCommentsByCursorCheckExistsCursor(findPost.getId(), cursor, size);
             ListOperations<String, Object> opsForList = redisCacheTemplate.opsForList();
             for (Comment findComment : comments) {
-                opsForList.rightPush(getCommentKeyByPostAndCursorAndSize(postId, cursor, size), findComment);
+                opsForList.rightPush(getCommentKeyByPostAndCursor(postId, cursor), findComment);
             }
-            opsForList.getOperations().expire(getCommentKeyByPostAndCursorAndSize(postId, cursor, size), CacheExpireTime.COMMENT, TimeUnit.HOURS);
+            opsForList.getOperations().expire(getCommentKeyByPostAndCursor(postId, cursor), CacheExpireTime.COMMENT, TimeUnit.HOURS);
 
             Map<Long, Member> findCommentsByMember = findCommentsByMember(comments);
             return GetCommentCursorResDto.of(comments, findCommentsByMember, size);
         } 
 
         // 캐시 조회
-        List<Comment> cachedComments = redisCacheTemplate.opsForList().range(getCommentKeyByPostAndCursorAndSize(postId, cursor, size), 0, -1).stream()
+        List<Comment> cachedComments = redisCacheTemplate.opsForList().range(getCommentKeyByPostAndCursor(postId, cursor), 0, -1).stream()
                 .map(v -> (Comment) v)
                 .collect(Collectors.toList());
 
@@ -81,7 +81,7 @@ public class CommentService {
                     .collect(Collectors.toList());
             ListOperations<String, Object> opsForList = redisCacheTemplate.opsForList();
             for (Comment filteredComment : filteredComments) {
-                opsForList.rightPush(getCommentKeyByPostAndCursorAndSize(postId, cursor, size), filteredComment);
+                opsForList.rightPush(getCommentKeyByPostAndCursor(postId, cursor), filteredComment);
             }
 
             Map<Long, Member> findCommentsByMember = findCommentsByMember(comments);
@@ -125,10 +125,9 @@ public class CommentService {
         return findCommentsByMember;
     }
 
-    private String getCommentKeyByPostAndCursorAndSize(Long postId, Long cursor, Integer size) {
+    private String getCommentKeyByPostAndCursor(Long postId, Long cursor) {
         return CacheNames.COMMENT + "::"
                 + "postId_" + postId
-                + ":cursor_" + cursor
-                + ":size_" + size;
+                + ":cursor_" + cursor;
     }
 }
