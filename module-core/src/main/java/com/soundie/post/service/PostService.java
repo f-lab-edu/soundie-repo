@@ -3,6 +3,7 @@ package com.soundie.post.service;
 import com.soundie.comment.repository.CommentRepository;
 import com.soundie.global.common.exception.ApplicationError;
 import com.soundie.global.common.exception.NotFoundException;
+import com.soundie.global.common.util.CacheExpireTime;
 import com.soundie.global.common.util.CacheNames;
 import com.soundie.global.common.util.PaginationUtil;
 import com.soundie.member.domain.Member;
@@ -63,7 +64,7 @@ public class PostService {
         for (PostWithCount postWithCount : findPostsWithCount) {
             opsForList.rightPush(getPostKeyByCursorAndSize(cursor, size), postWithCount);
         }
-        opsForList.getOperations().expire(getPostKeyByCursorAndSize(cursor, size), 1L, TimeUnit.HOURS);
+        opsForList.getOperations().expire(getPostKeyByCursorAndSize(cursor, size), CacheExpireTime.POST, TimeUnit.HOURS);
 
         return GetPostCursorResDto.of(findPostsWithCount, size);
     }
