@@ -45,26 +45,24 @@ public class PostService {
         Long cursor = getPostCursorReqDto.getCursor();
         Integer size = getPostCursorReqDto.getSize();
 
-        // 캐시 존재 판단에 따른, 캐시 리턴
+        // 캐시 존재 판단에 따른, 캐시 조회
+        // 캐시 존재 판단에 따른, 캐시 저장
+        List<Post> findPosts = null;
         if (redisCacheTemplate.hasKey(getPostKeyByCursorAndSize(cursor, size))) {
-            return GetPostCursorResDto.of(
-                    redisCacheTemplate.opsForList().range(getPostKeyByCursorAndSize(cursor, size), 0, -1).stream()
-                            .map(v -> (PostWithCount) v)
-                            .collect(Collectors.toList())
-                    , size
-            );
+            findPosts = redisCacheTemplate.opsForList().range(getPostKeyByCursorAndSize(cursor, size), 0, -1).stream()
+                    .map(v -> (Post) v)
+                    .collect(Collectors.toList());
+        } else {
+            findPosts = findPostsByCursorCheckExistsCursor(cursor, size);
+            ListOperations<String, Object> opsForList = redisCacheTemplate.opsForList();
+            for (Post findPost : findPosts) {
+                opsForList.rightPush(getPostKeyByCursorAndSize(cursor, size), findPost);
+            }
+            opsForList.getOperations().expire(getPostKeyByCursorAndSize(cursor, size), CacheExpireTime.POST, TimeUnit.HOURS);
         }
-
-        // 캐시 존재 판단에 따른, 캐시 저장 및 DB 리턴
-        List<Post> findPosts = findPostsByCursorCheckExistsCursor(cursor, size);
+        
+        // 캐시 필요
         List<PostWithCount> findPostsWithCount = findPostsWithCount(findPosts);
-
-        ListOperations<String, Object> opsForList = redisCacheTemplate.opsForList();
-        for (PostWithCount postWithCount : findPostsWithCount) {
-            opsForList.rightPush(getPostKeyByCursorAndSize(cursor, size), postWithCount);
-        }
-        opsForList.getOperations().expire(getPostKeyByCursorAndSize(cursor, size), CacheExpireTime.POST, TimeUnit.HOURS);
-
         return GetPostCursorResDto.of(findPostsWithCount, size);
     }
 
@@ -106,17 +104,8 @@ public class PostService {
             ListOperations<String, Object> opsForList = redisCacheTemplate.opsForList();
             opsForList.leftPush(
                     getPostKeyByCursorAndSize(PaginationUtil.START_CURSOR, PaginationUtil.POST_SIZE),
-                    new PostWithCount(
-                            post.getId(),
-                            post.getMemberId(),
-                            post.getTitle(),
-                            post.getArtistName(),
-                            post.getAlbumImgPath(),
-                            post.getAlbumName(),
-                            0,
-                            0,
-                            post.getCreatedAt()
-                    ));
+                    post
+            );
             opsForList.rightPop(
                     getPostKeyByCursorAndSize(PaginationUtil.START_CURSOR, PaginationUtil.POST_SIZE)
             );
