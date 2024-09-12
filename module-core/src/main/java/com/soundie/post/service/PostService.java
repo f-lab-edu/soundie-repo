@@ -15,6 +15,7 @@ import com.soundie.post.repository.PostLikeRepository;
 import com.soundie.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -41,13 +42,29 @@ public class PostService {
         return GetPostResDto.of(findPostsWithCount);
     }
 
-    @Cacheable(cacheNames = CacheNames.POST, key = "'cursor_' + #getPostCursorReqDto.cursor + ':size_' + #getPostCursorReqDto.size")
     public GetPostCursorResDto readPostListByCursor(GetPostCursorReqDto getPostCursorReqDto) {
         Long cursor = getPostCursorReqDto.getCursor();
         Integer size = getPostCursorReqDto.getSize();
 
+        // 캐시 존재 판단에 따른, 캐시 리턴
+        if (redisCacheTemplate.hasKey(getPostKeyByCursorAndSize(cursor, size))) {
+            return GetPostCursorResDto.of(
+                    redisCacheTemplate.opsForList().range(getPostKeyByCursorAndSize(cursor, size), 0, -1).stream()
+                            .map(v -> (PostWithCount) v)
+                            .collect(Collectors.toList())
+                    , size
+            );
+        }
+
+        // 캐시 존재 판단에 따른, 캐시 저장 및 DB 리턴
         List<Post> findPosts = findPostsByCursorCheckExistsCursor(cursor, size);
         List<PostWithCount> findPostsWithCount = findPostsWithCount(findPosts);
+
+        ListOperations<String, Object> opsForList = redisCacheTemplate.opsForList();
+        for (PostWithCount postWithCount : findPostsWithCount) {
+            opsForList.rightPush(getPostKeyByCursorAndSize(cursor, size), postWithCount);
+        }
+        opsForList.getOperations().expire(getPostKeyByCursorAndSize(cursor, size), 1L, TimeUnit.HOURS);
 
         return GetPostCursorResDto.of(findPostsWithCount, size);
     }
@@ -153,5 +170,11 @@ public class PostService {
                     );
                 })
                 .collect(Collectors.toList());
+    }
+
+    private String getPostKeyByCursorAndSize(Long cursor, Integer size) {
+        return CacheNames.POST + "::"
+                + "cursor_" + cursor
+                + ":size_" + size;
     }
 }
