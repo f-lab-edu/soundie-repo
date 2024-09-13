@@ -85,6 +85,7 @@ public class ChatRoomService {
                 ChatUtil.ADMIN_ID,
                 ChatMessageType.ENTER,
                 findHostMember.getName() + ChatUtil.ENTER_MESSAGE,
+                ChatUtil.INITIAL_MEMBER_CNT,
                 LocalDateTime.now()
         );
 

@@ -87,10 +87,11 @@ create table chatmessage
          sender_id bigint,
          type_name varchar(255),
          content varchar(1000),
+         member_cnt tinyint,
          created_at  TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP(6),
 		 primary key (id),
 		 foreign key (chatroom_id) references chatroom(id)
-		    on delete set null
+		    on delete cascade
 		    on update cascade,
 		 foreign key (sender_id) references member(id)
 		    on delete cascade

@@ -10,6 +10,7 @@
             sender_id as "senderId",
             type_name as "typeName",
             content as "content",
+            member_cnt as "memberCnt",
             created_at as "createdAt"
         from chatmessage
     </select>
@@ -19,11 +20,13 @@
         insert into chatmessage (chatroom_id,
                                     sender_id,
                                     type_name,
-                                    content)
+                                    content,
+                                    member_cnt)
         values (#{chatMessage.chatRoomId},
                 #{chatMessage.senderId},
                 #{chatMessage.typeName},
-                #{chatMessage.content})
+                #{chatMessage.content},
+                #{chatMessage.memberCnt})
     </insert>
 
     <!-- 채팅방 Id로, 채팅 메시지 목록 삭제 -->
