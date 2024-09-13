@@ -1,8 +1,10 @@
 package com.soundie.post.repository;
 
+import com.soundie.global.common.util.CacheNames;
 import com.soundie.post.domain.PostLike;
 import com.soundie.post.mapper.PostLikeMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -34,6 +36,7 @@ public class MyBatisPostLikeRepository implements PostLikeRepository{
      * 좋아요 개수 조회
      * */
     @Override
+    @Cacheable(cacheNames = CacheNames.LIKE_COUNT, key = "'postId_' + #postId")
     public Number countPostLikesByPostId(Long postId) {
         return postLikeMapper.countPostLikesByPostId(postId);
     }

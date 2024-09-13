@@ -52,6 +52,7 @@ public class CacheConfig {
         redisCacheConfigMap.put(CacheNames.POST, defaultCacheConfig.entryTtl(Duration.ofHours(CacheExpireTime.POST)));
         redisCacheConfigMap.put(CacheNames.COMMENT, defaultCacheConfig.entryTtl(Duration.ofHours(CacheExpireTime.COMMENT)));
         redisCacheConfigMap.put(CacheNames.COMMENT_COUNT, defaultCacheConfig.entryTtl(Duration.ofHours(CacheExpireTime.COMMENT_COUNT)));
+        redisCacheConfigMap.put(CacheNames.LIKE_COUNT, defaultCacheConfig.entryTtl(Duration.ofHours(CacheExpireTime.LIKE_COUNT)));
         redisCacheConfigMap.put(CacheNames.MEMBER, defaultCacheConfig.entryTtl(Duration.ofHours(CacheExpireTime.MEMBER)));
 
         return RedisCacheManager.builder(redisCacheConnectionFactory())

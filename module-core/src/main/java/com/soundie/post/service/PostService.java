@@ -17,6 +17,7 @@ import com.soundie.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -144,10 +145,22 @@ public class PostService {
     private void saveLike(Member member, Post post) {
         PostLike postLike = new PostLike(member.getId(), post.getId());
         postLikeRepository.save(postLike);
+
+        // 캐시 존재 판단에 따른, 캐시 초기화
+        if (Boolean.TRUE.equals(redisCacheTemplate.hasKey(getLikeCountKeyByPost(post.getId())))){
+            ValueOperations<String, Object> opsForValue = redisCacheTemplate.opsForValue();
+            opsForValue.increment(getLikeCountKeyByPost(post.getId()));
+        }
     }
 
     private void deleteLike(PostLike postLike) {
         postLikeRepository.delete(postLike);
+
+        // 캐시 존재 판단에 따른, 캐시 초기화
+        if (Boolean.TRUE.equals(redisCacheTemplate.hasKey(getLikeCountKeyByPost(postLike.getPostId())))){
+            ValueOperations<String, Object> opsForValue = redisCacheTemplate.opsForValue();
+            opsForValue.decrement(getLikeCountKeyByPost(postLike.getPostId()));
+        }
     }
 
     private List<Post> findPostsByCursorCheckExistsCursor(Long cursor, Integer size) {
@@ -178,5 +191,10 @@ public class PostService {
     private String getPostKeyByCursor(Long cursor) {
         return CacheNames.POST + "::"
                 + "cursor_" + cursor;
+    }
+
+    private String getLikeCountKeyByPost(Long postId) {
+        return CacheNames.LIKE_COUNT + "::"
+                + "postId_" + postId;
     }
 }
