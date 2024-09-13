@@ -9,6 +9,10 @@ public interface ChatMessageRepository {
 
     List<ChatMessage> findChatMessagesByChatRoomId(Long chatRoomId);
 
+    List<ChatMessage> findChatMessagesByChatRoomIdOrderByIdDesc(Long chatRoomId, Integer size);
+
+    List<ChatMessage> findChatMessageByChatRoomIdAndIdLessThanOrderByIdDesc(Long chatRoomId, Long cursor, Integer size);
+
     Optional<ChatMessage> findChatMessageByChatRoomIdOrderByIdDesc(Long chatRoomId);
 
     ChatMessage save(ChatMessage chatMessage);

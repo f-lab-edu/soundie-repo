@@ -22,6 +22,16 @@ public class MyBatisChatMessageRepository implements ChatMessageRepository {
         return chatMessageMapper.findChatMessagesByChatRoomId(chatRoomId);
     }
 
+    @Override
+    public List<ChatMessage> findChatMessagesByChatRoomIdOrderByIdDesc(Long chatRoomId, Integer size) {
+        return chatMessageMapper.findChatMessagesByChatRoomIdOrderByIdDesc(chatRoomId, size);
+    }
+
+    @Override
+    public List<ChatMessage> findChatMessageByChatRoomIdAndIdLessThanOrderByIdDesc(Long chatRoomId, Long cursor, Integer size) {
+        return chatMessageMapper.findChatMessageByChatRoomIdAndIdLessThanOrderByIdDesc(chatRoomId, cursor, size);
+    }
+
     /*
      * 채팅방 Id로, 최근 채팅 메시지 조회
      * */

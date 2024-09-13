@@ -27,6 +27,18 @@ public class RedisChatMessageRepository implements ChatMessageRepository {
         return hashOperations.values(CHAT_ROOM + DELIMITER + chatRoomId);
     }
 
+    @Override
+    public List<ChatMessage> findChatMessagesByChatRoomIdOrderByIdDesc(Long chatRoomId, Integer size) {
+        // 구현 필요
+        return null;
+    }
+
+    @Override
+    public List<ChatMessage> findChatMessageByChatRoomIdAndIdLessThanOrderByIdDesc(Long chatRoomId, Long cursor, Integer size) {
+        // 구현 필요
+        return null;
+    }
+
     /*
      * 채팅방 Id로, 최근 채팅 메시지 조회
      * */

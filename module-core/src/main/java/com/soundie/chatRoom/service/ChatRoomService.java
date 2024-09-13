@@ -12,6 +12,7 @@ import com.soundie.global.common.exception.BadRequestException;
 import com.soundie.global.common.exception.DuplicateException;
 import com.soundie.global.common.exception.NotFoundException;
 import com.soundie.global.common.util.ChatUtil;
+import com.soundie.global.common.util.PaginationUtil;
 import com.soundie.member.domain.Member;
 import com.soundie.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +47,7 @@ public class ChatRoomService {
         Integer size = getChatMessageCursorReqDto.getSize();
 
         List<ChatMessage> findChatMessages = findChatMessagesCursorCheckExistsCursor(findChatRoom.getId(), cursor, size);
-        return GetChatRoomDetailResDto.of(findChatRoom, findChatMessages);
+        return GetChatRoomDetailResDto.of(findChatRoom, findChatMessages, size);
     }
 
     public ChatRoomIdElement createChatRoom(Long memberId, PostChatRoomCreateReqDto postChatRoomCreateReqDto) {
@@ -128,6 +129,7 @@ public class ChatRoomService {
     }
 
     private List<ChatMessage> findChatMessagesCursorCheckExistsCursor(Long chatRoomId, Long cursor, Integer size) {
-        return chatMessageRepository.findChatMessagesByChatRoomId(chatRoomId);
+        return cursor.equals(PaginationUtil.START_CURSOR) ? chatMessageRepository.findChatMessagesByChatRoomIdOrderByIdDesc(chatRoomId, size)
+                : chatMessageRepository.findChatMessageByChatRoomIdAndIdLessThanOrderByIdDesc(chatRoomId, cursor, size);
     }
 }

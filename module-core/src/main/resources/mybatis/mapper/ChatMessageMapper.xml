@@ -15,6 +15,39 @@
         from chatmessage
     </select>
 
+    <select id="findChatMessagesByChatRoomIdOrderByIdDesc"
+            resultType="com.soundie.chatMessage.domain.ChatMessage">
+        select
+            id as "id",
+            chatroom_id as "chatRoomId",
+            sender_id as "senderId",
+            type_name as "typeName",
+            content as "content",
+            member_cnt as "memberCnt",
+            created_at as "createdAt"
+        from chatmessage
+        where chatroom_id = #{chatRoomId}
+        order by id desc
+        limit #{size}
+    </select>
+
+    <select id="findChatMessageByChatRoomIdAndIdLessThanOrderByIdDesc"
+            resultType="com.soundie.chatMessage.domain.ChatMessage">
+        select
+            id as "id",
+            chatroom_id as "chatRoomId",
+            sender_id as "senderId",
+            type_name as "typeName",
+            content as "content",
+            member_cnt as "memberCnt",
+            created_at as "createdAt"
+        from chatmessage
+        where chatroom_id = #{chatRoomId}
+            and id &lt; #{id}
+        order by id desc
+        limit #{size}
+    </select>
+
     <!-- 채팅방 Id로, 최근 채팅 메시지 조회 -->
     <select id="findChatMessageByChatRoomIdOrderByIdDesc" resultType="com.soundie.chatMessage.domain.ChatMessage">
         select
