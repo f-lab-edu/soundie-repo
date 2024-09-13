@@ -16,7 +16,7 @@ public interface PostLikeMapper {
             @Param("memberId") Long memberId,
             @Param("postId") Long postId);
 
-    Long countPostLikesByPostId(@Param("postId") Long postId);
+    Number countPostLikesByPostId(@Param("postId") Long postId);
 
     void save(@Param("postLike") PostLike postLike);
 

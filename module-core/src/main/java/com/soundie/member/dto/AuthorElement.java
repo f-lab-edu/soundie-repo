@@ -1,27 +1,20 @@
 package com.soundie.member.dto;
 
 import com.soundie.member.domain.Member;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
-@Builder(builderMethodName = "innerBuilder")
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthorElement {
 
-    private final Long memberId;
-    private final String name;
-
-    private static AuthorElementBuilder builder(Long memberId, String name){
-        return innerBuilder()
-                .memberId(memberId)
-                .name(name);
-    }
+    private Long memberId;
+    private String name;
 
     public static AuthorElement of(Member member){
-        return AuthorElement.builder(
+        return new AuthorElement(
                     member.getId(),
                     member.getName()
-                )
-                .build();
+                );
     }
 }

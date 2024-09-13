@@ -1,8 +1,10 @@
 package com.soundie.post.repository;
 
+import com.soundie.global.common.util.CacheNames;
 import com.soundie.post.domain.Post;
 import com.soundie.post.mapper.PostMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -36,6 +38,7 @@ public class MyBatisPostRepository implements PostRepository {
      * 음원 게시물 Id로, 음원 게시물 조회
      * */
     @Override
+    @Cacheable(cacheNames = CacheNames.POST, key = "'postId_' + #postId")
     public Optional<Post> findPostById(Long postId) {
         return postMapper.findPostById(postId);
     }

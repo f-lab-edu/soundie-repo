@@ -1,24 +1,18 @@
 package com.soundie.post.dto;
 
 import com.soundie.post.domain.Post;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
-@Builder(builderMethodName = "innerBuilder")
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class GetPostDetailResDto {
 
-    private final GetPostDetailElement post;
+    private GetPostDetailElement post;
 
-    private static GetPostDetailResDtoBuilder builder(GetPostDetailElement post){
-        return innerBuilder()
-                .post(post);
-    }
-
-    public static GetPostDetailResDto of(Post post, Long likeCount, Long commentCount, Boolean isLiked){
-        return GetPostDetailResDto.builder(
+    public static GetPostDetailResDto of(Post post, Number likeCount, Number commentCount, Boolean isLiked){
+        return new GetPostDetailResDto(
                     GetPostDetailElement.of(post, likeCount, commentCount, isLiked)
-                )
-                .build();
+                );
     }
 }

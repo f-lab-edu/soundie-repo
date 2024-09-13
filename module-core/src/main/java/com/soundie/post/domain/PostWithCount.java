@@ -14,7 +14,6 @@ public class PostWithCount {
     private Long memberId;
     private String title;
     private String artistName;
-    private String musicPath;
     private String albumImgPath;
     private String albumName;
     private Number likeCount;
@@ -26,7 +25,6 @@ public class PostWithCount {
             Long memberId,
             String title,
             String artistName,
-            String musicPath,
             String albumImgPath,
             String albumName,
             Number likeCount,
@@ -37,7 +35,6 @@ public class PostWithCount {
         this.memberId = memberId;
         this.title = title;
         this.artistName = artistName;
-        this.musicPath = musicPath;
         this.albumImgPath = albumImgPath;
         this.albumName = albumName;
         this.likeCount = likeCount;
