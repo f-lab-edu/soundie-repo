@@ -31,13 +31,10 @@ public class RedisChatMessageRepository implements ChatMessageRepository {
      * */
     @Override
     public ChatMessage save(ChatMessage chatMessage) {
-        // id를 UUID 로 설정
-        chatMessage.setId(UUID.randomUUID().toString());
-
         HashOperations<String, String, ChatMessage> hashOperations = redisTemplate.opsForHash();
         hashOperations.put(
                 CHAT_ROOM + DELIMITER + chatMessage.getChatRoomId(),
-                chatMessage.getId(),
+                UUID.randomUUID().toString(),
                 chatMessage
         );
         return chatMessage;

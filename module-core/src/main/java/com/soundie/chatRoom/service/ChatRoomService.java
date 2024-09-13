@@ -80,11 +80,12 @@ public class ChatRoomService {
 
         chatRoom = chatRoomRepository.save(chatRoom);
 
-        String content = findHostMember.getName() + "님이 대화를 개설 했습니다.";
+        // 메시지 생성
         ChatMessage chatMessage = new ChatMessage(
-                ChatMessageType.ENTER,
                 chatRoom.getId(),
-                content,
+                1L,
+                ChatMessageType.ENTER,
+                findGuestMember.getName() + "님이 대화를 개설 했습니다.",
                 LocalDateTime.now()
         );
         chatMessageProducer.sendMessage(chatMessage);
