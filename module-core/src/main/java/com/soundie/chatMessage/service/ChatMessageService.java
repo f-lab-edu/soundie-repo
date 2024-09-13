@@ -1,7 +1,7 @@
 package com.soundie.chatMessage.service;
 
 import com.soundie.chatMessage.domain.ChatMessage;
-import com.soundie.chatMessage.repository.RedisChatMessageRepository;
+import com.soundie.chatMessage.repository.ChatMessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -9,19 +9,19 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class RedisChatMessageService {
+public class ChatMessageService {
 
-    private final RedisChatMessageRepository redisChatMessageRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
     public List<ChatMessage> readMessageList(Long chatRoomId) {
-        return redisChatMessageRepository.findChatMessagesByChatRoomId(chatRoomId);
+        return chatMessageRepository.findChatMessagesByChatRoomId(chatRoomId);
     }
 
     public ChatMessage createMessage(ChatMessage chatMessage) {
-        return redisChatMessageRepository.save(chatMessage);
+        return chatMessageRepository.save(chatMessage);
     }
 
     public void deleteMessageList(Long chatRoomId) {
-        redisChatMessageRepository.deleteChatMessagesByChatRoomId(chatRoomId);
+        chatMessageRepository.deleteChatMessagesByChatRoomId(chatRoomId);
     }
 }

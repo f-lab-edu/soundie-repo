@@ -3,7 +3,7 @@ package com.soundie.chatRoom.service;
 import com.soundie.chatMessage.domain.ChatMessage;
 import com.soundie.chatMessage.domain.ChatMessageType;
 import com.soundie.chatMessage.service.ChatMessageProducer;
-import com.soundie.chatMessage.service.RedisChatMessageService;
+import com.soundie.chatMessage.service.ChatMessageService;
 import com.soundie.chatRoom.domain.ChatRoom;
 import com.soundie.chatRoom.dto.ChatRoomIdElement;
 import com.soundie.chatRoom.dto.GetChatRoomDetailResDto;
@@ -30,7 +30,7 @@ public class ChatRoomService {
     private final MemberRepository memberRepository;
 
     private final ChatMessageProducer chatMessageProducer;
-    private final RedisChatMessageService redisChatMessageService;
+    private final ChatMessageService chatMessageService;
 
     public GetChatRoomResDto readChatRoomList(Long memberId) {
         Member findMember = memberRepository.findMemberById(memberId)
@@ -46,7 +46,7 @@ public class ChatRoomService {
         Member findMember = memberRepository.findMemberById(memberId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
 
-        List<ChatMessage> findChatMessages = redisChatMessageService.readMessageList(findChatRoom.getId());
+        List<ChatMessage> findChatMessages = chatMessageService.readMessageList(findChatRoom.getId());
 
         return GetChatRoomDetailResDto.of(findChatRoom, findChatMessages);
     }
@@ -88,7 +88,7 @@ public class ChatRoomService {
                 LocalDateTime.now()
         );
         chatMessageProducer.sendMessage(chatMessage);
-        redisChatMessageService.createMessage(chatMessage);
+        chatMessageService.createMessage(chatMessage);
 
         return ChatRoomIdElement.of(chatRoom);
     }
@@ -104,7 +104,7 @@ public class ChatRoomService {
         }
 
         chatRoomRepository.delete(findChatRoom);
-        redisChatMessageService.deleteMessageList(findChatRoom.getId());
+        chatMessageService.deleteMessageList(findChatRoom.getId());
 
         return ChatRoomIdElement.ofId(chatRoomId);
     }
