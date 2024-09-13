@@ -55,7 +55,6 @@ public class PostService {
             }
             opsForList.getOperations().expire(getPostKeyByCursor(cursor), CacheExpireTime.POST, TimeUnit.HOURS);
 
-            // 캐시 필요
             List<PostWithCount> findPostsWithCount = findPostsWithCount(findPosts);
             return GetPostCursorResDto.of(findPostsWithCount, size);
         }
@@ -65,7 +64,6 @@ public class PostService {
                     .map(v -> (Post) v)
                     .collect(Collectors.toList());
 
-        // 캐시 필요
         List<PostWithCount> findPostsWithCount = findPostsWithCount(cachedPosts);
         return GetPostCursorResDto.of(findPostsWithCount, size);
     }
