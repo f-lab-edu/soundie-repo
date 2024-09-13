@@ -86,7 +86,7 @@ public class ChatRoomService {
                 chatRoom.getId(),
                 ChatUtil.ADMIN_ID,
                 ChatMessageType.ENTER,
-                findGuestMember.getName() + ChatUtil.ENTER_MESSAGE,
+                findHostMember.getName() + ChatUtil.ENTER_MESSAGE,
                 LocalDateTime.now()
         );
         chatMessageProducer.sendMessage(chatMessage);
