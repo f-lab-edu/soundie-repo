@@ -2,12 +2,10 @@ package com.soundie.chatRoom.service;
 
 import com.soundie.chatMessage.domain.ChatMessage;
 import com.soundie.chatMessage.domain.ChatMessageType;
+import com.soundie.chatMessage.dto.GetChatMessageCursorReqDto;
 import com.soundie.chatMessage.repository.ChatMessageRepository;
 import com.soundie.chatRoom.domain.ChatRoom;
-import com.soundie.chatRoom.dto.ChatRoomIdElement;
-import com.soundie.chatRoom.dto.GetChatRoomDetailResDto;
-import com.soundie.chatRoom.dto.GetChatRoomResDto;
-import com.soundie.chatRoom.dto.PostChatRoomCreateReqDto;
+import com.soundie.chatRoom.dto.*;
 import com.soundie.chatRoom.repository.ChatRoomRepository;
 import com.soundie.global.common.exception.ApplicationError;
 import com.soundie.global.common.exception.BadRequestException;
@@ -38,14 +36,16 @@ public class ChatRoomService {
         return GetChatRoomResDto.of(findChatRooms);
     }
 
-    public GetChatRoomDetailResDto readChatRoom(Long chatRoomId, Long memberId) {
+    public GetChatRoomDetailResDto readChatRoom(Long chatRoomId, Long memberId, GetChatMessageCursorReqDto getChatMessageCursorReqDto) {
         ChatRoom findChatRoom = chatRoomRepository.findChatRoomById(chatRoomId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.CHAT_ROOM_NOT_FOUND));
         Member findMember = memberRepository.findMemberById(memberId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
 
-        List<ChatMessage> findChatMessages = chatMessageRepository.findChatMessagesByChatRoomId(findChatRoom.getId());
+        Long cursor = getChatMessageCursorReqDto.getCursor();
+        Integer size = getChatMessageCursorReqDto.getSize();
 
+        List<ChatMessage> findChatMessages = findChatMessagesCursorCheckExistsCursor(findChatRoom.getId(), cursor, size);
         return GetChatRoomDetailResDto.of(findChatRoom, findChatMessages);
     }
 
@@ -125,5 +125,9 @@ public class ChatRoomService {
 
         chatRoomRepository.delete(chatRoom);
         return ChatRoomIdElement.ofId(chatRoom.getId());
+    }
+
+    private List<ChatMessage> findChatMessagesCursorCheckExistsCursor(Long chatRoomId, Long cursor, Integer size) {
+        return chatMessageRepository.findChatMessagesByChatRoomId(chatRoomId);
     }
 }
