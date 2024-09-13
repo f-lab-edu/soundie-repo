@@ -21,7 +21,7 @@ public class GetPostDetailElement {
     private Boolean liked;
     private LocalDateTime createdAt;
 
-    public static GetPostDetailElement of(Post post, Long postLikeCount, Long commentCount, Boolean liked) {
+    public static GetPostDetailElement of(Post post, Number postLikeCount, Number commentCount, Boolean liked) {
         return new GetPostDetailElement(
                     post.getId(),
                     post.getTitle(),

@@ -34,7 +34,7 @@ public class MyBatisPostLikeRepository implements PostLikeRepository{
      * 좋아요 개수 조회
      * */
     @Override
-    public Long countPostLikesByPostId(Long postId) {
+    public Number countPostLikesByPostId(Long postId) {
         return postLikeMapper.countPostLikesByPostId(postId);
     }
 

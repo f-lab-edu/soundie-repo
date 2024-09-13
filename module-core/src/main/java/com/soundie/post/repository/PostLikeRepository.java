@@ -11,7 +11,7 @@ public interface PostLikeRepository {
 
     Optional<PostLike> findPostLikeByMemberIdAndPostId(Long memberId, Long postId);
 
-    Long countPostLikesByPostId(Long postId);
+    Number countPostLikesByPostId(Long postId);
 
     PostLike save(PostLike postLike);
 

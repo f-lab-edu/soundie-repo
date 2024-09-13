@@ -72,8 +72,8 @@ public class PostService {
     public GetPostDetailResDto readPost(Long memberId, Long postId) {
         Post findPost = postRepository.findPostById(postId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.POST_NOT_FOUND));
-        Long likeCount = postLikeRepository.countPostLikesByPostId(findPost.getId());
-        Long commentCount = commentRepository.countCommentsByPostId(findPost.getId());
+        Number likeCount = postLikeRepository.countPostLikesByPostId(findPost.getId());
+        Number commentCount = commentRepository.countCommentsByPostId(findPost.getId());
 
         if (memberId != null){
             Member findMember = memberRepository.findMemberById(memberId)
@@ -126,19 +126,19 @@ public class PostService {
         PostLike postLike = postLikeRepository.findPostLikeByMemberIdAndPostId(findMember.getId(), findPost.getId())
                 .orElse(null);
 
-        Long likeCount = postLikeRepository.countPostLikesByPostId(findPost.getId());
+        Number likeCount = postLikeRepository.countPostLikesByPostId(findPost.getId());
 
         return togglePostLike(findMember, findPost, postLike, likeCount);
     }
 
-    private PostPostLikeResDto togglePostLike(Member member, Post post, PostLike postLike, Long likeCount) {
+    private PostPostLikeResDto togglePostLike(Member member, Post post, PostLike postLike, Number likeCount) {
         if (postLike != null){
             deleteLike(postLike);
-            return PostPostLikeResDto.of(likeCount - 1, false);
+            return PostPostLikeResDto.of(likeCount.intValue() - 1, false);
         }
 
         saveLike(member, post);
-        return PostPostLikeResDto.of(likeCount + 1, true);
+        return PostPostLikeResDto.of(likeCount.intValue() + 1, true);
     }
 
     private void saveLike(Member member, Post post) {
@@ -158,8 +158,8 @@ public class PostService {
     private List<PostWithCount> findPostsWithCount(List<Post> findPosts) {
         return findPosts.stream()
                 .map(findPost -> {
-                    Long findPostLikeCount = postLikeRepository.countPostLikesByPostId(findPost.getId());
-                    Long findCommentCount = commentRepository.countCommentsByPostId(findPost.getId());
+                    Number findPostLikeCount = postLikeRepository.countPostLikesByPostId(findPost.getId());
+                    Number findCommentCount = commentRepository.countCommentsByPostId(findPost.getId());
                     return new PostWithCount(
                             findPost.getId(),
                             findPost.getMemberId(),

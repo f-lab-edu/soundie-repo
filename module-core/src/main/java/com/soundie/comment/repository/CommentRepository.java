@@ -14,7 +14,7 @@ public interface CommentRepository {
 
     List<Comment> findCommentsByPostIdAndIdLessThanOrderByIdAscCreatedAtAsc(Long postId, Long cursor, Integer size);
 
-    Long countCommentsByPostId(Long postId);
+    Number countCommentsByPostId(Long postId);
 
     Comment save(Comment comment);
 }

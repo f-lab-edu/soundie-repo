@@ -22,7 +22,7 @@ public interface CommentMapper {
             @Param("id") Long commentId,
             @Param("size") Integer size);
 
-    Long countCommentsByPostId(@Param("postId") Long postId);
+    Number countCommentsByPostId(@Param("postId") Long postId);
 
     void save(@Param("comment") Comment comment);
 }

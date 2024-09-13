@@ -46,7 +46,7 @@ public class MyBatisCommentRepository implements CommentRepository {
      * */
     @Override
     @Cacheable(cacheNames = CacheNames.COMMENT_COUNT, key = "'postId_' + #postId")
-    public Long countCommentsByPostId(Long postId){
+    public Number countCommentsByPostId(Long postId){
         return commentMapper.countCommentsByPostId(postId);
     }
 
