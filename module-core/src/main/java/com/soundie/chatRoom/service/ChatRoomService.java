@@ -14,6 +14,7 @@ import com.soundie.global.common.exception.ApplicationError;
 import com.soundie.global.common.exception.BadRequestException;
 import com.soundie.global.common.exception.DuplicateException;
 import com.soundie.global.common.exception.NotFoundException;
+import com.soundie.global.common.util.ChatUtil;
 import com.soundie.member.domain.Member;
 import com.soundie.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -83,9 +84,9 @@ public class ChatRoomService {
         // 메시지 생성
         ChatMessage chatMessage = new ChatMessage(
                 chatRoom.getId(),
-                1L,
+                ChatUtil.ADMIN_ID,
                 ChatMessageType.ENTER,
-                findGuestMember.getName() + "님이 대화를 개설 했습니다.",
+                findGuestMember.getName() + ChatUtil.ENTER_MESSAGE,
                 LocalDateTime.now()
         );
         chatMessageProducer.sendMessage(chatMessage);
