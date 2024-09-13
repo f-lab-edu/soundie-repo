@@ -93,11 +93,6 @@ public class CommentService {
         return GetCommentCursorResDto.of(cachedComments, findCommentsByMember, size);
     }
 
-    private List<Comment> findCommentsByCursorCheckExistsCursor(Long postId, Long cursor, Integer size) {
-        return cursor.equals(PaginationUtil.START_CURSOR) ? commentRepository.findCommentsByPostIdOrderByIdAscCreatedAtAsc(postId, size)
-                : commentRepository.findCommentsByPostIdAndIdLessThanOrderByIdAscCreatedAtAsc(postId, cursor, size);
-    }
-
     public CommentIdElement createComment(Long memberId, Long postId, PostCommentCreateReqDto postCommentCreateReqDto) {
         Member findMember = memberRepository.findMemberById(memberId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
@@ -119,6 +114,11 @@ public class CommentService {
         }
 
         return CommentIdElement.of(comment);
+    }
+
+    private List<Comment> findCommentsByCursorCheckExistsCursor(Long postId, Long cursor, Integer size) {
+        return cursor.equals(PaginationUtil.START_CURSOR) ? commentRepository.findCommentsByPostIdOrderByIdAscCreatedAtAsc(postId, size)
+                : commentRepository.findCommentsByPostIdAndIdLessThanOrderByIdAscCreatedAtAsc(postId, cursor, size);
     }
 
     private Map<Long, Member> findCommentsByMember(List<Comment> comments) {
