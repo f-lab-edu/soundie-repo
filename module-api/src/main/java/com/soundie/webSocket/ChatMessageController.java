@@ -1,8 +1,8 @@
 package com.soundie.webSocket;
 
 import com.soundie.chatMessage.domain.ChatMessage;
+import com.soundie.chatMessage.repository.ChatMessageRepository;
 import com.soundie.chatMessage.service.ChatMessageProducer;
-import com.soundie.chatMessage.service.ChatMessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
@@ -12,11 +12,11 @@ import org.springframework.stereotype.Controller;
 public class ChatMessageController {
 
     private final ChatMessageProducer chatMessageProducer;
-    private final ChatMessageService chatMessageService;
+    private final ChatMessageRepository chatMessageRepository;
 
     @MessageMapping("/chatMessage")
     public void message(ChatMessage chatMessage) {
         chatMessageProducer.sendMessage(chatMessage);
-        ChatMessage saveMessage = chatMessageService.createMessage(chatMessage);
+        ChatMessage saveMessage = chatMessageRepository.save(chatMessage);
     }
 }

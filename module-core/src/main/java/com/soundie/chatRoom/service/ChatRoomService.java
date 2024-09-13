@@ -2,7 +2,7 @@ package com.soundie.chatRoom.service;
 
 import com.soundie.chatMessage.domain.ChatMessage;
 import com.soundie.chatMessage.domain.ChatMessageType;
-import com.soundie.chatMessage.service.ChatMessageService;
+import com.soundie.chatMessage.repository.ChatMessageRepository;
 import com.soundie.chatRoom.domain.ChatRoom;
 import com.soundie.chatRoom.dto.ChatRoomIdElement;
 import com.soundie.chatRoom.dto.GetChatRoomDetailResDto;
@@ -28,7 +28,7 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final MemberRepository memberRepository;
 
-    private final ChatMessageService chatMessageService;
+    private final ChatMessageRepository chatMessageRepository;
 
     public GetChatRoomResDto readChatRoomList(Long memberId) {
         Member findMember = memberRepository.findMemberById(memberId)
@@ -44,7 +44,7 @@ public class ChatRoomService {
         Member findMember = memberRepository.findMemberById(memberId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
 
-        List<ChatMessage> findChatMessages = chatMessageService.readMessageList(findChatRoom.getId());
+        List<ChatMessage> findChatMessages = chatMessageRepository.findChatMessagesByChatRoomId(findChatRoom.getId());
 
         return GetChatRoomDetailResDto.of(findChatRoom, findChatMessages);
     }
@@ -87,7 +87,7 @@ public class ChatRoomService {
                 ChatUtil.INITIAL_MEMBER_CNT
         );
 
-        chatMessageService.createMessage(enterChatMessage);
+        chatMessageRepository.save(enterChatMessage);
         return ChatRoomIdElement.of(chatRoom);
     }
 
@@ -102,7 +102,7 @@ public class ChatRoomService {
             throw new BadRequestException(ApplicationError.INVALID_AUTHORITY);
         }
 
-        ChatMessage findRecentChatMessage = chatMessageService.readMessageByChatRoomIdOrderByIdDesc(findChatRoom.getId());
+        ChatMessage findRecentChatMessage = chatMessageRepository.findChatMessageByChatRoomIdOrderByIdDesc(findChatRoom.getId());
         return toggleExitChatRoom(findChatRoom, findMember, findRecentChatMessage);
     }
 
@@ -117,7 +117,7 @@ public class ChatRoomService {
                     ChatUtil.INITIAL_MEMBER_CNT - 1
             );
 
-            chatMessageService.createMessage(exitChatMessage);
+            chatMessageRepository.save(exitChatMessage);
             return ChatRoomIdElement.ofId(chatRoom.getId());
         }
 
