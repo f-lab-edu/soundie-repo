@@ -22,6 +22,14 @@ public class MyBatisChatMessageRepository implements ChatMessageRepository {
     }
 
     /*
+     * 채팅방 Id로, 최근 채팅 메시지 조회
+     * */
+    @Override
+    public ChatMessage findChatMessageByChatRoomIdOrderByIdDesc(Long chatRoomId) {
+        return chatMessageMapper.findChatMessageByChatRoomIdOrderByIdDesc(chatRoomId);
+    }
+
+    /*
      * 채팅방 Id로, 채팅 메시지 저장
      * */
     @Override

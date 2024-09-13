@@ -17,6 +17,10 @@ public class ChatMessageService {
         return chatMessageRepository.findChatMessagesByChatRoomId(chatRoomId);
     }
 
+    public ChatMessage readMessageByChatRoomIdOrderByIdDesc(Long chatRoomId) {
+        return chatMessageRepository.findChatMessageByChatRoomIdOrderByIdDesc(chatRoomId);
+    }
+
     public ChatMessage createMessage(ChatMessage chatMessage) {
         return chatMessageRepository.save(chatMessage);
     }

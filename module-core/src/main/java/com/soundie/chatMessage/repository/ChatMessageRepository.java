@@ -8,6 +8,8 @@ public interface ChatMessageRepository {
 
     List<ChatMessage> findChatMessagesByChatRoomId(Long chatRoomId);
 
+    ChatMessage findChatMessageByChatRoomIdOrderByIdDesc(Long chatRoomId);
+
     ChatMessage save(ChatMessage chatMessage);
 
     void deleteChatMessagesByChatRoomId(Long chatRoomId);

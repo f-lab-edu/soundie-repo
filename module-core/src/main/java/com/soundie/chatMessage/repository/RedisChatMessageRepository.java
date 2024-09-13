@@ -27,6 +27,15 @@ public class RedisChatMessageRepository implements ChatMessageRepository {
     }
 
     /*
+     * 채팅방 Id로, 최근 채팅 메시지 조회
+     * */
+    @Override
+    public ChatMessage findChatMessageByChatRoomIdOrderByIdDesc(Long chatRoomId) {
+        // 구현 필요
+        return null;
+    }
+
+    /*
      * 채팅방 Id를 key 로, 채팅 메시지 저장
      * */
     @Override

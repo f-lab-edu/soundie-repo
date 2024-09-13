@@ -15,6 +15,21 @@
         from chatmessage
     </select>
 
+    <!-- 채팅방 Id로, 최근 채팅 메시지 조회 -->
+    <select id="findChatMessageByChatRoomIdOrderByIdDesc" resultType="com.soundie.chatMessage.domain.ChatMessage">
+        select
+            id as "id",
+            chatroom_id as "chatRoomId",
+            sender_id as "senderId",
+            type_name as "typeName",
+            content as "content",
+            member_cnt as "memberCnt",
+            created_at as "createdAt"
+        from chatmessage
+        order by id desc
+        limit 1
+    </select>
+
     <!-- 채팅방 Id로, 채팅 메시지 저장 -->
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
         insert into chatmessage (chatroom_id,
