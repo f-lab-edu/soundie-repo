@@ -5,13 +5,14 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface ChatMessageMapper {
 
     List<ChatMessage> findChatMessagesByChatRoomId(@Param("chatRoomId") Long chatRoomId);
 
-    ChatMessage findChatMessageByChatRoomIdOrderByIdDesc(Long chatRoomId);
+    Optional<ChatMessage> findChatMessageByChatRoomIdOrderByIdDesc(Long chatRoomId);
 
     void save(@Param("chatMessage") ChatMessage chatMessage);
 

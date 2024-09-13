@@ -3,12 +3,13 @@ package com.soundie.chatMessage.repository;
 import com.soundie.chatMessage.domain.ChatMessage;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ChatMessageRepository {
 
     List<ChatMessage> findChatMessagesByChatRoomId(Long chatRoomId);
 
-    ChatMessage findChatMessageByChatRoomIdOrderByIdDesc(Long chatRoomId);
+    Optional<ChatMessage> findChatMessageByChatRoomIdOrderByIdDesc(Long chatRoomId);
 
     ChatMessage save(ChatMessage chatMessage);
 

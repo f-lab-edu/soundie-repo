@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class MyBatisChatMessageRepository implements ChatMessageRepository {
      * 채팅방 Id로, 최근 채팅 메시지 조회
      * */
     @Override
-    public ChatMessage findChatMessageByChatRoomIdOrderByIdDesc(Long chatRoomId) {
+    public Optional<ChatMessage> findChatMessageByChatRoomIdOrderByIdDesc(Long chatRoomId) {
         return chatMessageMapper.findChatMessageByChatRoomIdOrderByIdDesc(chatRoomId);
     }
 

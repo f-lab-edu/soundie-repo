@@ -102,7 +102,9 @@ public class ChatRoomService {
             throw new BadRequestException(ApplicationError.INVALID_AUTHORITY);
         }
 
-        ChatMessage findRecentChatMessage = chatMessageRepository.findChatMessageByChatRoomIdOrderByIdDesc(findChatRoom.getId());
+        ChatMessage findRecentChatMessage = chatMessageRepository.findChatMessageByChatRoomIdOrderByIdDesc(findChatRoom.getId())
+                .orElseThrow(() -> new NotFoundException(ApplicationError.CHAT_MESSAGE_NOT_FOUND));
+
         return toggleExitChatRoom(findChatRoom, findMember, findRecentChatMessage);
     }
 

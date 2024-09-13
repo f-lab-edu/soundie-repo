@@ -7,6 +7,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -30,9 +31,9 @@ public class RedisChatMessageRepository implements ChatMessageRepository {
      * 채팅방 Id로, 최근 채팅 메시지 조회
      * */
     @Override
-    public ChatMessage findChatMessageByChatRoomIdOrderByIdDesc(Long chatRoomId) {
+    public Optional<ChatMessage> findChatMessageByChatRoomIdOrderByIdDesc(Long chatRoomId) {
         // 구현 필요
-        return null;
+        return Optional.empty();
     }
 
     /*
