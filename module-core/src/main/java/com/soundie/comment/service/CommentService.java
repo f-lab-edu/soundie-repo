@@ -19,6 +19,7 @@ import com.soundie.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
@@ -111,6 +112,12 @@ public class CommentService {
 
         comment = commentRepository.save(comment);
 
+        // 캐시 존재 판단에 따른, 캐시 초기화
+        if (Boolean.TRUE.equals(redisCacheTemplate.hasKey(getCommentCountKeyByPost(comment.getPostId())))){
+            ValueOperations<String, Object> opsForValue = redisCacheTemplate.opsForValue();
+            opsForValue.increment(getCommentCountKeyByPost(comment.getPostId()));
+        }
+
         return CommentIdElement.of(comment);
     }
 
@@ -129,5 +136,10 @@ public class CommentService {
         return CacheNames.COMMENT + "::"
                 + "postId_" + postId
                 + ":cursor_" + cursor;
+    }
+
+    private String getCommentCountKeyByPost(Long postId) {
+        return CacheNames.COMMENT_COUNT + "::"
+                + "postId_" + postId;
     }
 }
