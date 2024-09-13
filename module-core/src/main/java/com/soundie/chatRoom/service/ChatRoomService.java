@@ -100,13 +100,32 @@ public class ChatRoomService {
         Member findMember = memberRepository.findMemberById(memberId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
 
-        if (!findChatRoom.getHostMemberId().equals(findMember.getId())){
+        // Host 회원과 Guest 회원이 아닌, 회원이 채팅방 나감
+        if (findChatRoom.getHostMemberId().equals(findMember.getId()) && findChatRoom.getGuestMemberId().equals(findMember.getId())){
             throw new BadRequestException(ApplicationError.INVALID_AUTHORITY);
         }
 
-        chatRoomRepository.delete(findChatRoom);
-        chatMessageService.deleteMessageList(findChatRoom.getId());
+        ChatMessage findRecentChatMessage = chatMessageService.readMessageByChatRoomIdOrderByIdDesc(findChatRoom.getId());
+        return toggleExitChatRoom(findChatRoom, findMember, findRecentChatMessage);
+    }
 
-        return ChatRoomIdElement.ofId(chatRoomId);
+    private ChatRoomIdElement toggleExitChatRoom(ChatRoom chatRoom, Member member, ChatMessage chatMessage) {
+        if (chatMessage.getMemberCnt() == ChatUtil.INITIAL_MEMBER_CNT){
+            // 퇴장 메시지 생성
+            ChatMessage exitChatMessage = new ChatMessage(
+                    chatRoom.getId(),
+                    ChatUtil.ADMIN_ID,
+                    ChatMessageType.EXIT,
+                    member.getName() + ChatUtil.EXIT_MESSAGE,
+                    ChatUtil.INITIAL_MEMBER_CNT - 1,
+                    LocalDateTime.now()
+            );
+
+            chatMessageService.createMessage(exitChatMessage);
+            return ChatRoomIdElement.ofId(chatRoom.getId());
+        }
+
+        chatRoomRepository.delete(chatRoom);
+        return ChatRoomIdElement.ofId(chatRoom.getId());
     }
 }

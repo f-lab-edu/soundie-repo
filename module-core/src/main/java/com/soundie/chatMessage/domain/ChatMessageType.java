@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum ChatMessageType {
     ENTER("ENTER"),
-    TALK("TALK");
+    TALK("TALK"),
+    EXIT("EXIT");
 
     private final String name;
 
