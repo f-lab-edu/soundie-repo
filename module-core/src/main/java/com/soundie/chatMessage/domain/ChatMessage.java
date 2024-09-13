@@ -27,13 +27,11 @@ public class ChatMessage {
             Long senderId,
             ChatMessageType chatMessageType,
             String content,
-            int memberCnt,
-            LocalDateTime createdAt){
+            int memberCnt){
         this.chatRoomId = chatRoomId;
         this.senderId = senderId;
         this.typeName = chatMessageType.getName();
         this.content = content;
         this.memberCnt = memberCnt;
-        this.createdAt = createdAt;
     }
 }

@@ -19,7 +19,6 @@ import com.soundie.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -79,18 +78,16 @@ public class ChatRoomService {
 
         chatRoom = chatRoomRepository.save(chatRoom);
 
-        // 메시지 생성
-        ChatMessage chatMessage = new ChatMessage(
+        // 입장 메시지 생성
+        ChatMessage enterChatMessage = new ChatMessage(
                 chatRoom.getId(),
                 ChatUtil.ADMIN_ID,
                 ChatMessageType.ENTER,
                 findHostMember.getName() + ChatUtil.ENTER_MESSAGE,
-                ChatUtil.INITIAL_MEMBER_CNT,
-                LocalDateTime.now()
+                ChatUtil.INITIAL_MEMBER_CNT
         );
 
-        chatMessageService.createMessage(chatMessage);
-
+        chatMessageService.createMessage(enterChatMessage);
         return ChatRoomIdElement.of(chatRoom);
     }
 
@@ -117,8 +114,7 @@ public class ChatRoomService {
                     ChatUtil.ADMIN_ID,
                     ChatMessageType.EXIT,
                     member.getName() + ChatUtil.EXIT_MESSAGE,
-                    ChatUtil.INITIAL_MEMBER_CNT - 1,
-                    LocalDateTime.now()
+                    ChatUtil.INITIAL_MEMBER_CNT - 1
             );
 
             chatMessageService.createMessage(exitChatMessage);
