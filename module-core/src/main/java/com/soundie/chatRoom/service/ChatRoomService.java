@@ -49,10 +49,10 @@ public class ChatRoomService {
         return GetChatRoomDetailResDto.of(findChatRoom, findChatMessages);
     }
 
-    public ChatRoomIdElement createChatRoom(Long hostMemberId, Long guestMemberId, PostChatRoomCreateReqDto postChatRoomCreateReqDto) {
-        Member findHostMember = memberRepository.findMemberById(hostMemberId)
+    public ChatRoomIdElement createChatRoom(Long memberId, PostChatRoomCreateReqDto postChatRoomCreateReqDto) {
+        Member findHostMember = memberRepository.findMemberById(memberId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
-        Member findGuestMember = memberRepository.findMemberById(guestMemberId)
+        Member findGuestMember = memberRepository.findMemberById(postChatRoomCreateReqDto.getGuestMemberId())
                 .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
 
         // Host 회원과 Guest 회원, 채팅방이 이미 존재

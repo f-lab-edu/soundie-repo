@@ -33,10 +33,9 @@ public class ChatRoomController {
 
     @PostMapping
     public EnvelopeResponse<ChatRoomIdElement> createChatRoom(@RequestBody PostChatRoomCreateReqDto postChatRoomCreateReqDto,
-                                                              @RequestParam Long hostMemberId,
-                                                              @RequestParam Long guestMemberId){
+                                                              @RequestParam Long memberId){
         return EnvelopeResponse.<ChatRoomIdElement>builder()
-                .data(chatRoomService.createChatRoom(hostMemberId, guestMemberId, postChatRoomCreateReqDto))
+                .data(chatRoomService.createChatRoom(memberId, postChatRoomCreateReqDto))
                 .build();
     }
 
