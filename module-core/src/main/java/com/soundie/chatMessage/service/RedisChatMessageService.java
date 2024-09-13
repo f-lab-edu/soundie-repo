@@ -11,26 +11,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RedisChatMessageService {
 
-    private static final String CHAT_ROOM = "CHAT_ROOM";
-    private static final String DELIMITER = ":";
-
     private final RedisChatMessageRepository redisChatMessageRepository;
 
     public List<ChatMessage> readMessageList(Long chatRoomId) {
-        return redisChatMessageRepository.findChatMessagesByChatRoomId(
-                CHAT_ROOM + DELIMITER + chatRoomId
-        );
+        return redisChatMessageRepository.findChatMessagesByChatRoomId(chatRoomId);
     }
 
     public ChatMessage createMessage(ChatMessage chatMessage) {
-        return redisChatMessageRepository.save(
-                CHAT_ROOM + DELIMITER + chatMessage.getChatRoomId(),
-                chatMessage);
+        return redisChatMessageRepository.save(chatMessage);
     }
 
     public void deleteMessageList(Long chatRoomId) {
-        redisChatMessageRepository.delete(
-                CHAT_ROOM + DELIMITER + chatRoomId
-        );
+        redisChatMessageRepository.deleteChatMessagesByChatRoomId(chatRoomId);
     }
 }
