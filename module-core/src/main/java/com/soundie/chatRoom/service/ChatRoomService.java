@@ -3,6 +3,7 @@ package com.soundie.chatRoom.service;
 import com.soundie.chatMessage.domain.ChatMessage;
 import com.soundie.chatMessage.domain.ChatMessageType;
 import com.soundie.chatMessage.dto.GetChatMessageCursorReqDto;
+import com.soundie.chatMessage.dto.PostChatMessageCreateReqDto;
 import com.soundie.chatMessage.repository.ChatMessageRepository;
 import com.soundie.chatRoom.domain.ChatRoom;
 import com.soundie.chatRoom.dto.*;
@@ -90,6 +91,10 @@ public class ChatRoomService {
 
         chatMessageRepository.save(enterChatMessage);
         return ChatRoomIdElement.of(chatRoom);
+    }
+
+    public ChatRoomIdElement sendChatRoomByMessage(Long chatRoomId, Long memberId, PostChatMessageCreateReqDto postChatMessageCreateReqDto) {
+        return ChatRoomIdElement.ofId(-1L);
     }
 
     public ChatRoomIdElement deleteChatRoom(Long chatRoomId, Long memberId) {
