@@ -13,7 +13,7 @@ public class MemberIdElement {
 
     public static MemberIdElement of(Member member){
         return new MemberIdElement(
-                    member.getId()
-                );
+                member.getId()
+        );
     }
 }

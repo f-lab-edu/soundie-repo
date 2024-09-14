@@ -14,8 +14,8 @@ public class AuthorElement {
 
     public static AuthorElement of(Member member){
         return new AuthorElement(
-                    member.getId(),
-                    member.getName()
-                );
+                member.getId(),
+                member.getName()
+        );
     }
 }
