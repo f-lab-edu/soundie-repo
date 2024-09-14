@@ -94,7 +94,22 @@ public class ChatRoomService {
     }
 
     public ChatRoomIdElement sendChatRoomByMessage(Long chatRoomId, Long memberId, PostChatMessageCreateReqDto postChatMessageCreateReqDto) {
-        return ChatRoomIdElement.ofId(-1L);
+        ChatRoom findChatRoom = chatRoomRepository.findChatRoomById(chatRoomId)
+                .orElseThrow(() -> new NotFoundException(ApplicationError.CHAT_ROOM_NOT_FOUND));
+        Member findMember = memberRepository.findMemberById(memberId)
+                .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
+
+        // 전송 메시지 생성
+        ChatMessage talkChatMessage = new ChatMessage(
+                findChatRoom.getId(),
+                findMember.getId(),
+                ChatMessageType.TALK,
+                postChatMessageCreateReqDto.getContent(),
+                postChatMessageCreateReqDto.getMemberCnt()
+        );
+
+        chatMessageRepository.save(talkChatMessage);
+        return ChatRoomIdElement.ofId(findChatRoom.getId());
     }
 
     public ChatRoomIdElement deleteChatRoom(Long chatRoomId, Long memberId) {
