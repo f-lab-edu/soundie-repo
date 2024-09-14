@@ -17,10 +17,9 @@ public class GetNotificationResDto {
 
     public static GetNotificationResDto of(List<Notification> notifications) {
         return new GetNotificationResDto(
-                    notifications.stream()
-                            .map(GetNotificationElement::of)
-                            .collect(Collectors.toList())
-                );
-
+                notifications.stream()
+                        .map(GetNotificationElement::of)
+                        .collect(Collectors.toList())
+        );
     }
 }

@@ -21,12 +21,12 @@ public class GetNotificationElement {
 
     public static GetNotificationElement of(Notification notification) {
         return new GetNotificationElement(
-                    notification.getId(),
-                    notification.getMessage(),
-                    notification.getContentId(),
-                    notification.getNotificationType(),
-                    notification.getCreatedAt(),
-                    notification.getRead()
-                );
+                notification.getId(),
+                notification.getMessage(),
+                notification.getContentId(),
+                notification.getNotificationType(),
+                notification.getCreatedAt(),
+                notification.getRead()
+        );
     }
 }
