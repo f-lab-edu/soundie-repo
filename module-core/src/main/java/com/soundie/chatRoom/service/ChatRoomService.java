@@ -151,6 +151,7 @@ public class ChatRoomService {
             );
 
             chatMessageRepository.save(exitChatMessage);
+            chatRoomRepository.updateMemberNullIfMatchMember(chatRoom, member);
             return ChatRoomIdElement.ofId(chatRoom.getId());
         }
 

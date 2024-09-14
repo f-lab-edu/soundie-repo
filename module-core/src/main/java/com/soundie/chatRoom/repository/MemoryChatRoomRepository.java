@@ -1,6 +1,7 @@
 package com.soundie.chatRoom.repository;
 
 import com.soundie.chatRoom.domain.ChatRoom;
+import com.soundie.member.domain.Member;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +60,15 @@ public class MemoryChatRoomRepository implements ChatRoomRepository {
         chatRoom.setId(sequence.incrementAndGet());
         store.put(chatRoom.getId(), chatRoom);
 
+        return chatRoom;
+    }
+
+    /*
+     * 채팅방의 회원 Id 일치하면, null 로 수정(동적 쿼리)
+     * */
+    @Override
+    public ChatRoom updateMemberNullIfMatchMember(ChatRoom chatRoom, Member member) {
+        // 구현 필요
         return chatRoom;
     }
 
