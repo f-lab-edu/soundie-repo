@@ -59,6 +59,7 @@
             member_cnt as "memberCnt",
             created_at as "createdAt"
         from chatmessage
+        where chatroom_id = #{chatRoomId}
         order by id desc
         limit 1
     </select>

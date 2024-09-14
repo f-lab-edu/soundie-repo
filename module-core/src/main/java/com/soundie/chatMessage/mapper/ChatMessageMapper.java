@@ -21,7 +21,7 @@ public interface ChatMessageMapper {
             @Param("id") Long chatMessageId,
             @Param("size") Integer size);
 
-    Optional<ChatMessage> findChatMessageByChatRoomIdOrderByIdDesc(Long chatRoomId);
+    Optional<ChatMessage> findChatMessageByChatRoomIdOrderByIdDesc(@Param("chatRoomId") Long chatRoomId);
 
     void save(@Param("chatMessage") ChatMessage chatMessage);
 
