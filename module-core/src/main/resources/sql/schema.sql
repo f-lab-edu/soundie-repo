@@ -97,3 +97,4 @@ create table chatmessage
 		    on delete cascade
 		    on update cascade
 );
+create index chatmessage_idx_id on chatmessage(id);
