@@ -1,24 +1,19 @@
 package com.soundie.member.dto;
 
 import com.soundie.member.domain.Member;
-import lombok.Builder;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@Builder(builderMethodName = "innerBuilder")
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MemberIdElement {
 
     private final Long memberId;
 
-    private static MemberIdElementBuilder builder(Long memberId){
-        return innerBuilder()
-                .memberId(memberId);
-    }
-
     public static MemberIdElement of(Member member){
-        return MemberIdElement.builder(
+        return new MemberIdElement(
                     member.getId()
-                )
-                .build();
+                );
     }
 }
