@@ -2,18 +2,19 @@ package com.soundie.chatRoom.dto;
 
 import com.soundie.chatMessage.domain.ChatMessage;
 import com.soundie.chatRoom.domain.ChatRoom;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.List;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class GetChatRoomDetailResDto {
 
-    private GetChatRoomDetailElement chatRoom;
-    private List<ChatMessage> chatMessages;
-    private Long cursor;
+    private final GetChatRoomDetailElement chatRoom;
+    private final List<ChatMessage> chatMessages;
+    private final Long cursor;
 
     public static GetChatRoomDetailResDto of(ChatRoom chatRoom, List<ChatMessage> chatMessages, Integer size) {
         return new GetChatRoomDetailResDto(
