@@ -44,6 +44,11 @@ public class ChatRoomService {
         Member findMember = memberRepository.findMemberById(memberId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
 
+        // Host 회원과 Guest 회원이 아닌, 회원이 채팅방 접속
+        if (!findChatRoom.getHostMemberId().equals(findMember.getId()) && !findChatRoom.getGuestMemberId().equals(findMember.getId())){
+            throw new BadRequestException(ApplicationError.INVALID_AUTHORITY);
+        }
+
         Long cursor = getChatMessageCursorReqDto.getCursor();
         Integer size = getChatMessageCursorReqDto.getSize();
 
@@ -99,6 +104,11 @@ public class ChatRoomService {
         Member findMember = memberRepository.findMemberById(memberId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
 
+        // Host 회원과 Guest 회원이 아닌, 회원이 채팅방 접속
+        if (!findChatRoom.getHostMemberId().equals(findMember.getId()) && !findChatRoom.getGuestMemberId().equals(findMember.getId())){
+            throw new BadRequestException(ApplicationError.INVALID_AUTHORITY);
+        }
+
         // 전송 메시지 생성
         ChatMessage talkChatMessage = new ChatMessage(
                 findChatRoom.getId(),
@@ -119,7 +129,7 @@ public class ChatRoomService {
                 .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
 
         // Host 회원과 Guest 회원이 아닌, 회원이 채팅방 나감
-        if (findChatRoom.getHostMemberId().equals(findMember.getId()) && findChatRoom.getGuestMemberId().equals(findMember.getId())){
+        if (!findChatRoom.getHostMemberId().equals(findMember.getId()) && !findChatRoom.getGuestMemberId().equals(findMember.getId())){
             throw new BadRequestException(ApplicationError.INVALID_AUTHORITY);
         }
 
