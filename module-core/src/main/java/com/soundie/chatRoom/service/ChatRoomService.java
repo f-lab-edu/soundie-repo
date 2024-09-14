@@ -119,7 +119,7 @@ public class ChatRoomService {
         );
 
         chatMessageRepository.save(talkChatMessage);
-        return ChatRoomIdElement.ofId(findChatRoom.getId());
+        return ChatRoomIdElement.of(findChatRoom);
     }
 
     public ChatRoomIdElement deleteChatRoom(Long chatRoomId, Long memberId) {
@@ -152,11 +152,11 @@ public class ChatRoomService {
 
             chatMessageRepository.save(exitChatMessage);
             chatRoomRepository.updateMemberNullIfMatchMember(chatRoom, member);
-            return ChatRoomIdElement.ofId(chatRoom.getId());
+            return ChatRoomIdElement.of(chatRoom);
         }
 
         chatRoomRepository.delete(chatRoom);
-        return ChatRoomIdElement.ofId(chatRoom.getId());
+        return ChatRoomIdElement.of(chatRoom);
     }
 
     private List<ChatMessage> findChatMessagesCursorCheckExistsCursor(Long chatRoomId, Long cursor, Integer size) {

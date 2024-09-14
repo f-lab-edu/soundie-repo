@@ -21,11 +21,4 @@ public class ChatRoomIdElement {
                 )
                 .build();
     }
-
-    public static ChatRoomIdElement ofId(Long chatRoomId){
-        return ChatRoomIdElement.builder(
-                    chatRoomId
-                )
-                .build();
-    }
 }
