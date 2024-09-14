@@ -117,8 +117,8 @@ public class CommentService {
     }
 
     private List<Comment> findCommentsByCursorCheckExistsCursor(Long postId, Long cursor, Integer size) {
-        return cursor.equals(PaginationUtil.START_CURSOR) ? commentRepository.findCommentsByPostIdOrderByIdAscCreatedAtAsc(postId, size)
-                : commentRepository.findCommentsByPostIdAndIdLessThanOrderByIdAscCreatedAtAsc(postId, cursor, size);
+        return cursor.equals(PaginationUtil.START_CURSOR) ? commentRepository.findCommentsByPostIdOrderByIdAsc(postId, size)
+                : commentRepository.findCommentsByPostIdAndIdLessThanOrderByIdAsc(postId, cursor, size);
     }
 
     private Map<Long, Member> findCommentsByMember(List<Comment> comments) {

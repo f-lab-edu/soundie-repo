@@ -24,13 +24,13 @@ public class MemoryPostRepository implements PostRepository {
 
     
     @Override
-    public List<Post> findPostsByOrderByIdDescCreatedAtDesc(Integer size) {
+    public List<Post> findPostsOrderByIdDesc(Integer size) {
         // 구현 필요
         return null;
     }
 
     @Override
-    public List<Post> findPostsByIdLessThanOrderByIdDescCreatedAtDesc(Long postId, Integer size) {
+    public List<Post> findPostsByIdLessThanOrderByIdDesc(Long postId, Integer size) {
         // 구현 필요
         return null;
     }
