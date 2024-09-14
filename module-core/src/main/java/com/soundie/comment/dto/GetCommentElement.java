@@ -20,10 +20,10 @@ public class GetCommentElement {
 
     public static GetCommentElement of(Comment comment, Member member){
         return new GetCommentElement(
-                    comment.getId(),
-                    comment.getContent(),
-                    AuthorElement.of(member),
-                    comment.getCreatedAt()
-                );
+                comment.getId(),
+                comment.getContent(),
+                AuthorElement.of(member),
+                comment.getCreatedAt()
+        );
     }
 }

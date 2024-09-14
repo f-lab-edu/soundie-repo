@@ -21,14 +21,14 @@ public class GetCommentCursorResDto {
 
     public static GetCommentCursorResDto of(List<Comment> comments, Map<Long, Member> commentsByMember, Integer size) {
         return new GetCommentCursorResDto(
-                        comments.stream()
-                                .map(c -> {
-                                    Member member = commentsByMember.get(c.getId());
-                                    return GetCommentElement.of(c, member);
-                                })
-                                .collect(Collectors.toList()),
-                        getNextCursor(comments, size)
-                );
+                comments.stream()
+                        .map(c -> {
+                            Member member = commentsByMember.get(c.getId());
+                            return GetCommentElement.of(c, member);
+                        })
+                        .collect(Collectors.toList()),
+                getNextCursor(comments, size)
+        );
     }
 
     private static Long getNextCursor(List<Comment> comments, Integer size) {

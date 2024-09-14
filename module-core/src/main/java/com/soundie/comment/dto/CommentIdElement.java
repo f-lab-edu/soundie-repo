@@ -13,7 +13,7 @@ public class CommentIdElement {
 
     public static CommentIdElement of(Comment comment) {
         return new CommentIdElement(
-                    comment.getId()
-                );
+                comment.getId()
+        );
     }
 }
