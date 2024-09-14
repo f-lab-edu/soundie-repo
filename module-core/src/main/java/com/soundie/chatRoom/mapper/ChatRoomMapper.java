@@ -1,6 +1,7 @@
 package com.soundie.chatRoom.mapper;
 
 import com.soundie.chatRoom.domain.ChatRoom;
+import com.soundie.member.domain.Member;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -21,6 +22,10 @@ public interface ChatRoomMapper {
             @Param("guestMemberId") Long guestMemberId);
 
     void save(@Param("chatRoom") ChatRoom chatRoom);
+
+    void updateMemberNullIfMatchMember(
+            @Param("chatRoom") ChatRoom chatRoom,
+            @Param("member") Member member);
 
     void delete(@Param("chatRoom") ChatRoom chatRoom);
 }

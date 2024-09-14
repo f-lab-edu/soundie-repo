@@ -1,9 +1,8 @@
 package com.soundie.api;
 
-import com.soundie.chatRoom.dto.ChatRoomIdElement;
-import com.soundie.chatRoom.dto.GetChatRoomDetailResDto;
-import com.soundie.chatRoom.dto.GetChatRoomResDto;
-import com.soundie.chatRoom.dto.PostChatRoomCreateReqDto;
+import com.soundie.chatMessage.dto.GetChatMessageCursorReqDto;
+import com.soundie.chatMessage.dto.PostChatMessageCreateReqDto;
+import com.soundie.chatRoom.dto.*;
 import com.soundie.chatRoom.service.ChatRoomService;
 import com.soundie.global.common.dto.EnvelopeResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,19 +23,28 @@ public class ChatRoomController {
     }
 
     @GetMapping("/{chatRoomId}")
-    public EnvelopeResponse<GetChatRoomDetailResDto> readChatRoom(@PathVariable Long chatRoomId,
+    public EnvelopeResponse<GetChatRoomDetailResDto> readChatRoom(@RequestBody GetChatMessageCursorReqDto getChatMessageCursorReqDto,
+                                                                  @PathVariable Long chatRoomId,
                                                                   @RequestParam Long memberId){
         return EnvelopeResponse.<GetChatRoomDetailResDto>builder()
-                .data(chatRoomService.readChatRoom(chatRoomId, memberId))
+                .data(chatRoomService.readChatRoom(chatRoomId, memberId, getChatMessageCursorReqDto))
                 .build();
     }
 
     @PostMapping
     public EnvelopeResponse<ChatRoomIdElement> createChatRoom(@RequestBody PostChatRoomCreateReqDto postChatRoomCreateReqDto,
-                                                              @RequestParam Long hostMemberId,
-                                                              @RequestParam Long guestMemberId){
+                                                              @RequestParam Long memberId){
         return EnvelopeResponse.<ChatRoomIdElement>builder()
-                .data(chatRoomService.createChatRoom(hostMemberId, guestMemberId, postChatRoomCreateReqDto))
+                .data(chatRoomService.createChatRoom(memberId, postChatRoomCreateReqDto))
+                .build();
+    }
+
+    @PostMapping("/{chatRoomId}")
+    public EnvelopeResponse<ChatRoomIdElement> sendChatRoomByMessage(@RequestBody PostChatMessageCreateReqDto postChatMessageCreateReqDto,
+                                                                     @PathVariable Long chatRoomId,
+                                                                     @RequestParam Long memberId) {
+        return EnvelopeResponse.<ChatRoomIdElement>builder()
+                .data(chatRoomService.sendChatRoomByMessage(chatRoomId, memberId, postChatMessageCreateReqDto))
                 .build();
     }
 

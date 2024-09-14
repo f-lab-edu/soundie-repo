@@ -2,24 +2,23 @@ package com.soundie.chatRoom.service;
 
 import com.soundie.chatMessage.domain.ChatMessage;
 import com.soundie.chatMessage.domain.ChatMessageType;
-import com.soundie.chatMessage.service.ChatMessageProducer;
-import com.soundie.chatMessage.service.RedisChatMessageService;
+import com.soundie.chatMessage.dto.GetChatMessageCursorReqDto;
+import com.soundie.chatMessage.dto.PostChatMessageCreateReqDto;
+import com.soundie.chatMessage.repository.ChatMessageRepository;
 import com.soundie.chatRoom.domain.ChatRoom;
-import com.soundie.chatRoom.dto.ChatRoomIdElement;
-import com.soundie.chatRoom.dto.GetChatRoomDetailResDto;
-import com.soundie.chatRoom.dto.GetChatRoomResDto;
-import com.soundie.chatRoom.dto.PostChatRoomCreateReqDto;
+import com.soundie.chatRoom.dto.*;
 import com.soundie.chatRoom.repository.ChatRoomRepository;
 import com.soundie.global.common.exception.ApplicationError;
 import com.soundie.global.common.exception.BadRequestException;
 import com.soundie.global.common.exception.DuplicateException;
 import com.soundie.global.common.exception.NotFoundException;
+import com.soundie.global.common.util.ChatUtil;
+import com.soundie.global.common.util.PaginationUtil;
 import com.soundie.member.domain.Member;
 import com.soundie.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -29,8 +28,7 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final MemberRepository memberRepository;
 
-    private final ChatMessageProducer chatMessageProducer;
-    private final RedisChatMessageService redisChatMessageService;
+    private final ChatMessageRepository chatMessageRepository;
 
     public GetChatRoomResDto readChatRoomList(Long memberId) {
         Member findMember = memberRepository.findMemberById(memberId)
@@ -40,32 +38,39 @@ public class ChatRoomService {
         return GetChatRoomResDto.of(findChatRooms);
     }
 
-    public GetChatRoomDetailResDto readChatRoom(Long chatRoomId, Long memberId) {
+    public GetChatRoomDetailResDto readChatRoom(Long chatRoomId, Long memberId, GetChatMessageCursorReqDto getChatMessageCursorReqDto) {
         ChatRoom findChatRoom = chatRoomRepository.findChatRoomById(chatRoomId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.CHAT_ROOM_NOT_FOUND));
         Member findMember = memberRepository.findMemberById(memberId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
 
-        List<ChatMessage> findChatMessages = redisChatMessageService.readMessageList(findChatRoom.getId());
+        // Host 회원과 Guest 회원이 아닌, 회원이 채팅방 접속
+        if (!findMember.getId().equals(findChatRoom.getHostMemberId()) && !findMember.getId().equals(findChatRoom.getGuestMemberId())){
+            throw new BadRequestException(ApplicationError.INVALID_AUTHORITY);
+        }
 
-        return GetChatRoomDetailResDto.of(findChatRoom, findChatMessages);
+        Long cursor = getChatMessageCursorReqDto.getCursor();
+        Integer size = getChatMessageCursorReqDto.getSize();
+
+        List<ChatMessage> findChatMessages = findChatMessagesCursorCheckExistsCursor(findChatRoom.getId(), cursor, size);
+        return GetChatRoomDetailResDto.of(findChatRoom, findChatMessages, size);
     }
 
-    public ChatRoomIdElement createChatRoom(Long hostMemberId, Long guestMemberId, PostChatRoomCreateReqDto postChatRoomCreateReqDto) {
-        Member findHostMember = memberRepository.findMemberById(hostMemberId)
+    public ChatRoomIdElement createChatRoom(Long memberId, PostChatRoomCreateReqDto postChatRoomCreateReqDto) {
+        Member findHostMember = memberRepository.findMemberById(memberId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
-        Member findGuestMember = memberRepository.findMemberById(guestMemberId)
+        Member findGuestMember = memberRepository.findMemberById(postChatRoomCreateReqDto.getGuestMemberId())
                 .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
 
         // Host 회원과 Guest 회원, 채팅방이 이미 존재
-        Boolean hasChatRoom = chatRoomRepository.findChatRoomByHostMemberIdAndGuestMemberId(findHostMember.getId(), findGuestMember.getId())
+        boolean hasChatRoom = chatRoomRepository.findChatRoomByHostMemberIdAndGuestMemberId(findHostMember.getId(), findGuestMember.getId())
                 .isPresent();
         if (hasChatRoom) {
             throw new DuplicateException(ApplicationError.DUPLICATE_CHAT_ROOM);
         }
 
         // Host 회원과 Guest 회원이 반대인, 채팅방이 이미 존재
-        Boolean hasReverseChatRoom = chatRoomRepository.findChatRoomByHostMemberIdAndGuestMemberId(findGuestMember.getId(), findHostMember.getId())
+        boolean hasReverseChatRoom = chatRoomRepository.findChatRoomByHostMemberIdAndGuestMemberId(findGuestMember.getId(), findHostMember.getId())
                 .isPresent();
         if (hasReverseChatRoom) {
             throw new DuplicateException(ApplicationError.DUPLICATE_CHAT_ROOM);
@@ -80,17 +85,41 @@ public class ChatRoomService {
 
         chatRoom = chatRoomRepository.save(chatRoom);
 
-        String content = findHostMember.getName() + "님이 대화를 개설 했습니다.";
-        ChatMessage chatMessage = new ChatMessage(
-                ChatMessageType.ENTER,
+        // 입장 메시지 생성
+        ChatMessage enterChatMessage = new ChatMessage(
                 chatRoom.getId(),
-                content,
-                LocalDateTime.now()
+                ChatUtil.ADMIN_ID,
+                ChatMessageType.ENTER,
+                findHostMember.getName() + ChatUtil.ENTER_MESSAGE,
+                ChatUtil.INITIAL_MEMBER_CNT
         );
-        chatMessageProducer.sendMessage(chatMessage);
-        redisChatMessageService.createMessage(chatMessage);
 
+        chatMessageRepository.save(enterChatMessage);
         return ChatRoomIdElement.of(chatRoom);
+    }
+
+    public ChatRoomIdElement sendChatRoomByMessage(Long chatRoomId, Long memberId, PostChatMessageCreateReqDto postChatMessageCreateReqDto) {
+        ChatRoom findChatRoom = chatRoomRepository.findChatRoomById(chatRoomId)
+                .orElseThrow(() -> new NotFoundException(ApplicationError.CHAT_ROOM_NOT_FOUND));
+        Member findMember = memberRepository.findMemberById(memberId)
+                .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
+
+        // Host 회원과 Guest 회원이 아닌, 회원이 채팅방 접속
+        if (!findMember.getId().equals(findChatRoom.getHostMemberId()) && !findMember.getId().equals(findChatRoom.getGuestMemberId())){
+            throw new BadRequestException(ApplicationError.INVALID_AUTHORITY);
+        }
+
+        // 전송 메시지 생성
+        ChatMessage talkChatMessage = new ChatMessage(
+                findChatRoom.getId(),
+                findMember.getId(),
+                ChatMessageType.TALK,
+                postChatMessageCreateReqDto.getContent(),
+                postChatMessageCreateReqDto.getMemberCnt()
+        );
+
+        chatMessageRepository.save(talkChatMessage);
+        return ChatRoomIdElement.of(findChatRoom);
     }
 
     public ChatRoomIdElement deleteChatRoom(Long chatRoomId, Long memberId) {
@@ -99,13 +128,39 @@ public class ChatRoomService {
         Member findMember = memberRepository.findMemberById(memberId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
 
-        if (!findChatRoom.getHostMemberId().equals(findMember.getId())){
+        // Host 회원과 Guest 회원이 아닌, 회원이 채팅방 나감
+        if (!findMember.getId().equals(findChatRoom.getHostMemberId()) && !findMember.getId().equals(findChatRoom.getGuestMemberId())){
             throw new BadRequestException(ApplicationError.INVALID_AUTHORITY);
         }
 
-        chatRoomRepository.delete(findChatRoom);
-        redisChatMessageService.deleteMessageList(findChatRoom.getId());
+        ChatMessage findRecentChatMessage = chatMessageRepository.findChatMessageByChatRoomIdOrderByIdDesc(findChatRoom.getId())
+                .orElseThrow(() -> new NotFoundException(ApplicationError.CHAT_MESSAGE_NOT_FOUND));
 
-        return ChatRoomIdElement.ofId(chatRoomId);
+        return toggleExitChatRoom(findChatRoom, findMember, findRecentChatMessage);
+    }
+
+    private ChatRoomIdElement toggleExitChatRoom(ChatRoom chatRoom, Member member, ChatMessage chatMessage) {
+        if (chatMessage.getMemberCnt() == ChatUtil.INITIAL_MEMBER_CNT){
+            // 퇴장 메시지 생성
+            ChatMessage exitChatMessage = new ChatMessage(
+                    chatRoom.getId(),
+                    ChatUtil.ADMIN_ID,
+                    ChatMessageType.EXIT,
+                    member.getName() + ChatUtil.EXIT_MESSAGE,
+                    ChatUtil.INITIAL_MEMBER_CNT - 1
+            );
+
+            chatMessageRepository.save(exitChatMessage);
+            chatRoomRepository.updateMemberNullIfMatchMember(chatRoom, member);
+            return ChatRoomIdElement.of(chatRoom);
+        }
+
+        chatRoomRepository.delete(chatRoom);
+        return ChatRoomIdElement.of(chatRoom);
+    }
+
+    private List<ChatMessage> findChatMessagesCursorCheckExistsCursor(Long chatRoomId, Long cursor, Integer size) {
+        return cursor.equals(PaginationUtil.START_CURSOR) ? chatMessageRepository.findChatMessagesByChatRoomIdOrderByIdDesc(chatRoomId, size)
+                : chatMessageRepository.findChatMessageByChatRoomIdAndIdLessThanOrderByIdDesc(chatRoomId, cursor, size);
     }
 }

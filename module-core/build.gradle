@@ -9,9 +9,6 @@ dependencies {
     // h2 라이브러리
     runtimeOnly 'com.h2database:h2'
 
-    // Spring Boot WebSocket Starter : 웹 소켓 사용을 위한 기본 설정 및 의존성
-    implementation 'org.springframework.boot:spring-boot-starter-websocket'
-
     // Spring KafKa : KafKa 사용을 위한 기본 설정 및 의존성
     implementation 'org.springframework.kafka:spring-kafka'
     testImplementation 'org.springframework.kafka:spring-kafka-test'

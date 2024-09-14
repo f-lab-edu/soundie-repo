@@ -67,6 +67,15 @@
                 #{chatRoom.description})
     </insert>
 
+    <update id="updateMemberNullIfMatchMember">
+        update chatroom
+        <set>
+            <if test="#{chatRoom.hostMemberId} == #{member.id}">host_member_id = null</if>
+            <if test="#{chatRoom.guestMemberId} == #{member.id}">guest_member_id = null</if>
+        </set>
+        where id = #{chatRoom.id}
+    </update>
+
     <!-- 채팅방 삭제 -->
     <delete id="delete">
         delete from chatroom

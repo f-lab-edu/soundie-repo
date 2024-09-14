@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.soundie.chatMessage.mapper.ChatMessageMapper">
+    <!-- 채팅방 Id로, 채팅 메시지 목록 조회 -->
+    <select id="findChatMessagesByChatRoomId" resultType="com.soundie.chatMessage.domain.ChatMessage">
+        select
+            id as "id",
+            chatroom_id as "chatRoomId",
+            sender_id as "senderId",
+            type_name as "typeName",
+            content as "content",
+            member_cnt as "memberCnt",
+            created_at as "createdAt"
+        from chatmessage
+    </select>
+
+    <select id="findChatMessagesByChatRoomIdOrderByIdDesc"
+            resultType="com.soundie.chatMessage.domain.ChatMessage">
+        select
+            id as "id",
+            chatroom_id as "chatRoomId",
+            sender_id as "senderId",
+            type_name as "typeName",
+            content as "content",
+            member_cnt as "memberCnt",
+            created_at as "createdAt"
+        from chatmessage
+        where chatroom_id = #{chatRoomId}
+        order by id desc
+        limit #{size}
+    </select>
+
+    <select id="findChatMessageByChatRoomIdAndIdLessThanOrderByIdDesc"
+            resultType="com.soundie.chatMessage.domain.ChatMessage">
+        select
+            id as "id",
+            chatroom_id as "chatRoomId",
+            sender_id as "senderId",
+            type_name as "typeName",
+            content as "content",
+            member_cnt as "memberCnt",
+            created_at as "createdAt"
+        from chatmessage
+        where chatroom_id = #{chatRoomId}
+            and id &lt; #{id}
+        order by id desc
+        limit #{size}
+    </select>
+
+    <!-- 채팅방 Id로, 최근 채팅 메시지 조회 -->
+    <select id="findChatMessageByChatRoomIdOrderByIdDesc" resultType="com.soundie.chatMessage.domain.ChatMessage">
+        select
+            id as "id",
+            chatroom_id as "chatRoomId",
+            sender_id as "senderId",
+            type_name as "typeName",
+            content as "content",
+            member_cnt as "memberCnt",
+            created_at as "createdAt"
+        from chatmessage
+        where chatroom_id = #{chatRoomId}
+        order by id desc
+        limit 1
+    </select>
+
+    <!-- 채팅방 Id로, 채팅 메시지 저장 -->
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into chatmessage (chatroom_id,
+                                    sender_id,
+                                    type_name,
+                                    content,
+                                    member_cnt)
+        values (#{chatMessage.chatRoomId},
+                #{chatMessage.senderId},
+                #{chatMessage.typeName},
+                #{chatMessage.content},
+                #{chatMessage.memberCnt})
+    </insert>
+
+    <!-- 채팅방 Id로, 채팅 메시지 목록 삭제 -->
+    <delete id="deleteChatMessagesByChatRoomId">
+        delete from chatmessage
+        where chatroom_id = #{chatRoomId}
+    </delete>
+</mapper>

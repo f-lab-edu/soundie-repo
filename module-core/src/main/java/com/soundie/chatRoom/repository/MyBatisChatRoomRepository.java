@@ -2,6 +2,7 @@ package com.soundie.chatRoom.repository;
 
 import com.soundie.chatRoom.domain.ChatRoom;
 import com.soundie.chatRoom.mapper.ChatRoomMapper;
+import com.soundie.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -52,6 +53,15 @@ public class MyBatisChatRoomRepository implements ChatRoomRepository {
     @Override
     public ChatRoom save(ChatRoom chatRoom) {
         chatRoomMapper.save(chatRoom);
+        return chatRoom;
+    }
+
+    /*
+     * 채팅방의 회원 Id 일치하면, null 로 수정(동적 쿼리)
+     * */
+    @Override
+    public ChatRoom updateMemberNullIfMatchMember(ChatRoom chatRoom, Member member) {
+        chatRoomMapper.updateMemberNullIfMatchMember(chatRoom, member);
         return chatRoom;
     }
 

@@ -1,41 +1,37 @@
 package com.soundie.chatMessage.domain;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor
-public class ChatMessage implements Serializable {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class ChatMessage {
 
-    private String id; // 메시지 Id(String=UUID)
-    private ChatMessageType type; // 메시지 타입
+    private Long id; // 메시지 Id(Long)
     private Long chatRoomId; // 채팅방 Id(Long)
     private Long senderId; // 메시지 보낸 사람 Id(Long)
+    private String typeName; // 메시지 타입 이름
     private String content; // 메시지 내용
+    private int memberCnt; // 채팅방에 접속한 인원
     private LocalDateTime createdAt; // 메시지 생성 시간
 
     /*
-    * 입장 메시지 위함
-    * 퇴장 메시지 위함
-    * */
+     * 입장 메시지 위함
+     * 퇴장 메시지 위함
+     * */
     public ChatMessage(
-            ChatMessageType type,
             Long chatRoomId,
+            Long senderId,
+            ChatMessageType chatMessageType,
             String content,
-            LocalDateTime createdAt){
-        this.type = type;
+            int memberCnt){
         this.chatRoomId = chatRoomId;
+        this.senderId = senderId;
+        this.typeName = chatMessageType.getName();
         this.content = content;
-        this.createdAt = createdAt;
-    }
-
-    /*
-    * 전송 메시지 위함
-    * */
-    public void setId(String id) {
-        this.id = id;
+        this.memberCnt = memberCnt;
     }
 }
