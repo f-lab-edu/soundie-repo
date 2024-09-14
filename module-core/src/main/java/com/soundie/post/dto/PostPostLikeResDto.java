@@ -1,26 +1,20 @@
 package com.soundie.post.dto;
 
-import lombok.Builder;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@Builder(builderMethodName = "innerBuilder")
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class PostPostLikeResDto {
 
     private final Number likeCount;
     private final Boolean liked;
 
-    private static PostPostLikeResDtoBuilder builder(Number likeCount, Boolean liked){
-        return innerBuilder()
-                .likeCount(likeCount)
-                .liked(liked);
-    }
-
     public static PostPostLikeResDto of(Number likeCount, Boolean liked){
-        return PostPostLikeResDto.builder(
-                    likeCount,
-                    liked
-                )
-                .build();
+        return new PostPostLikeResDto(
+                likeCount,
+                liked
+        );
     }
 }

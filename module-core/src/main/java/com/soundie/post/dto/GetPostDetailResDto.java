@@ -1,18 +1,19 @@
 package com.soundie.post.dto;
 
 import com.soundie.post.domain.Post;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class GetPostDetailResDto {
 
-    private GetPostDetailElement post;
+    private final GetPostDetailElement post;
 
     public static GetPostDetailResDto of(Post post, Number likeCount, Number commentCount, Boolean isLiked){
         return new GetPostDetailResDto(
-                    GetPostDetailElement.of(post, likeCount, commentCount, isLiked)
-                );
+                GetPostDetailElement.of(post, likeCount, commentCount, isLiked)
+        );
     }
 }

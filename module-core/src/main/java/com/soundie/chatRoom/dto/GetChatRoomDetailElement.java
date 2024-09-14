@@ -1,13 +1,14 @@
 package com.soundie.chatRoom.dto;
 
 import com.soundie.chatRoom.domain.ChatRoom;
-import lombok.Builder;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Builder(builderMethodName = "innerBuilder")
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class GetChatRoomDetailElement {
 
     private final Long chatRoomId;
@@ -15,25 +16,12 @@ public class GetChatRoomDetailElement {
     private final String description;
     private final LocalDateTime createdAt;
 
-    private static GetChatRoomDetailElementBuilder builder(
-            Long chatRoomId,
-            String name,
-            String description,
-            LocalDateTime createdAt) {
-        return innerBuilder()
-                .chatRoomId(chatRoomId)
-                .name(name)
-                .description(description)
-                .createdAt(createdAt);
-    }
-
     public static GetChatRoomDetailElement of(ChatRoom chatRoom) {
-        return GetChatRoomDetailElement.builder(
-                    chatRoom.getId(),
-                    chatRoom.getName(),
-                    chatRoom.getDescription(),
-                    chatRoom.getCreatedAt()
-                )
-                .build();
+        return new GetChatRoomDetailElement(
+                chatRoom.getId(),
+                chatRoom.getName(),
+                chatRoom.getDescription(),
+                chatRoom.getCreatedAt()
+        );
     }
 }
