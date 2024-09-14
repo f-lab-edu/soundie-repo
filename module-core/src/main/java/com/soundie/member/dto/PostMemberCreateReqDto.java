@@ -7,9 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PostMemberCreateReqDto {
-    private String name;
 
-    public PostMemberCreateReqDto(String name){
-        this.name = name;
-    }
+    private String name;
 }

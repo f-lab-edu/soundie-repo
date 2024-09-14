@@ -11,9 +11,4 @@ public class GetCommentCursorReqDto {
 
     private Long cursor = PaginationUtil.START_CURSOR;
     private Integer size = PaginationUtil.COMMENT_SIZE;
-
-    public GetCommentCursorReqDto(Long cursor, Integer size){
-        this.cursor = cursor;
-        this.size = size;
-    }
 }

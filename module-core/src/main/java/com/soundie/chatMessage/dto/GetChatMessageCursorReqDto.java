@@ -11,9 +11,4 @@ public class GetChatMessageCursorReqDto {
 
     private Long cursor = PaginationUtil.START_CURSOR;
     private Integer size = PaginationUtil.CHAT_MESSAGE_SIZE;
-
-    public GetChatMessageCursorReqDto(Long cursor, Integer size){
-        this.cursor = cursor;
-        this.size = size;
-    }
 }
