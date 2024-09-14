@@ -25,13 +25,13 @@ public class MyBatisPostRepository implements PostRepository {
     }
 
     @Override
-    public List<Post> findPostsOrderByIdDesc(Integer size) {
-        return postMapper.findPostsOrderByIdDesc(size);
+    public List<Post> findPostsByOrderByIdDescCreatedAtDesc(Integer size) {
+        return postMapper.findPostsByOrderByIdDescCreatedAtDesc(size);
     }
 
     @Override
-    public List<Post> findPostsByIdLessThanOrderByIdDesc(Long postId, Integer size) {
-        return postMapper.findPostsByIdLessThanOrderByIdDesc(postId, size);
+    public List<Post> findPostsByIdLessThanOrderByIdDescCreatedAtDesc(Long postId, Integer size) {
+        return postMapper.findPostsByIdLessThanOrderByIdDescCreatedAtDesc(postId, size);
     }
 
     /*

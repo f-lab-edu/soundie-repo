@@ -16,7 +16,7 @@
         from post
     </select>
 
-    <select id="findPostsOrderByIdDesc"
+    <select id="findPostsByOrderByIdDescCreatedAtDesc"
             resultType="com.soundie.post.domain.Post">
         select
             id as "id",
@@ -28,11 +28,11 @@
             album_name as "albumName",
             created_at as "createdAt"
         from post
-        order by id desc
+        order by id desc, created_at desc
         limit #{size}
     </select>
 
-    <select id="findPostsByIdLessThanOrderByIdDesc"
+    <select id="findPostsByIdLessThanOrderByIdDescCreatedAtDesc"
             resultType="com.soundie.post.domain.Post">
         select
             id as "id",
@@ -45,7 +45,7 @@
             created_at as "createdAt"
         from post
         where id &lt; #{id}
-        order by id desc
+        order by id desc, created_at desc
         limit #{size}
     </select>
 

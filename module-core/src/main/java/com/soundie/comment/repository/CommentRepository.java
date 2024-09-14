@@ -10,9 +10,9 @@ public interface CommentRepository {
 
     List<Comment> findCommentsByPostId(Long postId);
 
-    List<Comment> findCommentsByPostIdOrderByIdAsc(Long postId, Integer size);
+    List<Comment> findCommentsByPostIdOrderByIdAscCreatedAtAsc(Long postId, Integer size);
 
-    List<Comment> findCommentsByPostIdAndIdLessThanOrderByIdAsc(Long postId, Long cursor, Integer size);
+    List<Comment> findCommentsByPostIdAndIdLessThanOrderByIdAscCreatedAtAsc(Long postId, Long cursor, Integer size);
 
     Number countCommentsByPostId(Long postId);
 

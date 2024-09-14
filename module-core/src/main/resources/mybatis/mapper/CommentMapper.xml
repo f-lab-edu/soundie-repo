@@ -25,7 +25,7 @@
         where post_id = #{postId}
     </select>
 
-    <select id="findCommentsByPostIdOrderByIdAsc"
+    <select id="findCommentsByPostIdOrderByIdAscCreatedAtAsc"
             resultType="com.soundie.comment.domain.Comment">
         select
             id as "id",
@@ -35,11 +35,11 @@
             created_at as "createdAt"
         from comment
         where post_id = #{postId}
-        order by id asc
+        order by id asc, created_at asc
         limit #{size}
     </select>
 
-    <select id="findCommentsByPostIdAndIdLessThanOrderByIdAsc"
+    <select id="findCommentsByPostIdAndIdLessThanOrderByIdAscCreatedAtAsc"
             resultType="com.soundie.comment.domain.Comment">
         select
             id as "id",
@@ -50,7 +50,7 @@
         from comment
         where post_id = #{postId}
             and id &gt; #{id}
-        order by id asc
+        order by id asc, created_at asc
         limit #{size}
     </select>
 

@@ -162,8 +162,8 @@ public class PostService {
     }
 
     private List<Post> findPostsByCursorCheckExistsCursor(Long cursor, Integer size) {
-        return cursor.equals(PaginationUtil.START_CURSOR) ? postRepository.findPostsOrderByIdDesc(size)
-                : postRepository.findPostsByIdLessThanOrderByIdDesc(cursor, size);
+        return cursor.equals(PaginationUtil.START_CURSOR) ? postRepository.findPostsByOrderByIdDescCreatedAtDesc(size)
+                : postRepository.findPostsByIdLessThanOrderByIdDescCreatedAtDesc(cursor, size);
     }
 
     private List<PostWithCount> findPostsWithCount(List<Post> findPosts) {

@@ -34,13 +34,13 @@ public class MemoryCommentRepository implements CommentRepository {
     }
 
     @Override
-    public List<Comment> findCommentsByPostIdOrderByIdAsc(Long postId, Integer size) {
+    public List<Comment> findCommentsByPostIdOrderByIdAscCreatedAtAsc(Long postId, Integer size) {
         // 구현 필요
         return null;
     }
 
     @Override
-    public List<Comment> findCommentsByPostIdAndIdLessThanOrderByIdAsc(Long postId, Long cursor, Integer size) {
+    public List<Comment> findCommentsByPostIdAndIdLessThanOrderByIdAscCreatedAtAsc(Long postId, Long cursor, Integer size) {
         // 구현 필요
         return null;
     }

@@ -13,11 +13,11 @@ public interface CommentMapper {
 
     List<Comment> findCommentsByPostId(@Param("postId") Long postId);
 
-    List<Comment> findCommentsByPostIdOrderByIdAsc(
+    List<Comment> findCommentsByPostIdOrderByIdAscCreatedAtAsc(
             @Param("postId") Long postId,
             @Param("size") Integer size);
 
-    List<Comment> findCommentsByPostIdAndIdLessThanOrderByIdAsc(
+    List<Comment> findCommentsByPostIdAndIdLessThanOrderByIdAscCreatedAtAsc(
             @Param("postId") Long postId,
             @Param("id") Long commentId,
             @Param("size") Integer size);
