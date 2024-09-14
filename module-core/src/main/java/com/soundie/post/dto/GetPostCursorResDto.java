@@ -1,19 +1,20 @@
 package com.soundie.post.dto;
 
 import com.soundie.post.domain.PostWithCount;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class GetPostCursorResDto {
 
-    private Collection<GetPostElement> posts;
-    private Long cursor;
+    private final Collection<GetPostElement> posts;
+    private final Long cursor;
 
     public static GetPostCursorResDto of(List<PostWithCount> postsWithCount, Integer size) {
         return new GetPostCursorResDto(

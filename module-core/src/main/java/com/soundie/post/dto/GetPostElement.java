@@ -1,23 +1,24 @@
 package com.soundie.post.dto;
 
 import com.soundie.post.domain.PostWithCount;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class GetPostElement {
 
-    private Long postId;
-    private String title;
-    private String artistName;
-    private String albumImgPath;
-    private String albumName;
-    private Number likeCount;
-    private Number commentCount;
-    private LocalDateTime createdAt;
+    private final Long postId;
+    private final String title;
+    private final String artistName;
+    private final String albumImgPath;
+    private final String albumName;
+    private final Number likeCount;
+    private final Number commentCount;
+    private final LocalDateTime createdAt;
 
     public static GetPostElement of(PostWithCount postWithCount){
         return new GetPostElement(
