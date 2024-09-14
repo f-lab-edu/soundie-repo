@@ -7,11 +7,15 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PostPostCreateReqDto {
+
     private String title;
     private String musicPath;
     private String albumImgPath;
     private String albumName;
 
+    /*
+     * test 를 위한 생성자
+     * */
     public PostPostCreateReqDto(String title, String musicPath, String albumImgPath, String albumName){
         this.title = title;
         this.musicPath = musicPath;
