@@ -17,10 +17,10 @@ public class GetChatRoomResDto {
 
     public static GetChatRoomResDto of(List<ChatRoom> chatRooms) {
         return new GetChatRoomResDto(
-                    chatRooms.stream()
-                            .map(GetChatRoomElement::of)
-                            .collect(Collectors.toList())
-                );
+                chatRooms.stream()
+                        .map(GetChatRoomElement::of)
+                        .collect(Collectors.toList())
+        );
 
     }
 }

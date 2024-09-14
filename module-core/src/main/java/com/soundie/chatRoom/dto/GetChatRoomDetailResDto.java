@@ -18,9 +18,9 @@ public class GetChatRoomDetailResDto {
 
     public static GetChatRoomDetailResDto of(ChatRoom chatRoom, List<ChatMessage> chatMessages, Integer size) {
         return new GetChatRoomDetailResDto(
-                    GetChatRoomDetailElement.of(chatRoom),
-                    chatMessages,
-                    getNextCursor(chatMessages, size)
+                GetChatRoomDetailElement.of(chatRoom),
+                chatMessages,
+                getNextCursor(chatMessages, size)
         );
     }
 

@@ -18,10 +18,10 @@ public class GetChatRoomElement {
 
     public static GetChatRoomElement of(ChatRoom chatRoom) {
         return new GetChatRoomElement(
-                    chatRoom.getId(),
-                    chatRoom.getName(),
-                    chatRoom.getDescription(),
-                    chatRoom.getCreatedAt()
-                );
+                chatRoom.getId(),
+                chatRoom.getName(),
+                chatRoom.getDescription(),
+                chatRoom.getCreatedAt()
+        );
     }
 }

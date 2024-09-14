@@ -12,6 +12,8 @@ public class ChatRoomIdElement {
     private final Long chatRoomId;
 
     public static ChatRoomIdElement of(ChatRoom chatRoom){
-        return new ChatRoomIdElement(chatRoom.getId());
+        return new ChatRoomIdElement(
+                chatRoom.getId()
+        );
     }
 }
