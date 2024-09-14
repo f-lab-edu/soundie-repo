@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 public class PostCommentCreateReqDto {
     private String content;
 
+    /*
+    * test 를 위한 생성자
+    * */
     public PostCommentCreateReqDto(String content){
         this.content = content;
     }

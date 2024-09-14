@@ -11,9 +11,4 @@ public class GetPostCursorReqDto {
 
     private Long cursor = PaginationUtil.START_CURSOR;
     private Integer size = PaginationUtil.POST_SIZE;
-
-    public GetPostCursorReqDto(Long cursor, Integer size){
-        this.cursor = cursor;
-        this.size = size;
-    }
 }

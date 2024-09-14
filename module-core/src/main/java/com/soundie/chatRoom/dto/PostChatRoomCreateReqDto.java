@@ -11,10 +11,4 @@ public class PostChatRoomCreateReqDto {
     private Long guestMemberId;
     private String name;
     private String description;
-
-    public PostChatRoomCreateReqDto(Long guestMemberId, String name, String description){
-        this.guestMemberId = guestMemberId;
-        this.name = name;
-        this.description = description;
-    }
 }
