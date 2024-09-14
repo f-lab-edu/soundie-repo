@@ -17,9 +17,9 @@ public class GetPostResDto {
 
     public static GetPostResDto of(List<PostWithCount> postsWithCount) {
         return new GetPostResDto(
-                    postsWithCount.stream()
-                            .map(GetPostElement::of)
-                            .collect(Collectors.toList())
-                );
+                postsWithCount.stream()
+                        .map(GetPostElement::of)
+                        .collect(Collectors.toList())
+        );
     }
 }

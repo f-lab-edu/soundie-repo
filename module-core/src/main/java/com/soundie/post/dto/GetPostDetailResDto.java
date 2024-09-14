@@ -13,7 +13,7 @@ public class GetPostDetailResDto {
 
     public static GetPostDetailResDto of(Post post, Number likeCount, Number commentCount, Boolean isLiked){
         return new GetPostDetailResDto(
-                    GetPostDetailElement.of(post, likeCount, commentCount, isLiked)
-                );
+                GetPostDetailElement.of(post, likeCount, commentCount, isLiked)
+        );
     }
 }

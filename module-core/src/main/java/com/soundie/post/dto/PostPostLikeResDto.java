@@ -13,8 +13,8 @@ public class PostPostLikeResDto {
 
     public static PostPostLikeResDto of(Number likeCount, Boolean liked){
         return new PostPostLikeResDto(
-                    likeCount,
-                    liked
-                );
+                likeCount,
+                liked
+        );
     }
 }

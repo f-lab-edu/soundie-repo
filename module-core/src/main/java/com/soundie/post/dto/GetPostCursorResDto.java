@@ -18,11 +18,11 @@ public class GetPostCursorResDto {
 
     public static GetPostCursorResDto of(List<PostWithCount> postsWithCount, Integer size) {
         return new GetPostCursorResDto(
-                        postsWithCount.stream()
-                                .map(GetPostElement::of)
-                                .collect(Collectors.toList()),
-                        getNextCursor(postsWithCount, size)
-                );
+                postsWithCount.stream()
+                        .map(GetPostElement::of)
+                        .collect(Collectors.toList()),
+                getNextCursor(postsWithCount, size)
+        );
     }
 
     private static Long getNextCursor(List<PostWithCount> postsWithCount, Integer size) {

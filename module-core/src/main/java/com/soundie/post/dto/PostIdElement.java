@@ -13,7 +13,7 @@ public class PostIdElement {
 
     public static PostIdElement of(Post post){
         return new PostIdElement(
-                    post.getId()
-                );
+                post.getId()
+        );
     }
 }

@@ -24,16 +24,16 @@ public class GetPostDetailElement {
 
     public static GetPostDetailElement of(Post post, Number postLikeCount, Number commentCount, Boolean liked) {
         return new GetPostDetailElement(
-                    post.getId(),
-                    post.getTitle(),
-                    post.getArtistName(),
-                    post.getMusicPath(),
-                    post.getAlbumImgPath(),
-                    post.getAlbumName(),
-                    postLikeCount,
-                    commentCount,
-                    liked,
-                    post.getCreatedAt()
-                );
+                post.getId(),
+                post.getTitle(),
+                post.getArtistName(),
+                post.getMusicPath(),
+                post.getAlbumImgPath(),
+                post.getAlbumName(),
+                postLikeCount,
+                commentCount,
+                liked,
+                post.getCreatedAt()
+        );
     }
 }
