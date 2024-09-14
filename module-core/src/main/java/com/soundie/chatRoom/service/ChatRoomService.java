@@ -63,14 +63,14 @@ public class ChatRoomService {
                 .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
 
         // Host 회원과 Guest 회원, 채팅방이 이미 존재
-        Boolean hasChatRoom = chatRoomRepository.findChatRoomByHostMemberIdAndGuestMemberId(findHostMember.getId(), findGuestMember.getId())
+        boolean hasChatRoom = chatRoomRepository.findChatRoomByHostMemberIdAndGuestMemberId(findHostMember.getId(), findGuestMember.getId())
                 .isPresent();
         if (hasChatRoom) {
             throw new DuplicateException(ApplicationError.DUPLICATE_CHAT_ROOM);
         }
 
         // Host 회원과 Guest 회원이 반대인, 채팅방이 이미 존재
-        Boolean hasReverseChatRoom = chatRoomRepository.findChatRoomByHostMemberIdAndGuestMemberId(findGuestMember.getId(), findHostMember.getId())
+        boolean hasReverseChatRoom = chatRoomRepository.findChatRoomByHostMemberIdAndGuestMemberId(findGuestMember.getId(), findHostMember.getId())
                 .isPresent();
         if (hasReverseChatRoom) {
             throw new DuplicateException(ApplicationError.DUPLICATE_CHAT_ROOM);
