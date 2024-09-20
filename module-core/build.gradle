@@ -18,4 +18,7 @@ dependencies {
 
     // Redis Cache 를 위한 LocalDateTime 의 직렬화/역직렬화
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3'
+
+    // Spring Cloud AWS Starter-S3: AWS S3 사용을 위한 기본 설정 및 의존성
+    implementation 'io.awspring.cloud:spring-cloud-aws-s3:3.0.2'
 }
