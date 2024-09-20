@@ -3,6 +3,7 @@ spring:
   config:
     activate:
       on-profile: local
+    import: application-secret.yaml
 
   datasource:
     driver-class-name: org.h2.Driver
@@ -45,3 +46,14 @@ mybatis:
   mapper-locations: classpath*:mybatis/mapper/**/*.xml
   configuration:
     map-underscore-to-camel-case: true
+
+# cloud
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: ${S3_BUCKET_NAME}
