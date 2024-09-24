@@ -23,7 +23,7 @@
             c.content as "content",
             c.created_at as "createdAt"
         from comment c join member m on (c.member_id = m.id)
-        where post_id = #{postId}
+        where c.post_id = #{postId}
     </select>
 
     <select id="findCommentsWithAuthorByPostIdOrderByIdAsc"
