@@ -1,6 +1,7 @@
 package com.soundie.comment.service;
 
 import com.soundie.comment.domain.Comment;
+import com.soundie.comment.domain.CommentWithAuthor;
 import com.soundie.comment.dto.CommentIdElement;
 import com.soundie.comment.dto.GetCommentResDto;
 import com.soundie.comment.dto.PostCommentCreateReqDto;
@@ -42,10 +43,8 @@ public class CommentService {
         Post findPost = postRepository.findPostById(postId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.POST_NOT_FOUND));
 
-        List<Comment> comments = commentRepository.findCommentsByPostId(findPost.getId());
-        Map<Long, Member> findCommentsByMember = findCommentsByMember(comments);
-
-        return GetCommentResDto.of(comments, findCommentsByMember);
+        List<CommentWithAuthor> commentsWithAuthor = commentRepository.findCommentsWithAuthorByPostId(findPost.getId());
+        return GetCommentResDto.of(commentsWithAuthor);
     }
 
     public GetCommentCursorResDto readCommentListByCursor(Long postId, GetCommentCursorReqDto getCommentCursorReqDto) {

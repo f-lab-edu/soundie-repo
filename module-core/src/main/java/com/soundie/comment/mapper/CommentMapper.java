@@ -1,6 +1,7 @@
 package com.soundie.comment.mapper;
 
 import com.soundie.comment.domain.Comment;
+import com.soundie.comment.domain.CommentWithAuthor;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -11,7 +12,7 @@ public interface CommentMapper {
 
     List<Comment> findComments();
 
-    List<Comment> findCommentsByPostId(@Param("postId") Long postId);
+    List<CommentWithAuthor> findCommentsWithAuthorByPostId(@Param("postId") Long postId);
 
     List<Comment> findCommentsByPostIdOrderByIdAsc(
             @Param("postId") Long postId,

@@ -1,14 +1,12 @@
 package com.soundie.comment.dto;
 
-import com.soundie.comment.domain.Comment;
-import com.soundie.member.domain.Member;
+import com.soundie.comment.domain.CommentWithAuthor;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Getter
@@ -17,13 +15,10 @@ public class GetCommentResDto {
 
     private final Collection<GetCommentElement> comments;
 
-    public static GetCommentResDto of(List<Comment> comments, Map<Long, Member> commentsByMember) {
+    public static GetCommentResDto of(List<CommentWithAuthor> commentsWithAuthor) {
         return new GetCommentResDto(
-                comments.stream()
-                        .map(c -> {
-                            Member member = commentsByMember.get(c.getId());
-                            return GetCommentElement.of(c, member);
-                        })
+                commentsWithAuthor.stream()
+                        .map(GetCommentElement::of)
                         .collect(Collectors.toList())
         );
     }

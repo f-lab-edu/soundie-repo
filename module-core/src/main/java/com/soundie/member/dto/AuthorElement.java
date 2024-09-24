@@ -1,6 +1,5 @@
 package com.soundie.member.dto;
 
-import com.soundie.member.domain.Member;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,13 +8,13 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthorElement {
 
-    private final Long memberId;
+    private final Long id;
     private final String name;
 
-    public static AuthorElement of(Member member){
+    public static AuthorElement of(Long memberId, String memberName) {
         return new AuthorElement(
-                member.getId(),
-                member.getName()
+                memberId,
+                memberName
         );
     }
 }

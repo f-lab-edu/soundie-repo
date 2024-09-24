@@ -1,6 +1,7 @@
 package com.soundie.comment.repository;
 
 import com.soundie.comment.domain.Comment;
+import com.soundie.comment.domain.CommentWithAuthor;
 import com.soundie.comment.mapper.CommentMapper;
 import com.soundie.global.common.util.CacheNames;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +25,11 @@ public class MyBatisCommentRepository implements CommentRepository {
     }
 
     /*
-     * 음원 게시물 Id로, 댓글 목록 조회
+     * 음원 게시물 Id로, 댓글+작성자이름 목록 조회
      * */
     @Override
-    public List<Comment> findCommentsByPostId(Long postId) {
-        return commentMapper.findCommentsByPostId(postId);
+    public List<CommentWithAuthor> findCommentsWithAuthorByPostId(Long postId) {
+        return commentMapper.findCommentsWithAuthorByPostId(postId);
     }
 
     @Override
