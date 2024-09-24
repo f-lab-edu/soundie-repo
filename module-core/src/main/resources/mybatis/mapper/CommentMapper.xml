@@ -26,32 +26,34 @@
         where post_id = #{postId}
     </select>
 
-    <select id="findCommentsByPostIdOrderByIdAsc"
-            resultType="com.soundie.comment.domain.Comment">
+    <select id="findCommentsWithAuthorByPostIdOrderByIdAsc"
+            resultType="com.soundie.comment.domain.CommentWithAuthor">
         select
-            id as "id",
-            member_id as "memberId",
-            post_id as "postId",
-            content as "content",
-            created_at as "createdAt"
-        from comment
-        where post_id = #{postId}
-        order by id asc
+            c.id as "id",
+            c.member_id as "memberId",
+            m.name as "memberName",
+            c.post_id as "postId",
+            c.content as "content",
+            c.created_at as "createdAt"
+        from comment c join member m on (c.member_id = m.id)
+        where c.post_id = #{postId}
+        order by c.id asc
         limit #{size}
     </select>
 
-    <select id="findCommentsByPostIdAndIdLessThanOrderByIdAsc"
-            resultType="com.soundie.comment.domain.Comment">
+    <select id="findCommentsWithAuthorByPostIdAndIdLessThanOrderByIdAsc"
+            resultType="com.soundie.comment.domain.CommentWithAuthor">
         select
-            id as "id",
-            member_id as "memberId",
-            post_id as "postId",
-            content as "content",
-            created_at as "createdAt"
-        from comment
-        where post_id = #{postId}
-            and id &gt; #{id}
-        order by id asc
+            c.id as "id",
+            c.member_id as "memberId",
+            m.name as "memberName",
+            c.post_id as "postId",
+            c.content as "content",
+            c.created_at as "createdAt"
+        from comment c join member m on (c.member_id = m.id)
+        where c.post_id = #{postId}
+            and c.id &gt; #{id}
+        order by c.id asc
         limit #{size}
     </select>
 

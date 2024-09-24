@@ -33,13 +33,13 @@ public class MyBatisCommentRepository implements CommentRepository {
     }
 
     @Override
-    public List<Comment> findCommentsByPostIdOrderByIdAsc(Long postId, Integer size) {
-        return commentMapper.findCommentsByPostIdOrderByIdAsc(postId, size);
+    public List<CommentWithAuthor> findCommentsWithAuthorByPostIdOrderByIdAsc(Long postId, Integer size) {
+        return commentMapper.findCommentsWithAuthorByPostIdOrderByIdAsc(postId, size);
     }
 
     @Override
-    public List<Comment> findCommentsByPostIdAndIdLessThanOrderByIdAsc(Long postId, Long cursor, Integer size) {
-        return commentMapper.findCommentsByPostIdAndIdLessThanOrderByIdAsc(postId, cursor, size);
+    public List<CommentWithAuthor> findCommentsWithAuthorByPostIdAndIdLessThanOrderByIdAsc(Long postId, Long cursor, Integer size) {
+        return commentMapper.findCommentsWithAuthorByPostIdAndIdLessThanOrderByIdAsc(postId, cursor, size);
     }
 
     /*

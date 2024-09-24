@@ -11,9 +11,9 @@ public interface CommentRepository {
 
     List<CommentWithAuthor> findCommentsWithAuthorByPostId(Long postId);
 
-    List<Comment> findCommentsByPostIdOrderByIdAsc(Long postId, Integer size);
+    List<CommentWithAuthor> findCommentsWithAuthorByPostIdOrderByIdAsc(Long postId, Integer size);
 
-    List<Comment> findCommentsByPostIdAndIdLessThanOrderByIdAsc(Long postId, Long cursor, Integer size);
+    List<CommentWithAuthor> findCommentsWithAuthorByPostIdAndIdLessThanOrderByIdAsc(Long postId, Long cursor, Integer size);
 
     Number countCommentsByPostId(Long postId);
 

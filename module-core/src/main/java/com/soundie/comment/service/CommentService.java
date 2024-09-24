@@ -23,9 +23,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -56,40 +54,38 @@ public class CommentService {
         
         // 캐시 존재 판단에 따른, 캐시 저장
         if (Boolean.FALSE.equals(redisCacheTemplate.hasKey(getCommentKeyByPostAndCursor(postId, cursor)))){
-            List<Comment> comments = findCommentsByCursorCheckExistsCursor(findPost.getId(), cursor, size);
+            List<CommentWithAuthor> commentsWithAuthor = findCommentsWithAuthorByCursorCheckExistsCursor(findPost.getId(), cursor, size);
             ListOperations<String, Object> opsForList = redisCacheTemplate.opsForList();
-            for (Comment findComment : comments) {
-                opsForList.rightPush(getCommentKeyByPostAndCursor(postId, cursor), findComment);
+            for (CommentWithAuthor findCommentWithAuthor : commentsWithAuthor) {
+                opsForList.rightPush(getCommentKeyByPostAndCursor(postId, cursor), findCommentWithAuthor);
             }
             opsForList.getOperations().expire(getCommentKeyByPostAndCursor(postId, cursor), CacheExpireTime.COMMENT, TimeUnit.HOURS);
 
-            Map<Long, Member> findCommentsByMember = findCommentsByMember(comments);
-            return GetCommentCursorResDto.of(comments, findCommentsByMember, size);
+            return GetCommentCursorResDto.of(commentsWithAuthor, size);
         } 
 
         // 캐시 조회
-        List<Comment> cachedComments = redisCacheTemplate.opsForList().range(getCommentKeyByPostAndCursor(postId, cursor), 0, -1).stream()
-                .map(v -> (Comment) v)
+        List<CommentWithAuthor> cachedCommentsWithAuthor = redisCacheTemplate.opsForList().range(getCommentKeyByPostAndCursor(postId, cursor), 0, -1).stream()
+                .map(v -> (CommentWithAuthor) v)
                 .collect(Collectors.toList());
 
         // 마지막 페이지 판단에 따른, 캐시 저장
-        if (cachedComments.size() < size) {
-            List<Comment> comments = findCommentsByCursorCheckExistsCursor(findPost.getId(), cursor, size);
-            List<Comment> filteredComments = comments.stream()
-                    .filter(comment -> cachedComments.stream()
-                            .noneMatch(cachedComment -> comment.getId().equals(cachedComment.getId())))
+        if (cachedCommentsWithAuthor.size() < size) {
+            List<CommentWithAuthor> commentsWithAuthor = findCommentsWithAuthorByCursorCheckExistsCursor(findPost.getId(), cursor, size);
+            List<CommentWithAuthor> filteredComments = commentsWithAuthor.stream()
+                    .filter(commentWithAuthor -> cachedCommentsWithAuthor.stream()
+                            .noneMatch(cachedCommentWithAuthor -> commentWithAuthor.getId().equals(cachedCommentWithAuthor.getId()))
+                    )
                     .collect(Collectors.toList());
             ListOperations<String, Object> opsForList = redisCacheTemplate.opsForList();
-            for (Comment filteredComment : filteredComments) {
+            for (CommentWithAuthor filteredComment : filteredComments) {
                 opsForList.rightPush(getCommentKeyByPostAndCursor(postId, cursor), filteredComment);
             }
 
-            Map<Long, Member> findCommentsByMember = findCommentsByMember(comments);
-            return GetCommentCursorResDto.of(comments, findCommentsByMember, size);
+            return GetCommentCursorResDto.of(commentsWithAuthor, size);
         }
-        
-        Map<Long, Member> findCommentsByMember = findCommentsByMember(cachedComments);
-        return GetCommentCursorResDto.of(cachedComments, findCommentsByMember, size);
+
+        return GetCommentCursorResDto.of(cachedCommentsWithAuthor, size);
     }
 
     public CommentIdElement createComment(Long memberId, Long postId, PostCommentCreateReqDto postCommentCreateReqDto) {
@@ -115,20 +111,9 @@ public class CommentService {
         return CommentIdElement.of(comment);
     }
 
-    private List<Comment> findCommentsByCursorCheckExistsCursor(Long postId, Long cursor, Integer size) {
-        return cursor.equals(PaginationUtil.START_CURSOR) ? commentRepository.findCommentsByPostIdOrderByIdAsc(postId, size)
-                : commentRepository.findCommentsByPostIdAndIdLessThanOrderByIdAsc(postId, cursor, size);
-    }
-
-    private Map<Long, Member> findCommentsByMember(List<Comment> comments) {
-        Map<Long, Member> findCommentsByMember = new LinkedHashMap<>();
-        for (Comment comment : comments){
-            Member findMember = memberRepository.findMemberById(comment.getMemberId())
-                    .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
-            findCommentsByMember.put(comment.getId(), findMember);
-        }
-
-        return findCommentsByMember;
+    private List<CommentWithAuthor> findCommentsWithAuthorByCursorCheckExistsCursor(Long postId, Long cursor, Integer size) {
+        return cursor.equals(PaginationUtil.START_CURSOR) ? commentRepository.findCommentsWithAuthorByPostIdOrderByIdAsc(postId, size)
+                : commentRepository.findCommentsWithAuthorByPostIdAndIdLessThanOrderByIdAsc(postId, cursor, size);
     }
 
     private String getCommentKeyByPostAndCursor(Long postId, Long cursor) {
