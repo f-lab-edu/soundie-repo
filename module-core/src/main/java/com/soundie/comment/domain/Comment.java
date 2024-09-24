@@ -30,9 +30,13 @@ public class Comment {
     }
 
     /*
-     * MemoryRepository 저장 위함
+     * fixture 생성 위함
      * */
-    public void setId(Long id) {
+    public Comment(Long id, Long memberId, Long postId, String content) {
         this.id = id;
+        this.memberId = memberId;
+        this.postId = postId;
+        this.content = content;
+        this.createdAt = LocalDateTime.now();
     }
 }
