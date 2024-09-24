@@ -22,11 +22,4 @@ public class ChatRoom {
         this.name = name;
         this.description = description;
     }
-
-    /*
-     * MemoryRepository 저장 위함
-     * */
-    public void setId(Long id) {
-        this.id = id;
-    }
 }

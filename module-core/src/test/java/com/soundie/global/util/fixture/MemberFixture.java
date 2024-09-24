@@ -5,14 +5,14 @@ import com.soundie.member.domain.Member;
 public class MemberFixture {
 
     public static final Member createFirstMember(){
-        Member member = new Member("Nick");
-        member.setId(1L);
-        return member;
+        return new Member(
+                1L,
+                "Nick");
     }
 
     public static final Member createSecondMember() {
-        Member member = new Member("Nick");
-        member.setId(2L);
-        return member;
+        return new Member(
+                2L,
+                "Nick");
     }
 }

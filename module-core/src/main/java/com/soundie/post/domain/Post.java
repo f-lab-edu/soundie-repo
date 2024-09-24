@@ -36,9 +36,16 @@ public class Post {
     }
 
     /*
-     * MemoryRepository 저장 위함
+     * fixture 생성 위함
      * */
-    public void setId(Long id) {
+    public Post(Long id, Long memberId, String title, String artistName, String musicPath, String albumImgPath, String albumName) {
         this.id = id;
+        this.memberId = memberId;
+        this.title = title;
+        this.artistName = artistName;
+        this.musicPath = musicPath;
+        this.albumImgPath = albumImgPath;
+        this.albumName = albumName;
+        this.createdAt = LocalDateTime.now();
     }
 }

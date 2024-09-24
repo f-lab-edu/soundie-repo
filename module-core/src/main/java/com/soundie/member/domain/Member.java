@@ -26,9 +26,11 @@ public class Member {
     }
 
     /*
-    * MemoryRepository 저장 위함
+    * fixture 생성 위함
     * */
-    public void setId(Long id) {
+    public Member(Long id, String name) {
         this.id = id;
+        this.name = name;
+        this.createdAt = LocalDateTime.now();
     }
 }
