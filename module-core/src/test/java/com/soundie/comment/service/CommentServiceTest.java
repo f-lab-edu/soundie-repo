@@ -2,6 +2,7 @@ package com.soundie.comment.service;
 
 
 import com.soundie.comment.domain.Comment;
+import com.soundie.comment.domain.CommentWithAuthor;
 import com.soundie.comment.dto.CommentIdElement;
 import com.soundie.comment.dto.GetCommentResDto;
 import com.soundie.comment.dto.PostCommentCreateReqDto;
@@ -21,9 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,24 +54,18 @@ class CommentServiceTest {
         Post post = PostFixture.createFirstMemberHavingFirstPost();
         given(postRepository.findPostById(post.getId())).willReturn(Optional.of(post));
 
-        List<Comment> comments = List.of(
-                CommentFixture.createFirstComment(member1, post),
-                CommentFixture.createSecondComment(member2, post));
-        given(commentRepository.findCommentsByPostId(post.getId())).willReturn(comments);
-
-        Member findMember = new Member("findMember");
-        Map<Long, Member> linkedHashMap = new LinkedHashMap<>();
-        for (Comment comment : comments){
-                given(memberRepository.findMemberById(comment.getId())).willReturn(Optional.of(findMember));
-                linkedHashMap.put(comment.getId(), findMember);
-        }
+        List<CommentWithAuthor> commentsWithAuthor = List.of(
+                CommentFixture.createFirstCommentWithAuthor(member1, post),
+                CommentFixture.createSecondCommentWithAuthor(member2, post)
+        );
+        given(commentRepository.findCommentsWithAuthorByPostId(post.getId())).willReturn(commentsWithAuthor);
 
         // when
         GetCommentResDto response = commentService.readCommentList(post.getId());
 
         // then
         assertThat(response).usingRecursiveComparison()
-                .isEqualTo(GetCommentResDto.of(comments, linkedHashMap));
+                .isEqualTo(GetCommentResDto.of(commentsWithAuthor));
     }
 
     @DisplayName("유효하지 않은 postId가 주어졌다면, 음원 게시물의 댓글 목록 조회가 실패합니다.")

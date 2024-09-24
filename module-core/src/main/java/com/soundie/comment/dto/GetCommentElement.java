@@ -1,7 +1,6 @@
 package com.soundie.comment.dto;
 
-import com.soundie.comment.domain.Comment;
-import com.soundie.member.domain.Member;
+import com.soundie.comment.domain.CommentWithAuthor;
 import com.soundie.member.dto.AuthorElement;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -18,12 +17,15 @@ public class GetCommentElement {
     private AuthorElement author;
     private LocalDateTime createdAt;
 
-    public static GetCommentElement of(Comment comment, Member member){
+    public static GetCommentElement of(CommentWithAuthor commentWithAuthor){
         return new GetCommentElement(
-                comment.getId(),
-                comment.getContent(),
-                AuthorElement.of(member),
-                comment.getCreatedAt()
+                commentWithAuthor.getId(),
+                commentWithAuthor.getContent(),
+                AuthorElement.of(
+                        commentWithAuthor.getMemberId(),
+                        commentWithAuthor.getMemberName()
+                ),
+                commentWithAuthor.getCreatedAt()
         );
     }
 }
