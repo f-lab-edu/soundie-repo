@@ -26,11 +26,4 @@ public class PostLike {
         this.memberId = memberId;
         this.postId = postId;
     }
-
-    /*
-     * MemoryRepository 저장 위함
-     * */
-    public void setId(Long id) {
-        this.id = id;
-    }
 }
