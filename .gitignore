@@ -10,6 +10,8 @@ build
 .LSOverride 
 
 # IntelliJ project files
+application-secret.yaml
+
 .idea
 .idea/*.xml
 *.iml
