@@ -49,11 +49,11 @@ public class CacheConfig {
                         RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())
                 );
         Map<String, RedisCacheConfiguration> redisCacheConfigMap = new HashMap<>();
-        redisCacheConfigMap.put(CacheNames.POST, defaultCacheConfig.entryTtl(Duration.ofHours(CacheExpireTime.POST)));
+        redisCacheConfigMap.put(CacheNames.POST, defaultCacheConfig.entryTtl(Duration.ofSeconds(CacheExpireTime.POST)));
         redisCacheConfigMap.put(CacheNames.COMMENT, defaultCacheConfig.entryTtl(Duration.ofHours(CacheExpireTime.COMMENT)));
         redisCacheConfigMap.put(CacheNames.COMMENT_COUNT, defaultCacheConfig.entryTtl(Duration.ofHours(CacheExpireTime.COMMENT_COUNT)));
         redisCacheConfigMap.put(CacheNames.LIKE_COUNT, defaultCacheConfig.entryTtl(Duration.ofHours(CacheExpireTime.LIKE_COUNT)));
-        redisCacheConfigMap.put(CacheNames.MEMBER, defaultCacheConfig.entryTtl(Duration.ofHours(CacheExpireTime.MEMBER)));
+        redisCacheConfigMap.put(CacheNames.MEMBER, defaultCacheConfig.entryTtl(Duration.ofSeconds(CacheExpireTime.MEMBER)));
 
         return RedisCacheManager.builder(redisCacheConnectionFactory())
                 .withInitialCacheConfigurations(redisCacheConfigMap)
