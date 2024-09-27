@@ -51,40 +51,29 @@ public class CommentService {
 
         Long cursor = getCommentCursorReqDto.getCursor();
         Integer size = getCommentCursorReqDto.getSize();
-        
-        // 캐시 존재 판단에 따른, 캐시 저장
-        if (Boolean.FALSE.equals(redisCacheTemplate.hasKey(getCommentKeyByPostAndCursor(postId, cursor)))){
+
+        // 첫 페이지 x, db 조회
+        if (!cursor.equals(PaginationUtil.START_CURSOR)) {
+            List<CommentWithAuthor> commentsWithAuthor = findCommentsWithAuthorByCursorCheckExistsCursor(findPost.getId(), cursor, size);
+            return GetCommentCursorResDto.of(commentsWithAuthor, size);
+        }
+
+        // 커스텀 캐시 존재 x, 캐시 저장
+        if (Boolean.FALSE.equals(redisCacheTemplate.hasKey(CacheNames.COMMENT_CURSOR))) {
             List<CommentWithAuthor> commentsWithAuthor = findCommentsWithAuthorByCursorCheckExistsCursor(findPost.getId(), cursor, size);
             ListOperations<String, Object> opsForList = redisCacheTemplate.opsForList();
             for (CommentWithAuthor findCommentWithAuthor : commentsWithAuthor) {
-                opsForList.rightPush(getCommentKeyByPostAndCursor(postId, cursor), findCommentWithAuthor);
+                opsForList.rightPush(CacheNames.COMMENT_CURSOR, findCommentWithAuthor);
             }
-            opsForList.getOperations().expire(getCommentKeyByPostAndCursor(postId, cursor), CacheExpireTime.COMMENT, TimeUnit.HOURS);
-
-            return GetCommentCursorResDto.of(commentsWithAuthor, size);
-        } 
-
-        // 캐시 조회
-        List<CommentWithAuthor> cachedCommentsWithAuthor = redisCacheTemplate.opsForList().range(getCommentKeyByPostAndCursor(postId, cursor), 0, -1).stream()
-                .map(v -> (CommentWithAuthor) v)
-                .collect(Collectors.toList());
-
-        // 마지막 페이지 판단에 따른, 캐시 저장
-        if (cachedCommentsWithAuthor.size() < size) {
-            List<CommentWithAuthor> commentsWithAuthor = findCommentsWithAuthorByCursorCheckExistsCursor(findPost.getId(), cursor, size);
-            List<CommentWithAuthor> filteredComments = commentsWithAuthor.stream()
-                    .filter(commentWithAuthor -> cachedCommentsWithAuthor.stream()
-                            .noneMatch(cachedCommentWithAuthor -> commentWithAuthor.getId().equals(cachedCommentWithAuthor.getId()))
-                    )
-                    .collect(Collectors.toList());
-            ListOperations<String, Object> opsForList = redisCacheTemplate.opsForList();
-            for (CommentWithAuthor filteredComment : filteredComments) {
-                opsForList.rightPush(getCommentKeyByPostAndCursor(postId, cursor), filteredComment);
-            }
+            opsForList.getOperations().expire(CacheNames.COMMENT_CURSOR, CacheExpireTime.COMMENT_CURSOR, TimeUnit.HOURS);
 
             return GetCommentCursorResDto.of(commentsWithAuthor, size);
         }
 
+        // 커스텀 캐시 존재 o, 캐시 조회
+        List<CommentWithAuthor> cachedCommentsWithAuthor = redisCacheTemplate.opsForList().range(CacheNames.COMMENT_CURSOR, 0, -1).stream()
+                .map(v -> (CommentWithAuthor) v)
+                .collect(Collectors.toList());
         return GetCommentCursorResDto.of(cachedCommentsWithAuthor, size);
     }
 
@@ -99,10 +88,27 @@ public class CommentService {
                 findPost.getId(),
                 postCommentCreateReqDto.getContent()
         );
-
         comment = commentRepository.save(comment);
 
-        // 캐시 존재 판단에 따른, 캐시 초기화
+        // 커스텀 캐시 존재 o, 캐시 수정
+        if (Boolean.TRUE.equals(redisCacheTemplate.hasKey(CacheNames.COMMENT_CURSOR))) {
+            ListOperations<String, Object> opsForList = redisCacheTemplate.opsForList();
+            if (opsForList.size(CacheNames.COMMENT_CURSOR) < PaginationUtil.COMMENT_SIZE) {
+                opsForList.rightPush(
+                        CacheNames.COMMENT_CURSOR,
+                        new CommentWithAuthor(
+                                comment.getId(),
+                                comment.getMemberId(),
+                                findMember.getName(),
+                                comment.getPostId(),
+                                comment.getContent(),
+                                comment.getCreatedAt()
+                        )
+                );
+            }
+        }
+
+        // 개수 캐시 존재 o, 캐시 수정
         if (Boolean.TRUE.equals(redisCacheTemplate.hasKey(getCommentCountKeyByPost(comment.getPostId())))){
             ValueOperations<String, Object> opsForValue = redisCacheTemplate.opsForValue();
             opsForValue.increment(getCommentCountKeyByPost(comment.getPostId()));
@@ -114,12 +120,6 @@ public class CommentService {
     private List<CommentWithAuthor> findCommentsWithAuthorByCursorCheckExistsCursor(Long postId, Long cursor, Integer size) {
         return cursor.equals(PaginationUtil.START_CURSOR) ? commentRepository.findCommentsWithAuthorByPostIdOrderByIdAsc(postId, size)
                 : commentRepository.findCommentsWithAuthorByPostIdAndIdLessThanOrderByIdAsc(postId, cursor, size);
-    }
-
-    private String getCommentKeyByPostAndCursor(Long postId, Long cursor) {
-        return CacheNames.COMMENT + "::"
-                + "postId_" + postId
-                + ":cursor_" + cursor;
     }
 
     private String getCommentCountKeyByPost(Long postId) {

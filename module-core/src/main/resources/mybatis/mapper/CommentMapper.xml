@@ -65,7 +65,7 @@
     </select>
 
     <!-- 댓글 저장 -->
-    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+    <insert id="save" useGeneratedKeys="true" keyProperty="id,createdAt">
         insert into comment (member_id, post_id, content)
         values (#{comment.memberId},
                 #{comment.postId},

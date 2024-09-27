@@ -46,24 +46,31 @@ public class PostService {
         Long cursor = getPostCursorReqDto.getCursor();
         Integer size = getPostCursorReqDto.getSize();
 
-        // 캐시 존재 판단에 따른, 캐시 저장
-        if (Boolean.FALSE.equals(redisCacheTemplate.hasKey(getPostKeyByCursor(cursor)))){
+        // 첫 페이지 x, db 조회
+        if (!cursor.equals(PaginationUtil.START_CURSOR)) {
             List<Post> findPosts = findPostsByCursorCheckExistsCursor(cursor, size);
-            ListOperations<String, Object> opsForList = redisCacheTemplate.opsForList();
-            for (Post findPost : findPosts) {
-                opsForList.rightPush(getPostKeyByCursor(cursor), findPost);
-            }
-            opsForList.getOperations().expire(getPostKeyByCursor(cursor), CacheExpireTime.POST, TimeUnit.HOURS);
-
             List<PostWithCount> findPostsWithCount = findPostsWithCount(findPosts);
             return GetPostCursorResDto.of(findPostsWithCount, size);
         }
 
-        // 캐시 조회
-        List<Post> cachedPosts = redisCacheTemplate.opsForList().range(getPostKeyByCursor(cursor), 0, -1).stream()
-                    .map(v -> (Post) v)
-                    .collect(Collectors.toList());
+        // 커스텀 캐시 존재 x, 캐시 저장
+        if (Boolean.FALSE.equals(redisCacheTemplate.hasKey(CacheNames.POST_CURSOR))){
+            List<Post> findPosts = findPostsByCursorCheckExistsCursor(cursor, size);
+            List<PostWithCount> findPostsWithCount = findPostsWithCount(findPosts);
 
+            ListOperations<String, Object> opsForList = redisCacheTemplate.opsForList();
+            for (Post findPost : findPosts) {
+                opsForList.rightPush(CacheNames.POST_CURSOR, findPost);
+            }
+            opsForList.getOperations().expire(CacheNames.POST_CURSOR, CacheExpireTime.POST_CURSOR, TimeUnit.HOURS);
+
+            return GetPostCursorResDto.of(findPostsWithCount, size);
+        }
+
+        // 커스텀 캐시 존재 o, 캐시 조회
+        List<Post> cachedPosts = redisCacheTemplate.opsForList().range(CacheNames.POST_CURSOR, 0, -1).stream()
+                .map(c -> (Post) c)
+                .collect(Collectors.toList());
         List<PostWithCount> findPostsWithCount = findPostsWithCount(cachedPosts);
         return GetPostCursorResDto.of(findPostsWithCount, size);
     }
@@ -101,16 +108,11 @@ public class PostService {
         );
         post = postRepository.save(post);
 
-        // 캐시 존재 판단에 따른, 캐시 초기화
-        if (Boolean.TRUE.equals(redisCacheTemplate.hasKey(getPostKeyByCursor(PaginationUtil.START_CURSOR)))) {
+        // 커스텀 캐시 존재 o, 캐시 수정
+        if (Boolean.TRUE.equals(redisCacheTemplate.hasKey(CacheNames.POST_CURSOR))) {
             ListOperations<String, Object> opsForList = redisCacheTemplate.opsForList();
-            opsForList.leftPush(
-                    getPostKeyByCursor(PaginationUtil.START_CURSOR),
-                    post
-            );
-            opsForList.rightPop(
-                    getPostKeyByCursor(PaginationUtil.START_CURSOR)
-            );
+            opsForList.leftPush(CacheNames.POST_CURSOR, post);
+            opsForList.rightPop(CacheNames.POST_CURSOR);
         }
 
         return PostIdElement.of(post);
@@ -184,11 +186,6 @@ public class PostService {
                     );
                 })
                 .collect(Collectors.toList());
-    }
-
-    private String getPostKeyByCursor(Long cursor) {
-        return CacheNames.POST + "::"
-                + "cursor_" + cursor;
     }
 
     private String getLikeCountKeyByPost(Long postId) {
