@@ -46,8 +46,15 @@ public class PostService {
         Long cursor = getPostCursorReqDto.getCursor();
         Integer size = getPostCursorReqDto.getSize();
 
+        // 첫 페이지 x, db 조회
+        if (!cursor.equals(PaginationUtil.START_CURSOR)) {
+            List<Post> findPosts = findPostsByCursorCheckExistsCursor(cursor, size);
+            List<PostWithCount> findPostsWithCount = findPostsWithCount(findPosts);
+            return GetPostCursorResDto.of(findPostsWithCount, size);
+        }
+
         // 커스텀 캐시 존재 x, 캐시 저장
-        if (cursor.equals(PaginationUtil.START_CURSOR) && Boolean.FALSE.equals(redisCacheTemplate.hasKey(CacheNames.POST_CURSOR))){
+        if (Boolean.FALSE.equals(redisCacheTemplate.hasKey(CacheNames.POST_CURSOR))){
             List<Post> findPosts = findPostsByCursorCheckExistsCursor(cursor, size);
             List<PostWithCount> findPostsWithCount = findPostsWithCount(findPosts);
 
