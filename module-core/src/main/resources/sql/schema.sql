@@ -85,6 +85,7 @@ create table chatmessage
          sender_id bigint,
          type_name varchar(255),
          content varchar(1000),
+         content_img_path varchar(1000),
          member_cnt tinyint,
          created_at  TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP(6),
 		 primary key (id),

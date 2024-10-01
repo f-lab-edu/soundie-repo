@@ -9,5 +9,6 @@ import lombok.NoArgsConstructor;
 public class PostChatMessageCreateReqDto {
 
     private String content; // 메시지 내용
+    private String contentImgPath; // 메시지 이미지 주소
     private int memberCnt; // 채팅방에 접속한 인원
 }

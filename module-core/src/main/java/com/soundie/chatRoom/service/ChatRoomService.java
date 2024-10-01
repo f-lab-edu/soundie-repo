@@ -82,7 +82,6 @@ public class ChatRoomService {
                 postChatRoomCreateReqDto.getName(),
                 postChatRoomCreateReqDto.getDescription()
         );
-
         chatRoom = chatRoomRepository.save(chatRoom);
 
         // 입장 메시지 생성
@@ -93,8 +92,8 @@ public class ChatRoomService {
                 findHostMember.getName() + ChatUtil.ENTER_MESSAGE,
                 ChatUtil.INITIAL_MEMBER_CNT
         );
-
         chatMessageRepository.save(enterChatMessage);
+
         return ChatRoomIdElement.of(chatRoom);
     }
 
@@ -115,10 +114,11 @@ public class ChatRoomService {
                 findMember.getId(),
                 ChatMessageType.TALK,
                 postChatMessageCreateReqDto.getContent(),
+                postChatMessageCreateReqDto.getContentImgPath(),
                 postChatMessageCreateReqDto.getMemberCnt()
         );
-
         chatMessageRepository.save(talkChatMessage);
+
         return ChatRoomIdElement.of(findChatRoom);
     }
 
@@ -149,8 +149,8 @@ public class ChatRoomService {
                     member.getName() + ChatUtil.EXIT_MESSAGE,
                     ChatUtil.INITIAL_MEMBER_CNT - 1
             );
-
             chatMessageRepository.save(exitChatMessage);
+
             chatRoomRepository.updateMemberNullIfMatchMember(chatRoom, member);
             return ChatRoomIdElement.of(chatRoom);
         }
