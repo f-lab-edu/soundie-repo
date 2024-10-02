@@ -20,9 +20,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -37,6 +39,7 @@ public class PostService {
     private final ImageService imageService;
 
     private final RedisTemplate<String, Object> redisCacheTemplate;
+    private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     public GetPostResDto readPostList(){
         List<Post> findPosts = postRepository.findPosts();
@@ -132,9 +135,9 @@ public class PostService {
             throw new BadRequestException(ApplicationError.INVALID_AUTHORITY);
         }
 
-        postRepository.delete(findPost);
-        imageService.deleteFile(findPost.getAlbumImgPath());
-        imageService.deleteFile(findPost.getMusicPath());
+        CompletableFuture.runAsync(() -> postRepository.delete(findPost), threadPoolTaskExecutor);
+        CompletableFuture.runAsync(() -> imageService.deleteFile(findPost.getAlbumImgPath()), threadPoolTaskExecutor);
+        CompletableFuture.runAsync(() -> imageService.deleteFile(findPost.getMusicPath()), threadPoolTaskExecutor);
 
         return PostIdElement.of(findPost);
     }
