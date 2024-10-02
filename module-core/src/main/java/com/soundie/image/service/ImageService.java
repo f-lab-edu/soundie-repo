@@ -9,6 +9,8 @@ import com.soundie.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
@@ -21,6 +23,7 @@ import java.util.UUID;
 public class ImageService {
 
     private final S3Presigner s3Presigner;
+    private final S3Client s3Client;
     private final MemberRepository memberRepository;
 
     @Value("${cloud.aws.s3.bucket}")
@@ -41,6 +44,15 @@ public class ImageService {
                 fileName,
                 s3Presigner.presignPutObject(putObjectPresignRequest).url().toExternalForm()
         );
+    }
+
+    public void deleteFile(String filePath) {
+        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                .bucket(bucket)
+                .key(filePath)
+                .build();
+
+        s3Client.deleteObject(deleteObjectRequest);
     }
 
     private PutObjectPresignRequest makePutObjectPreSignRequest(PutObjectRequest PutObjectRequest) {
