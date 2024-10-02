@@ -79,4 +79,10 @@
                 #{post.albumImgPath},
                 #{post.albumName})
     </insert>
+
+    <!-- 음원 게시물 삭제 -->
+    <delete id="delete">
+        delete from post
+        where id = #{post.id}
+    </delete>
 </mapper>

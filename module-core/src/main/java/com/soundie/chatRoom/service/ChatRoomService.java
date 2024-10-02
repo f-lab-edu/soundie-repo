@@ -6,8 +6,13 @@ import com.soundie.chatMessage.dto.GetChatMessageCursorReqDto;
 import com.soundie.chatMessage.dto.PostChatMessageCreateReqDto;
 import com.soundie.chatMessage.repository.ChatMessageRepository;
 import com.soundie.chatRoom.domain.ChatRoom;
-import com.soundie.chatRoom.dto.*;
+
+import com.soundie.chatRoom.dto.ChatRoomIdElement;
+import com.soundie.chatRoom.dto.GetChatRoomDetailResDto;
+import com.soundie.chatRoom.dto.GetChatRoomResDto;
+import com.soundie.chatRoom.dto.PostChatRoomCreateReqDto;
 import com.soundie.chatRoom.repository.ChatRoomRepository;
+
 import com.soundie.global.common.exception.ApplicationError;
 import com.soundie.global.common.exception.BadRequestException;
 import com.soundie.global.common.exception.DuplicateException;
@@ -17,9 +22,11 @@ import com.soundie.global.common.util.PaginationUtil;
 import com.soundie.member.domain.Member;
 import com.soundie.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -27,8 +34,9 @@ public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final MemberRepository memberRepository;
-
     private final ChatMessageRepository chatMessageRepository;
+
+    private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     public GetChatRoomResDto readChatRoomList(Long memberId) {
         Member findMember = memberRepository.findMemberById(memberId)
@@ -76,26 +84,32 @@ public class ChatRoomService {
             throw new DuplicateException(ApplicationError.DUPLICATE_CHAT_ROOM);
         }
 
-        ChatRoom chatRoom = new ChatRoom(
-                findHostMember.getId(),
-                findGuestMember.getId(),
-                postChatRoomCreateReqDto.getName(),
-                postChatRoomCreateReqDto.getDescription()
-        );
+        CompletableFuture<ChatRoom> chatRoomFuture = CompletableFuture.supplyAsync(() -> {
+            // 채팅방 생성
+            ChatRoom chatRoom = new ChatRoom(
+                    findHostMember.getId(),
+                    findGuestMember.getId(),
+                    postChatRoomCreateReqDto.getName(),
+                    postChatRoomCreateReqDto.getDescription()
+            );
+            chatRoom = chatRoomRepository.save(chatRoom);
 
-        chatRoom = chatRoomRepository.save(chatRoom);
+            return chatRoom;
+        }, threadPoolTaskExecutor).thenApplyAsync(chatRoom -> {
+            // 입장 메시지 생성
+            ChatMessage enterChatMessage = new ChatMessage(
+                    chatRoom.getId(),
+                    ChatUtil.ADMIN_ID,
+                    ChatMessageType.ENTER,
+                    findHostMember.getName() + ChatUtil.ENTER_MESSAGE,
+                    ChatUtil.INITIAL_MEMBER_CNT
+            );
+            chatMessageRepository.save(enterChatMessage);
 
-        // 입장 메시지 생성
-        ChatMessage enterChatMessage = new ChatMessage(
-                chatRoom.getId(),
-                ChatUtil.ADMIN_ID,
-                ChatMessageType.ENTER,
-                findHostMember.getName() + ChatUtil.ENTER_MESSAGE,
-                ChatUtil.INITIAL_MEMBER_CNT
-        );
+            return chatRoom;
+        }, threadPoolTaskExecutor);
 
-        chatMessageRepository.save(enterChatMessage);
-        return ChatRoomIdElement.of(chatRoom);
+        return ChatRoomIdElement.of(chatRoomFuture.join());
     }
 
     public ChatRoomIdElement sendChatRoomByMessage(Long chatRoomId, Long memberId, PostChatMessageCreateReqDto postChatMessageCreateReqDto) {
@@ -115,10 +129,11 @@ public class ChatRoomService {
                 findMember.getId(),
                 ChatMessageType.TALK,
                 postChatMessageCreateReqDto.getContent(),
+                postChatMessageCreateReqDto.getContentImgPath(),
                 postChatMessageCreateReqDto.getMemberCnt()
         );
-
         chatMessageRepository.save(talkChatMessage);
+
         return ChatRoomIdElement.of(findChatRoom);
     }
 
@@ -140,21 +155,28 @@ public class ChatRoomService {
     }
 
     private ChatRoomIdElement toggleExitChatRoom(ChatRoom chatRoom, Member member, ChatMessage chatMessage) {
+        // 채팅방 모두 나감 X
         if (chatMessage.getMemberCnt() == ChatUtil.INITIAL_MEMBER_CNT){
-            // 퇴장 메시지 생성
-            ChatMessage exitChatMessage = new ChatMessage(
-                    chatRoom.getId(),
-                    ChatUtil.ADMIN_ID,
-                    ChatMessageType.EXIT,
-                    member.getName() + ChatUtil.EXIT_MESSAGE,
-                    ChatUtil.INITIAL_MEMBER_CNT - 1
-            );
+            CompletableFuture.runAsync(() -> {
+                // 채팅방 나간 인원, null 처리
+                chatRoomRepository.updateMemberNullIfMatchMember(chatRoom, member);
+            }, threadPoolTaskExecutor);
+            CompletableFuture.runAsync(() -> {
+                // 퇴장 메시지 생성
+                ChatMessage exitChatMessage = new ChatMessage(
+                        chatRoom.getId(),
+                        ChatUtil.ADMIN_ID,
+                        ChatMessageType.EXIT,
+                        member.getName() + ChatUtil.EXIT_MESSAGE,
+                        ChatUtil.INITIAL_MEMBER_CNT - 1
+                );
+                chatMessageRepository.save(exitChatMessage);
+            }, threadPoolTaskExecutor);
 
-            chatMessageRepository.save(exitChatMessage);
-            chatRoomRepository.updateMemberNullIfMatchMember(chatRoom, member);
             return ChatRoomIdElement.of(chatRoom);
         }
 
+        // 채팅방 모두 나감
         chatRoomRepository.delete(chatRoom);
         return ChatRoomIdElement.of(chatRoom);
     }

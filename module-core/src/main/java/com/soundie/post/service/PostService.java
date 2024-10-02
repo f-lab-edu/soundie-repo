@@ -2,10 +2,12 @@ package com.soundie.post.service;
 
 import com.soundie.comment.repository.CommentRepository;
 import com.soundie.global.common.exception.ApplicationError;
+import com.soundie.global.common.exception.BadRequestException;
 import com.soundie.global.common.exception.NotFoundException;
 import com.soundie.global.common.util.CacheExpireTime;
 import com.soundie.global.common.util.CacheNames;
 import com.soundie.global.common.util.PaginationUtil;
+import com.soundie.image.service.ImageService;
 import com.soundie.member.domain.Member;
 import com.soundie.member.repository.MemberRepository;
 import com.soundie.post.domain.Post;
@@ -18,9 +20,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -32,8 +36,10 @@ public class PostService {
     private final PostLikeRepository postLikeRepository;
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
+    private final ImageService imageService;
 
     private final RedisTemplate<String, Object> redisCacheTemplate;
+    private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     public GetPostResDto readPostList(){
         List<Post> findPosts = postRepository.findPosts();
@@ -116,6 +122,24 @@ public class PostService {
         }
 
         return PostIdElement.of(post);
+    }
+
+    public PostIdElement deletePost(Long memberId, Long postId) {
+        Member findMember = memberRepository.findMemberById(memberId)
+                .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
+        Post findPost = postRepository.findPostById(postId)
+                .orElseThrow(() -> new NotFoundException(ApplicationError.POST_NOT_FOUND));
+
+        // 음원 게시물 작성 회원이 아닌, 회원이 삭제
+        if (!findMember.getId().equals(findPost.getMemberId())){
+            throw new BadRequestException(ApplicationError.INVALID_AUTHORITY);
+        }
+
+        CompletableFuture.runAsync(() -> postRepository.delete(findPost), threadPoolTaskExecutor);
+        CompletableFuture.runAsync(() -> imageService.deleteFile(findPost.getAlbumImgPath()), threadPoolTaskExecutor);
+        CompletableFuture.runAsync(() -> imageService.deleteFile(findPost.getMusicPath()), threadPoolTaskExecutor);
+
+        return PostIdElement.of(findPost);
     }
 
     public PostPostLikeResDto likePost(Long memberId, Long postId) {

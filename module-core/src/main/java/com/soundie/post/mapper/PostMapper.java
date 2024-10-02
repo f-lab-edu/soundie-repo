@@ -21,4 +21,6 @@ public interface PostMapper {
     Optional<Post> findPostById(@Param("id") Long postId);
 
     void save(@Param("post") Post post);
+
+    void delete(@Param("post") Post post);
 }
