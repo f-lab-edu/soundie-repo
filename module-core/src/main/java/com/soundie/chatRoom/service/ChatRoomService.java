@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 @Service
 @RequiredArgsConstructor
@@ -110,11 +109,7 @@ public class ChatRoomService {
             return chatRoom;
         }, threadPoolTaskExecutor);
 
-        try {
-            return ChatRoomIdElement.of(chatRoomFuture.get());
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+        return ChatRoomIdElement.of(chatRoomFuture.join());
     }
 
     public ChatRoomIdElement sendChatRoomByMessage(Long chatRoomId, Long memberId, PostChatMessageCreateReqDto postChatMessageCreateReqDto) {
@@ -162,18 +157,21 @@ public class ChatRoomService {
     private ChatRoomIdElement toggleExitChatRoom(ChatRoom chatRoom, Member member, ChatMessage chatMessage) {
         // 채팅방 모두 나감 X
         if (chatMessage.getMemberCnt() == ChatUtil.INITIAL_MEMBER_CNT){
-            CompletableFuture.runAsync(() -> chatRoomRepository.updateMemberNullIfMatchMember(chatRoom, member), threadPoolTaskExecutor)
-                    .thenRunAsync(() -> {
-                        // 퇴장 메시지 생성
-                        ChatMessage exitChatMessage = new ChatMessage(
-                                chatRoom.getId(),
-                                ChatUtil.ADMIN_ID,
-                                ChatMessageType.EXIT,
-                                member.getName() + ChatUtil.EXIT_MESSAGE,
-                                ChatUtil.INITIAL_MEMBER_CNT - 1
-                        );
-                        chatMessageRepository.save(exitChatMessage);
-                    }, threadPoolTaskExecutor);
+            CompletableFuture.runAsync(() -> {
+                // 채팅방 나간 인원, null 처리
+                chatRoomRepository.updateMemberNullIfMatchMember(chatRoom, member);
+            }, threadPoolTaskExecutor);
+            CompletableFuture.runAsync(() -> {
+                // 퇴장 메시지 생성
+                ChatMessage exitChatMessage = new ChatMessage(
+                        chatRoom.getId(),
+                        ChatUtil.ADMIN_ID,
+                        ChatMessageType.EXIT,
+                        member.getName() + ChatUtil.EXIT_MESSAGE,
+                        ChatUtil.INITIAL_MEMBER_CNT - 1
+                );
+                chatMessageRepository.save(exitChatMessage);
+            }, threadPoolTaskExecutor);
 
             return ChatRoomIdElement.of(chatRoom);
         }
