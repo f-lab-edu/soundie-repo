@@ -1,9 +1,9 @@
-package com.soundie.image.service;
+package com.soundie.file.service;
 
 import com.soundie.global.common.exception.ApplicationError;
 import com.soundie.global.common.exception.NotFoundException;
-import com.soundie.image.dto.GetImageCreateReqDto;
-import com.soundie.image.dto.GetImageCreateResDto;
+import com.soundie.file.dto.GetFileCreateReqDto;
+import com.soundie.file.dto.GetFileCreateResDto;
 import com.soundie.member.domain.Member;
 import com.soundie.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class ImageService {
+public class FileService {
 
     private final S3Presigner s3Presigner;
     private final S3Client s3Client;
@@ -32,15 +32,15 @@ public class ImageService {
     @Value("${cloud.aws.s3.expire-in}")
     private Long expireIn;
 
-    public GetImageCreateResDto getPreSignedUrl(Long memberId, GetImageCreateReqDto getImageCreateReqDto) {
+    public GetFileCreateResDto getPreSignedUrl(Long memberId, GetFileCreateReqDto getFileCreateReqDto) {
         Member findMember = memberRepository.findMemberById(memberId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
-        String imageTypeName = getImageCreateReqDto.getTypeName();
-        String fileName = makeFileName(imageTypeName);
+        String fileTypeName = getFileCreateReqDto.getTypeName();
+        String fileName = makeFileName(fileTypeName);
 
         PutObjectRequest putObjectRequest = makePutObjectRequest(bucket, fileName);
         PutObjectPresignRequest putObjectPresignRequest = makePutObjectPreSignRequest(putObjectRequest);
-        return GetImageCreateResDto.of(
+        return GetFileCreateResDto.of(
                 fileName,
                 s3Presigner.presignPutObject(putObjectPresignRequest).url().toExternalForm()
         );
@@ -69,8 +69,8 @@ public class ImageService {
                 .build();
     }
 
-    private String makeFileName(String imageTypeName) {
-        return new StringBuffer().append(imageTypeName)
+    private String makeFileName(String fileTypeName) {
+        return new StringBuffer().append(fileTypeName)
                 .append("/")
                 .append(UUID.randomUUID())
                 .toString();

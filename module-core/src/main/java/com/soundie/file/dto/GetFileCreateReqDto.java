@@ -1,4 +1,4 @@
-package com.soundie.image.dto;
+package com.soundie.file.dto;
 
 
 import lombok.AccessLevel;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class GetImageCreateReqDto {
+public class GetFileCreateReqDto {
 
     private String typeName;
 }

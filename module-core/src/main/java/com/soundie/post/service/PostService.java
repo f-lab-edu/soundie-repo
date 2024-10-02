@@ -7,7 +7,7 @@ import com.soundie.global.common.exception.NotFoundException;
 import com.soundie.global.common.util.CacheExpireTime;
 import com.soundie.global.common.util.CacheNames;
 import com.soundie.global.common.util.PaginationUtil;
-import com.soundie.image.service.ImageService;
+import com.soundie.file.service.FileService;
 import com.soundie.member.domain.Member;
 import com.soundie.member.repository.MemberRepository;
 import com.soundie.post.domain.Post;
@@ -36,7 +36,7 @@ public class PostService {
     private final PostLikeRepository postLikeRepository;
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
-    private final ImageService imageService;
+    private final FileService fileService;
 
     private final RedisTemplate<String, Object> redisCacheTemplate;
     private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
@@ -136,8 +136,8 @@ public class PostService {
         }
 
         CompletableFuture.runAsync(() -> postRepository.delete(findPost), threadPoolTaskExecutor);
-        CompletableFuture.runAsync(() -> imageService.deleteFile(findPost.getAlbumImgPath()), threadPoolTaskExecutor);
-        CompletableFuture.runAsync(() -> imageService.deleteFile(findPost.getMusicPath()), threadPoolTaskExecutor);
+        CompletableFuture.runAsync(() -> fileService.deleteFile(findPost.getAlbumImgPath()), threadPoolTaskExecutor);
+        CompletableFuture.runAsync(() -> fileService.deleteFile(findPost.getMusicPath()), threadPoolTaskExecutor);
 
         return PostIdElement.of(findPost);
     }
