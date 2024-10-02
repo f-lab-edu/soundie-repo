@@ -51,4 +51,12 @@ public class PostController {
                 .data(postService.likePost(memberId, postId))
                 .build();
     }
+
+    @DeleteMapping("/{postId}")
+    public EnvelopeResponse<PostIdElement> deletePost(@PathVariable Long postId,
+                                                      @RequestParam Long memberId) {
+        return EnvelopeResponse.<PostIdElement>builder()
+                .data(postService.deletePost(memberId, postId))
+                .build();
+    }
 }

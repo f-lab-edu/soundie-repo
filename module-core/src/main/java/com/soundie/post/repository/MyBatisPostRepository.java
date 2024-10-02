@@ -51,4 +51,12 @@ public class MyBatisPostRepository implements PostRepository {
         postMapper.save(post);
         return post;
     }
+
+    /*
+    * 음원 게시물 삭제
+    * */
+    @Override
+    public void delete(Post post) {
+        postMapper.delete(post);
+    }
 }

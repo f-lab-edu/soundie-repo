@@ -2,10 +2,12 @@ package com.soundie.post.service;
 
 import com.soundie.comment.repository.CommentRepository;
 import com.soundie.global.common.exception.ApplicationError;
+import com.soundie.global.common.exception.BadRequestException;
 import com.soundie.global.common.exception.NotFoundException;
 import com.soundie.global.common.util.CacheExpireTime;
 import com.soundie.global.common.util.CacheNames;
 import com.soundie.global.common.util.PaginationUtil;
+import com.soundie.image.service.ImageService;
 import com.soundie.member.domain.Member;
 import com.soundie.member.repository.MemberRepository;
 import com.soundie.post.domain.Post;
@@ -32,6 +34,7 @@ public class PostService {
     private final PostLikeRepository postLikeRepository;
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
+    private final ImageService imageService;
 
     private final RedisTemplate<String, Object> redisCacheTemplate;
 
@@ -116,6 +119,24 @@ public class PostService {
         }
 
         return PostIdElement.of(post);
+    }
+
+    public PostIdElement deletePost(Long memberId, Long postId) {
+        Member findMember = memberRepository.findMemberById(memberId)
+                .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
+        Post findPost = postRepository.findPostById(postId)
+                .orElseThrow(() -> new NotFoundException(ApplicationError.POST_NOT_FOUND));
+
+        // 음원 게시물 작성 회원이 아닌, 회원이 삭제
+        if (!findMember.getId().equals(findPost.getMemberId())){
+            throw new BadRequestException(ApplicationError.INVALID_AUTHORITY);
+        }
+
+        postRepository.delete(findPost);
+        imageService.deleteFile(findPost.getAlbumImgPath());
+        imageService.deleteFile(findPost.getMusicPath());
+
+        return PostIdElement.of(findPost);
     }
 
     public PostPostLikeResDto likePost(Long memberId, Long postId) {
