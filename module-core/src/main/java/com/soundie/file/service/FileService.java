@@ -38,8 +38,14 @@ public class FileService {
         String fileTypeName = getFileCreateReqDto.getTypeName();
         String fileName = makeFileName(fileTypeName);
 
-        PutObjectRequest putObjectRequest = makePutObjectRequest(bucket, fileName);
-        PutObjectPresignRequest putObjectPresignRequest = makePutObjectPreSignRequest(putObjectRequest);
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(bucket)
+                .key(fileName)
+                .build();
+        PutObjectPresignRequest putObjectPresignRequest = PutObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofMinutes(expireIn))
+                .putObjectRequest(putObjectRequest)
+                .build();
         return GetFileCreateResDto.of(
                 fileName,
                 s3Presigner.presignPutObject(putObjectPresignRequest).url().toExternalForm()
@@ -53,20 +59,6 @@ public class FileService {
                 .build();
 
         s3Client.deleteObject(deleteObjectRequest);
-    }
-
-    private PutObjectPresignRequest makePutObjectPreSignRequest(PutObjectRequest PutObjectRequest) {
-        return PutObjectPresignRequest.builder()
-                .signatureDuration(Duration.ofMinutes(expireIn))
-                .putObjectRequest(PutObjectRequest)
-                .build();
-    }
-
-    private PutObjectRequest makePutObjectRequest(String bucket, String fileName) {
-        return PutObjectRequest.builder()
-                .bucket(bucket)
-                .key(fileName)
-                .build();
     }
 
     private String makeFileName(String fileTypeName) {
