@@ -12,7 +12,7 @@ import com.soundie.global.common.exception.ApplicationError;
 import com.soundie.global.common.exception.NotFoundException;
 import com.soundie.global.common.util.CacheExpireTime;
 import com.soundie.global.common.util.CacheNames;
-import com.soundie.global.common.util.PaginationUtil;
+import com.soundie.global.common.util.PaginationConstant;
 import com.soundie.member.domain.Member;
 import com.soundie.member.repository.MemberRepository;
 import com.soundie.post.domain.Post;
@@ -53,7 +53,7 @@ public class CommentService {
         Integer size = getCommentCursorReqDto.getSize();
 
         // 첫 페이지 x, db 조회
-        if (!cursor.equals(PaginationUtil.START_CURSOR)) {
+        if (!cursor.equals(PaginationConstant.START_CURSOR)) {
             List<CommentWithAuthor> commentsWithAuthor = findCommentsWithAuthorByCursorCheckExistsCursor(findPost.getId(), cursor, size);
             return GetCommentCursorResDto.of(commentsWithAuthor, size);
         }
@@ -93,7 +93,7 @@ public class CommentService {
         // 커스텀 캐시 존재 o, 캐시 수정
         if (Boolean.TRUE.equals(redisCacheTemplate.hasKey(CacheNames.COMMENT_CURSOR))) {
             ListOperations<String, Object> opsForList = redisCacheTemplate.opsForList();
-            if (opsForList.size(CacheNames.COMMENT_CURSOR) < PaginationUtil.COMMENT_SIZE) {
+            if (opsForList.size(CacheNames.COMMENT_CURSOR) < PaginationConstant.COMMENT_SIZE) {
                 opsForList.rightPush(
                         CacheNames.COMMENT_CURSOR,
                         new CommentWithAuthor(
@@ -118,7 +118,7 @@ public class CommentService {
     }
 
     private List<CommentWithAuthor> findCommentsWithAuthorByCursorCheckExistsCursor(Long postId, Long cursor, Integer size) {
-        return cursor.equals(PaginationUtil.START_CURSOR) ? commentRepository.findCommentsWithAuthorByPostIdOrderByIdAsc(postId, size)
+        return cursor.equals(PaginationConstant.START_CURSOR) ? commentRepository.findCommentsWithAuthorByPostIdOrderByIdAsc(postId, size)
                 : commentRepository.findCommentsWithAuthorByPostIdAndIdLessThanOrderByIdAsc(postId, cursor, size);
     }
 

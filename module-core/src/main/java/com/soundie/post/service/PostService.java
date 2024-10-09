@@ -6,14 +6,20 @@ import com.soundie.global.common.exception.BadRequestException;
 import com.soundie.global.common.exception.NotFoundException;
 import com.soundie.global.common.util.CacheExpireTime;
 import com.soundie.global.common.util.CacheNames;
-import com.soundie.global.common.util.PaginationUtil;
+import com.soundie.global.common.util.PaginationConstant;
 import com.soundie.file.service.FileService;
 import com.soundie.member.domain.Member;
 import com.soundie.member.repository.MemberRepository;
 import com.soundie.post.domain.Post;
 import com.soundie.post.domain.PostLike;
 import com.soundie.post.domain.PostWithCount;
-import com.soundie.post.dto.*;
+import com.soundie.post.dto.GetPostCursorReqDto;
+import com.soundie.post.dto.GetPostCursorResDto;
+import com.soundie.post.dto.GetPostDetailResDto;
+import com.soundie.post.dto.GetPostResDto;
+import com.soundie.post.dto.PostIdElement;
+import com.soundie.post.dto.PostPostCreateReqDto;
+import com.soundie.post.dto.PostPostLikeResDto;
 import com.soundie.post.repository.PostLikeRepository;
 import com.soundie.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +59,7 @@ public class PostService {
         Integer size = getPostCursorReqDto.getSize();
 
         // 첫 페이지 x, db 조회
-        if (!cursor.equals(PaginationUtil.START_CURSOR)) {
+        if (!cursor.equals(PaginationConstant.START_CURSOR)) {
             List<Post> findPosts = findPostsByCursorCheckExistsCursor(cursor, size);
             List<PostWithCount> findPostsWithCount = findPostsWithCount(findPosts);
             return GetPostCursorResDto.of(findPostsWithCount, size);
@@ -188,7 +194,7 @@ public class PostService {
     }
 
     private List<Post> findPostsByCursorCheckExistsCursor(Long cursor, Integer size) {
-        return cursor.equals(PaginationUtil.START_CURSOR) ? postRepository.findPostsOrderByIdDesc(size)
+        return cursor.equals(PaginationConstant.START_CURSOR) ? postRepository.findPostsOrderByIdDesc(size)
                 : postRepository.findPostsByIdLessThanOrderByIdDesc(cursor, size);
     }
 

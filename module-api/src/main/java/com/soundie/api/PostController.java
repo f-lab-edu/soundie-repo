@@ -1,7 +1,13 @@
 package com.soundie.api;
 
 import com.soundie.global.common.dto.EnvelopeResponse;
-import com.soundie.post.dto.*;
+import com.soundie.post.dto.GetPostCursorReqDto;
+import com.soundie.post.dto.GetPostCursorResDto;
+import com.soundie.post.dto.GetPostDetailResDto;
+import com.soundie.post.dto.GetPostResDto;
+import com.soundie.post.dto.PostIdElement;
+import com.soundie.post.dto.PostPostCreateReqDto;
+import com.soundie.post.dto.PostPostLikeResDto;
 import com.soundie.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

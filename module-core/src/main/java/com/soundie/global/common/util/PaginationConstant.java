@@ -1,6 +1,6 @@
 package com.soundie.global.common.util;
 
-public class PaginationUtil {
+public class PaginationConstant {
 
     public static final Long START_CURSOR = -1L;
     public static final Integer POST_SIZE = 5;

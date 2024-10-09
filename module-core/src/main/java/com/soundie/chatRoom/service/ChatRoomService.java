@@ -18,7 +18,7 @@ import com.soundie.global.common.exception.BadRequestException;
 import com.soundie.global.common.exception.DuplicateException;
 import com.soundie.global.common.exception.NotFoundException;
 import com.soundie.global.common.util.ChatUtil;
-import com.soundie.global.common.util.PaginationUtil;
+import com.soundie.global.common.util.PaginationConstant;
 import com.soundie.member.domain.Member;
 import com.soundie.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -160,8 +160,7 @@ public class ChatRoomService {
             CompletableFuture.runAsync(() -> {
                 // 채팅방 나간 인원, null 처리
                 chatRoomRepository.updateMemberNullIfMatchMember(chatRoom, member);
-            }, threadPoolTaskExecutor);
-            CompletableFuture.runAsync(() -> {
+            }, threadPoolTaskExecutor).thenRunAsync(() -> {
                 // 퇴장 메시지 생성
                 ChatMessage exitChatMessage = new ChatMessage(
                         chatRoom.getId(),
@@ -182,7 +181,7 @@ public class ChatRoomService {
     }
 
     private List<ChatMessage> findChatMessagesCursorCheckExistsCursor(Long chatRoomId, Long cursor, Integer size) {
-        return cursor.equals(PaginationUtil.START_CURSOR) ? chatMessageRepository.findChatMessagesByChatRoomIdOrderByIdDesc(chatRoomId, size)
+        return cursor.equals(PaginationConstant.START_CURSOR) ? chatMessageRepository.findChatMessagesByChatRoomIdOrderByIdDesc(chatRoomId, size)
                 : chatMessageRepository.findChatMessageByChatRoomIdAndIdLessThanOrderByIdDesc(chatRoomId, cursor, size);
     }
 }

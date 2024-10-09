@@ -2,7 +2,10 @@ package com.soundie.api;
 
 import com.soundie.chatMessage.dto.GetChatMessageCursorReqDto;
 import com.soundie.chatMessage.dto.PostChatMessageCreateReqDto;
-import com.soundie.chatRoom.dto.*;
+import com.soundie.chatRoom.dto.ChatRoomIdElement;
+import com.soundie.chatRoom.dto.GetChatRoomDetailResDto;
+import com.soundie.chatRoom.dto.GetChatRoomResDto;
+import com.soundie.chatRoom.dto.PostChatRoomCreateReqDto;
 import com.soundie.chatRoom.service.ChatRoomService;
 import com.soundie.global.common.dto.EnvelopeResponse;
 import lombok.RequiredArgsConstructor;

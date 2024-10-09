@@ -1,6 +1,10 @@
 package com.soundie.api;
 
-import com.soundie.comment.dto.*;
+import com.soundie.comment.dto.CommentIdElement;
+import com.soundie.comment.dto.GetCommentCursorReqDto;
+import com.soundie.comment.dto.GetCommentCursorResDto;
+import com.soundie.comment.dto.GetCommentResDto;
+import com.soundie.comment.dto.PostCommentCreateReqDto;
 import com.soundie.comment.service.CommentService;
 import com.soundie.global.common.dto.EnvelopeResponse;
 import lombok.RequiredArgsConstructor;
