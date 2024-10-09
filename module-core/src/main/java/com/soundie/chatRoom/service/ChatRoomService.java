@@ -160,8 +160,7 @@ public class ChatRoomService {
             CompletableFuture.runAsync(() -> {
                 // 채팅방 나간 인원, null 처리
                 chatRoomRepository.updateMemberNullIfMatchMember(chatRoom, member);
-            }, threadPoolTaskExecutor);
-            CompletableFuture.runAsync(() -> {
+            }, threadPoolTaskExecutor).thenRunAsync(() -> {
                 // 퇴장 메시지 생성
                 ChatMessage exitChatMessage = new ChatMessage(
                         chatRoom.getId(),
