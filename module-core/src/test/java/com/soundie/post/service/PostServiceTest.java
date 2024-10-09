@@ -8,15 +8,18 @@ import com.soundie.member.repository.MemberRepository;
 import com.soundie.post.domain.Post;
 import com.soundie.post.domain.PostLike;
 import com.soundie.post.domain.PostWithCount;
-import com.soundie.post.dto.*;
 import com.soundie.global.util.fixture.MemberFixture;
+import com.soundie.post.dto.GetPostDetailResDto;
+import com.soundie.post.dto.GetPostResDto;
+import com.soundie.post.dto.PostIdElement;
+import com.soundie.post.dto.PostPostCreateReqDto;
+import com.soundie.post.dto.PostPostLikeResDto;
 import com.soundie.post.repository.PostLikeRepository;
 import com.soundie.post.repository.PostRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import static org.mockito.BDDMockito.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -27,6 +30,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class PostServiceTest {

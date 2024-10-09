@@ -1,6 +1,5 @@
 package com.soundie.file.dto;
 
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
