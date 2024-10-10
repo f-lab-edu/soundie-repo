@@ -15,6 +15,10 @@ spring:
       enabled: true
       path: /h2-console
 
+  schedule:
+    fixed-delay: 1000
+    initial-delay: 1000
+
   # kafka
   kafka:
     # Kafka 클러스터에 대한 주소

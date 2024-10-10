@@ -29,7 +29,7 @@ public class PostLikeScheduler {
     private final RedisTemplate<String, Object> redisCacheTemplate;
 
     @Async("threadPoolTaskScheduler")
-    @Scheduled(fixedDelay = 1000, initialDelay = 1000)
+    @Scheduled(fixedDelayString = "${spring.schedule.fixed-delay}", initialDelayString = "${spring.schedule.initial-delay}")
     public void schedulePostLikeUpdate() {
         // 좋아요 저장 요청
         saveRequests.forEach((postId, memberSet) -> {
