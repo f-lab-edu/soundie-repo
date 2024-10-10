@@ -25,7 +25,6 @@ import com.soundie.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +45,7 @@ public class PostService {
 
     private final RedisTemplate<String, Object> redisCacheTemplate;
     private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    private final PostLikeScheduler postLikeScheduler;
 
     public GetPostResDto readPostList(){
         List<Post> findPosts = postRepository.findPosts();
@@ -153,10 +153,8 @@ public class PostService {
                 .orElseThrow(() -> new NotFoundException(ApplicationError.MEMBER_NOT_FOUND));
         Post findPost = postRepository.findPostById(postId)
                 .orElseThrow(() -> new NotFoundException(ApplicationError.POST_NOT_FOUND));
-
         PostLike postLike = postLikeRepository.findPostLikeByMemberIdAndPostId(findMember.getId(), findPost.getId())
                 .orElse(null);
-
         Number likeCount = postLikeRepository.countPostLikesByPostId(findPost.getId());
 
         return togglePostLike(findMember, findPost, postLike, likeCount);
@@ -173,24 +171,11 @@ public class PostService {
     }
 
     private void saveLike(Member member, Post post) {
-        PostLike postLike = new PostLike(member.getId(), post.getId());
-        postLikeRepository.save(postLike);
-
-        // 캐시 존재 판단에 따른, 캐시 초기화
-        if (Boolean.TRUE.equals(redisCacheTemplate.hasKey(getLikeCountKeyByPost(post.getId())))){
-            ValueOperations<String, Object> opsForValue = redisCacheTemplate.opsForValue();
-            opsForValue.increment(getLikeCountKeyByPost(post.getId()));
-        }
+        postLikeScheduler.saveLike(post.getId(), member.getId());
     }
 
     private void deleteLike(PostLike postLike) {
-        postLikeRepository.delete(postLike);
-
-        // 캐시 존재 판단에 따른, 캐시 초기화
-        if (Boolean.TRUE.equals(redisCacheTemplate.hasKey(getLikeCountKeyByPost(postLike.getPostId())))){
-            ValueOperations<String, Object> opsForValue = redisCacheTemplate.opsForValue();
-            opsForValue.decrement(getLikeCountKeyByPost(postLike.getPostId()));
-        }
+        postLikeScheduler.deleteLike(postLike.getPostId(), postLike.getMemberId());
     }
 
     private List<Post> findPostsByCursorCheckExistsCursor(Long cursor, Integer size) {

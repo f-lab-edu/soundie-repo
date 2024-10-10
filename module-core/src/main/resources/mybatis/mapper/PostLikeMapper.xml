@@ -37,9 +37,26 @@
         values (#{postLike.memberId}, #{postLike.postId})
     </insert>
 
+    <insert id="saveAll">
+        insert into postlike (member_id, post_id)
+        values
+        <foreach item="postLike" collection="postLikes" separator=",">
+            (#{postLike.memberId}, #{postLike.postId})
+        </foreach>
+    </insert>
+
     <!-- 좋아요 삭제 -->
     <delete id="delete">
         delete from postlike
         where id = #{postLike.id}
+    </delete>
+
+    <delete id="deleteAll">
+        delete from postlike
+        <where>
+            <foreach item="postLike" collection="postLikes" separator="or">
+                (member_id = #{postLike.memberId} and post_id = #{postLike.postId})
+            </foreach>
+        </where>
     </delete>
 </mapper>
