@@ -37,6 +37,14 @@
         values (#{postLike.memberId}, #{postLike.postId})
     </insert>
 
+    <insert id="saveAll">
+        insert into postlike (member_id, post_id)
+        values
+        <foreach item="postLike" collection="postLikes" separator=",">
+            (#{postLike.memberId}, #{postLike.postId})
+        </foreach>
+    </insert>
+
     <!-- 좋아요 삭제 -->
     <delete id="delete">
         delete from postlike

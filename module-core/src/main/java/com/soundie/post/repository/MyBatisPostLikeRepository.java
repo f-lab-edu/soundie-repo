@@ -50,6 +50,12 @@ public class MyBatisPostLikeRepository implements PostLikeRepository{
         return postLike;
     }
 
+    @Override
+    public List<PostLike> saveAll(List<PostLike> postLikes) {
+        postLikeMapper.saveAll(postLikes);
+        return postLikes;
+    }
+
     /*
      * 좋아요 삭제
      * */
