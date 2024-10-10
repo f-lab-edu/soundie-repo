@@ -50,4 +50,13 @@
         delete from postlike
         where id = #{postLike.id}
     </delete>
+
+    <delete id="deleteAll">
+        delete from postlike
+        <where>
+            <foreach item="postLike" collection="postLikes" separator="or">
+                (member_id = #{postLike.memberId} and post_id = #{postLike.postId})
+            </foreach>
+        </where>
+    </delete>
 </mapper>

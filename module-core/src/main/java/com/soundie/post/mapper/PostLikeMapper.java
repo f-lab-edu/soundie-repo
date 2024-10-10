@@ -23,4 +23,6 @@ public interface PostLikeMapper {
     void saveAll(@Param("postLikes") List<PostLike> postLikes);
 
     void delete(@Param("postLike") PostLike postLike);
+
+    void deleteAll(@Param("postLikes") List<PostLike> postLikes);
 }

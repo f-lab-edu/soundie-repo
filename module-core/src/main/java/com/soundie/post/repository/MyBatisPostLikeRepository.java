@@ -63,4 +63,9 @@ public class MyBatisPostLikeRepository implements PostLikeRepository{
     public void delete(PostLike postLike) {
         postLikeMapper.delete(postLike);
     }
+
+    @Override
+    public void deleteAll(List<PostLike> postLikes) {
+        postLikeMapper.deleteAll(postLikes);
+    }
 }
