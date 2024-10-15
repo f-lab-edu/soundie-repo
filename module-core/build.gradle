@@ -22,3 +22,10 @@ dependencies {
     // Spring Cloud AWS Starter-S3: AWS S3 사용을 위한 기본 설정 및 의존성
     implementation 'io.awspring.cloud:spring-cloud-aws-s3:3.0.2'
 }
+
+bootJar {
+    enabled = false
+}
+jar {
+    enabled = true
+}
