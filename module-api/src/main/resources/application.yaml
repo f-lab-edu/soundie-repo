@@ -3,4 +3,4 @@ spring:
   profiles:
     active: local
     include:
-      - core
+      - secret

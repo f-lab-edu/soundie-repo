@@ -1,0 +1,58 @@
+# spring
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  # db
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_DOMAIN}:${MYSQL_PORT}/${MYSQL_DATABASE}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+
+  # schedule
+  schedule:
+    fixed-delay: 1000
+    initial-delay: 1000
+
+  # kafka
+  kafka:
+    # Kafka 클러스터에 대한 주소
+    bootstrap-servers: ${KAFKA_DOMAIN}:9092
+
+    # Kafka 토픽
+    template:
+      default-topic: topic-spring
+
+    # Kafka 컨슈머에 대한 설정
+    consumer:
+      # 컨슈머 그룹의 고유 식별자인 그룹 ID를 설정
+      group-id: foo
+
+      # 마지막 커밋 기록이 없을 경우, 가장 예전(낮은 번호 오프셋) 레코드부터 처리
+      auto-offset-reset: earliest
+
+  # redis
+  redis:
+    cache:
+      host: ${REDIS_DOMAIN}
+      port: ${REDIS_PORT}
+
+# mybatis
+mybatis:
+  mapper-locations: classpath*:mybatis/mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+# cloud
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: ${S3_BUCKET_NAME}
+      expire-in: ${S3_EXPIRE_IN_TIME}
