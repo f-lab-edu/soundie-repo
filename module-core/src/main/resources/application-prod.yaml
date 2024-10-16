@@ -2,19 +2,17 @@
 spring:
   config:
     activate:
-      on-profile: local
-    import: application-secret.yaml
+      on-profile: prod
+    import: optional:file:.env.prod[.properties]
 
+  # db
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:~/test
-    username: sa
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_DOMAIN}:${MYSQL_PORT}/${MYSQL_DATABASE}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
 
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-
+  # schedule
   schedule:
     fixed-delay: 1000
     initial-delay: 1000
@@ -22,11 +20,11 @@ spring:
   # kafka
   kafka:
     # Kafka 클러스터에 대한 주소
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_DOMAIN}:9092
 
     # Kafka 토픽
     template:
-      default-topic: chatroom
+      default-topic: topic-spring
 
     # Kafka 컨슈머에 대한 설정
     consumer:
@@ -38,12 +36,9 @@ spring:
 
   # redis
   redis:
-    db:
-      host: localhost
-      port: 6379
     cache:
-      host: localhost
-      port: 6380
+      host: ${REDIS_DOMAIN}
+      port: ${REDIS_PORT}
 
 # mybatis
 mybatis:
