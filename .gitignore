@@ -11,6 +11,8 @@ build
 
 # IntelliJ project files
 application-secret.yaml
+.env.local
+.env.prod
 
 .idea
 .idea/*.xml

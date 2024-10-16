@@ -3,6 +3,7 @@ spring:
   config:
     activate:
       on-profile: prod
+    import: optional:file:.env.prod[.properties]
 
   # db
   datasource:

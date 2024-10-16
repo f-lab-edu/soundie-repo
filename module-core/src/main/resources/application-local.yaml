@@ -3,6 +3,7 @@ spring:
   config:
     activate:
       on-profile: local
+    import: optional:file:.env.local[.properties]
 
   # db
   datasource:
