@@ -9,4 +9,5 @@ ARG JAR_FILE=build/libs/*.jar
 COPY ${JAR_FILE} module-api.jar
 
 # 4. Docker Container가 시작될때, 실행할 명령어
-ENTRYPOINT ["java", "-jar", "/module-api.jar"]
+ARG SPRING_PROFILE=prod
+ENTRYPOINT ["java", "-Dspring.profiles.active=${SPRING_PROFILE}", "-jar", "/module-api.jar"]
