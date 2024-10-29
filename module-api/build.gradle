@@ -5,21 +5,6 @@ dependencies {
     implementation project(':module-core')
 }
 
-bootJar {
-    enabled = true
-}
 jar {
-    enabled = false
-}
-
-String jarName = "module-api.jar"
-tasks.named("bootJar") {
-    bootJar.getArchiveFileName().set(jarName)
-
-    bootJar.doLast(task -> {
-        copy(copySpec -> {
-            copySpec.from("build/libs/" + jarName)
-            copySpec.into("../build/libs")
-        })
-    })
+    archiveBaseName.set("module-api")
 }
