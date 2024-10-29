@@ -6,8 +6,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
 
-    // h2 라이브러리
-    runtimeOnly 'com.h2database:h2'
+    // mysql 라이브러리
+    runtimeOnly 'com.mysql:mysql-connector-j'
 
     // Spring KafKa : KafKa 사용을 위한 기본 설정 및 의존성
     implementation 'org.springframework.kafka:spring-kafka'
@@ -21,4 +21,11 @@ dependencies {
 
     // Spring Cloud AWS Starter-S3: AWS S3 사용을 위한 기본 설정 및 의존성
     implementation 'io.awspring.cloud:spring-cloud-aws-s3:3.0.2'
+}
+
+bootJar {
+    enabled = false
+}
+jar {
+    enabled = true
 }
