@@ -2,20 +2,34 @@ version: "3.8"
 
 services:
   server:
-    image: cluejws/soundie
+    build:
+      context: ./  # 빌드를 위한 root context
+      dockerfile: module-api/Dockerfile
     container_name: server-container
     networks:
       - my-network
     ports:
       - "8080:8080"
-    volumes:
-      - ./src/main/resources/application.yml:/app/application.yml
     env_file:
-      - .env.prod
+      - .env.local
     environment:
-      SPRING_CONFIG_LOCATION: /app/application.yml
-      SPRING_PROFILES_ACTIVE: prod  # 활성 프로파일
-      SPRING_PROFILE: prod  # 이 줄을 추가
+      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+      AWS_SECRET_KEY: ${AWS_SECRET_KEY}
+
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME}
+      S3_EXPIRE_IN_TIME: ${S3_EXPIRE_IN_TIME}
+
+      MYSQL_DOMAIN: ${MYSQL_DOMAIN}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USERNAME: ${MYSQL_USERNAME}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+      KAFKA_DOMAIN: ${KAFKA_DOMAIN}
+
+      REDIS_DOMAIN: ${REDIS_DOMAIN}
+      REDIS_PORT: ${REDIS_PORT}
+
+      SPRING_PROFILES_ACTIVE: local  # 활성 프로파일
     depends_on:
       - db
       - redis
@@ -28,9 +42,11 @@ services:
       - my-network
     ports:
       - "13306:3306"
+    env_file:
+      - .env.local
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}    # .env.prod에서 가져오기
-      MYSQL_DATABASE: ${MYSQL_DATABASE}         # .env.prod에서 가져오기
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
 
   redis:
     image: redis:latest
@@ -56,11 +72,21 @@ services:
       - my-network
     ports:
       - "9092:9092"
+      - "9094:9094"
+    env_file:
+      - .env.local
     environment:
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://${KAFKA_DOMAIN}:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT
-      KAFKA_LISTENERS: INSIDE://0.0.0.0:9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      # Kafka Broker가 Client로부터 듣고있는 네트워크
+      # Kafka Broker는 9092포트에서 PLAINTEXT 프로토콜을 사용하여, 들어오는 Client 연결을 수신
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9092,OUTSIDE://0.0.0.0:9094
+      # Kafka Broker가 Client에게 알려주는 네트워크
+      # Client는 ${KAFKA_DOMAIN}의 9092포트에서 PLAINTEXT 프로토콜을 사용하여, Kafka Broker에 연결
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://${KAFKA_DOMAIN}:9092,OUTSIDE://${KAFKA_DOMAIN}:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+    depends_on:
+      - zookeeper
 
 networks:
   my-network:

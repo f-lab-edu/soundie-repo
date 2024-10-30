@@ -8,9 +8,15 @@ spring:
   # db
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${MYSQL_DOMAIN}:${MYSQL_PORT}/${MYSQL_DATABASE}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://${MYSQL_DOMAIN}:3306/${MYSQL_DATABASE}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}
+
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:sql/schema-mysql.sql
+      data-locations: classpath:sql/data-mysql.sql
 
   # schedule
   schedule:
@@ -38,7 +44,7 @@ spring:
   redis:
     cache:
       host: ${REDIS_DOMAIN}
-      port: ${REDIS_PORT}
+      port: 6380
 
 # mybatis
 mybatis:
